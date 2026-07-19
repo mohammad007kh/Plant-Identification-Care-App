@@ -1,0 +1,441 @@
+# ============================================================================
+# PROJECT DEFAULTS REGISTRY
+# ============================================================================
+# Single source of truth for project-wide technical decisions.
+# ALL commands, agents, and phases MUST read this file before generating
+# specs, plans, or code. Deviations require explicit justification.
+#
+# Scaffolded + populated by /atomicspec.clarify (2026-07-19) after a
+# subagent-supervised architecture interview. See changelog.md for the
+# decision trail and _provenance below for how each field was decided.
+# ============================================================================
+
+version: 5
+created: 2026-07-19
+last_updated: 2026-07-19
+last_updated_by: human
+# ISO date when clarify last completed a full architectural-lurker pass.
+interview_completed: 2026-07-19
+
+# ============================================================================
+# LIFECYCLE MARKERS (v0.3+)
+# ============================================================================
+lifecycle:
+  stale_threshold_days: 7
+
+# ============================================================================
+# TARGET PLATFORM
+# ============================================================================
+target_platform:
+  # web | mobile | desktop | both | library
+  primary: web
+  mobile_platforms: null
+  mobile_framework: null
+  desktop_framework: null
+
+# ============================================================================
+# MOBILE CONFIGURATION (not applicable — web only)
+# ============================================================================
+mobile:
+  push_service: null
+  offline_strategy: null
+  local_database: null
+  deep_linking: null
+  iap_framework: null
+  crash_reporting: null
+  analytics: null
+  cert_pinning: null
+  biometric_auth: null
+  app_architecture: null
+
+# ============================================================================
+# ARCHITECTURE
+# ============================================================================
+architecture:
+  pattern: modular_monolith
+  layers: null
+  api_style: rest
+  communication: async
+  repo_structure: monorepo
+
+# ============================================================================
+# CODE PATTERNS
+# ============================================================================
+code_patterns:
+  data_access: repository
+  dependency_injection: container
+  error_handling: exceptions
+  async_pattern: async_await
+  validation_approach: schema
+  null_handling: strict_null
+
+# ============================================================================
+# API CONFIGURATION
+# ============================================================================
+api:
+  versioning: url
+  pagination: cursor
+  error_format: rfc7807
+  rate_limiting: token_bucket
+  idempotency: required
+  resource_naming: plural
+  request_format: json
+  auth_header: null
+  response_envelope: null
+  date_format: iso8601
+
+# ============================================================================
+# BACKEND CONFIGURATION
+# ============================================================================
+backend:
+  language: typescript
+  runtime_version: "node:22-lts"
+  framework: nestjs
+  orm: drizzle
+  # DEVIATION from clarify default `session`; founder-approved 2026-07-19 during /atomicspec.plan.
+  # Mitigations: short-lived access token + rotating httpOnly refresh token + server-side refresh denylist.
+  auth_method: jwt
+  auth_pattern: simple
+  job_queue: bull
+  cache: redis
+  job_durability_semantics: at_least_once
+
+# ============================================================================
+# FRONTEND CONFIGURATION (Web)
+# ============================================================================
+frontend:
+  framework: nextjs
+  rendering: hybrid
+  ui_library: mui
+  styling: emotion
+  state_management: zustand
+  data_fetching: tanstack-query
+  form_library: react-hook-form
+  validation_library: zod
+  routing: next-router
+  i18n_posture: i18n_from_day_one
+
+# ============================================================================
+# NATIVE MOBILE SECTIONS (not applicable — web only)
+# ============================================================================
+ios:
+  ui_framework: null
+  min_version: null
+  state_management: null
+  navigation: null
+  local_database: null
+  networking: null
+  async_pattern: null
+android:
+  ui_framework: null
+  min_sdk: null
+  target_sdk: null
+  state_management: null
+  navigation: null
+  local_database: null
+  dependency_injection: null
+  networking: null
+  async_pattern: null
+react_native:
+  dev_approach: null
+  ui_library: null
+  state_management: null
+  navigation: null
+  local_database: null
+  type_checking: null
+flutter:
+  ui_approach: null
+  min_version: null
+  state_management: null
+  navigation: null
+  local_database: null
+  networking: null
+  code_generation: null
+
+# ============================================================================
+# DATABASE CONFIGURATION
+# ============================================================================
+database:
+  type: postgresql
+  tenancy_model: single_tenant
+  soft_delete: true
+  audit_columns: true
+  migration_strategy: expand_contract
+  connection_pooling: orm_default
+  query_style: query_builder
+  naming_tables: snake_case
+  naming_columns: snake_case
+  primary_key_type: ulid
+
+# ============================================================================
+# ERROR HANDLING & LOGGING
+# ============================================================================
+error_handling:
+  logging_format: structured
+  log_level: info
+  error_tracking: null
+  tracing: null
+  correlation_header: null
+
+# ============================================================================
+# TESTING CONFIGURATION (deferred to /atomicspec.plan)
+# ============================================================================
+testing:
+  unit_framework: vitest
+  integration_framework: supertest
+  e2e_framework: playwright
+  coverage_target: 80
+  test_organization: colocated
+  mocking: msw
+
+# ============================================================================
+# INFRASTRUCTURE CONFIGURATION
+# ============================================================================
+# NOTE: cloud_provider enum has no Iran-domestic option. Object storage uses
+# the S3 protocol against ArvanCloud (S3-compatible), NOT AWS S3. Compute is a
+# self-managed / Iran-reachable VPS running Docker Compose. See changelog.
+infrastructure:
+  ci_cd: null            # deferred to cloud-move milestone (local-first v1)
+  container: docker
+  orchestration: docker-compose
+  cloud_provider: null
+  deployment_strategy: null
+  iac: null
+  secrets: env-files      # gitignored .env locally; secret manager on cloud move
+  search: postgres_fts
+  scheduling: app_scheduler
+  file_storage: s3
+  # v1 runs locally via Docker Compose; VPS/ArvanCloud production host deferred (cloud-later).
+  deployment_target: containerized
+
+# ============================================================================
+# CONVENTIONS (deferred to /atomicspec.plan)
+# ============================================================================
+conventions:
+  variables: camelCase
+  files: kebab-case
+  classes: PascalCase
+  constants: SCREAMING_SNAKE_CASE
+  commits: conventional
+  branches: feat/xxx
+  pr_titles: conventional
+
+# ============================================================================
+# UI/UX SPECIFICATIONS
+# ============================================================================
+ui_specs:
+  dark_mode: false
+  responsive: true
+  tablet_support: null
+  landscape_support: null
+  accessibility: wcag-aa
+  animations: css
+  design_tokens: css-variables
+  design_token_source: frontend/src/theme/
+  icons: lucide
+  notifications: null
+
+# ============================================================================
+# SECURITY CONFIGURATION
+# ============================================================================
+security:
+  cors: strict
+  csrf: token
+  csp: strict
+  rate_limit_scope: ip
+  input_sanitization: strict
+  password_policy: strong
+
+# ============================================================================
+# PAYMENT
+# ============================================================================
+# provider enum lacks an Iran-domestic option. v1 ships a Zarinpal MOCK behind
+# a PaymentPort (port/adapter). provider=none keeps downstream enum branches
+# honest; the real roadmap is carried as metadata below.
+payment:
+  provider: none
+  provider_custom: zarinpal_mock_v1
+  provider_planned: [zarinpal_live, stripe]
+  abstraction_pattern: port_adapter
+  billing_model: subscription
+  event_persistence: ledger
+
+# ============================================================================
+# EMAIL
+# ============================================================================
+# Western transactional email APIs may geoblock Iran. v1 uses a generic SMTP
+# relay (Iranian provider, own domain w/ SPF/DKIM/DMARC) behind a MailPort.
+email:
+  transactional_provider: smtp
+  marketing_provider: none
+  template_strategy: in_repo_react_email
+
+# ============================================================================
+# DOMAIN PRIMITIVES
+# ============================================================================
+domain:
+  money_representation: integer_minor_units
+  time_representation: utc_only
+  identifier_exposure: opaque_uuid
+
+# ============================================================================
+# AI / LLM (custom section — not in base template)
+# ============================================================================
+# Founder decision: OpenAI models, orchestrated with LangChain + LangGraph
+# (JS/TS packages), behind a single PlantAIProvider interface + AiGatewayService
+# that owns the 70% confidence gate, retry, and credit debit/refund. Iran
+# reachability is accepted by the founder as their responsibility.
+ai:
+  provider: openai
+  orchestration: langchain_langgraph
+  boundary: plant_ai_provider_interface
+
+# ============================================================================
+# INTEGRATIONS
+# ============================================================================
+integrations:
+  webhook_ingress_contract:
+    # For Zarinpal: "required" means NEVER grant credit off the redirect alone —
+    # always re-verify server-to-server via the provider Verify API. Same field
+    # governs real HMAC verification when Stripe is added.
+    signature_verification: required
+    replay_window: "900"
+    idempotency: event_id_dedupe
+  outbound_http_policy:
+    timeout_seconds: 30
+    retry: exponential_backoff
+    max_retries: 3
+    circuit_breaker: enabled
+
+# ============================================================================
+# COMPLIANCE
+# ============================================================================
+# Iran-only market, no EU users → out of GDPR scope. Mock payments, no
+# cardholder data handled directly → out of PCI scope. (PRD §9, §13.9.)
+compliance:
+  gdpr: false
+  pci: false
+  hipaa: null
+  coppa: null
+  soc2: null
+  data_residency: ir-only
+
+# ============================================================================
+# FEATURE TRACKING
+# ============================================================================
+applied_to:
+  - feature: plant-id-care-app
+    spec_path: specs/001-plant-id-care-app/spec.md
+    applied_at: 2026-07-19
+
+# ============================================================================
+# DECISION PROVENANCE
+# ============================================================================
+# human = founder actively chose; accepted_recommendation = AI-recommended
+# default applied without override (subagent-supervised interview).
+_provenance:
+  target_platform.primary: human
+  ai.provider: human
+  ai.orchestration: human
+  backend.auth_method: human  # deviation session→jwt, plan 2026-07-19
+  infrastructure.deployment_target: human  # vps→containerized (local-first), plan 2026-07-19
+  infrastructure.secrets: accepted_recommendation
+  testing.unit_framework: human
+  testing.integration_framework: accepted_recommendation
+  testing.e2e_framework: human
+  testing.coverage_target: human
+  testing.test_organization: accepted_recommendation
+  testing.mocking: accepted_recommendation
+  ui_specs.design_tokens: accepted_recommendation
+  conventions.variables: human
+  conventions.files: human
+  conventions.classes: human
+  conventions.constants: human
+  conventions.branches: accepted_recommendation
+  conventions.pr_titles: accepted_recommendation
+  email.transactional_provider: accepted_recommendation
+  payment.billing_model: accepted_recommendation
+  architecture.pattern: accepted_recommendation
+  architecture.api_style: accepted_recommendation
+  architecture.communication: accepted_recommendation
+  architecture.repo_structure: accepted_recommendation
+  code_patterns.data_access: accepted_recommendation
+  code_patterns.dependency_injection: accepted_recommendation
+  code_patterns.error_handling: accepted_recommendation
+  code_patterns.async_pattern: accepted_recommendation
+  code_patterns.validation_approach: accepted_recommendation
+  code_patterns.null_handling: accepted_recommendation
+  api.versioning: accepted_recommendation
+  api.pagination: accepted_recommendation
+  api.error_format: accepted_recommendation
+  api.rate_limiting: accepted_recommendation
+  api.idempotency: accepted_recommendation
+  api.resource_naming: accepted_recommendation
+  api.request_format: accepted_recommendation
+  api.date_format: accepted_recommendation
+  backend.language: accepted_recommendation
+  backend.runtime_version: accepted_recommendation
+  backend.framework: accepted_recommendation
+  backend.orm: accepted_recommendation
+  backend.auth_pattern: accepted_recommendation
+  backend.job_queue: accepted_recommendation
+  backend.cache: accepted_recommendation
+  backend.job_durability_semantics: accepted_recommendation
+  frontend.framework: accepted_recommendation
+  frontend.rendering: accepted_recommendation
+  frontend.ui_library: accepted_recommendation
+  frontend.styling: accepted_recommendation
+  frontend.state_management: accepted_recommendation
+  frontend.data_fetching: accepted_recommendation
+  frontend.form_library: accepted_recommendation
+  frontend.validation_library: accepted_recommendation
+  frontend.routing: accepted_recommendation
+  frontend.i18n_posture: accepted_recommendation
+  database.type: accepted_recommendation
+  database.tenancy_model: accepted_recommendation
+  database.soft_delete: accepted_recommendation
+  database.audit_columns: accepted_recommendation
+  database.migration_strategy: accepted_recommendation
+  database.connection_pooling: accepted_recommendation
+  database.query_style: accepted_recommendation
+  database.naming_tables: accepted_recommendation
+  database.naming_columns: accepted_recommendation
+  database.primary_key_type: accepted_recommendation
+  domain.money_representation: accepted_recommendation
+  domain.time_representation: accepted_recommendation
+  domain.identifier_exposure: accepted_recommendation
+  error_handling.logging_format: accepted_recommendation
+  error_handling.log_level: accepted_recommendation
+  infrastructure.container: accepted_recommendation
+  infrastructure.orchestration: accepted_recommendation
+  infrastructure.search: accepted_recommendation
+  infrastructure.scheduling: accepted_recommendation
+  infrastructure.file_storage: accepted_recommendation
+  infrastructure.deployment_target: accepted_recommendation
+  conventions.commits: accepted_recommendation
+  ui_specs.dark_mode: accepted_recommendation
+  ui_specs.responsive: accepted_recommendation
+  ui_specs.accessibility: accepted_recommendation
+  ui_specs.animations: accepted_recommendation
+  ui_specs.icons: accepted_recommendation
+  security.cors: accepted_recommendation
+  security.csrf: accepted_recommendation
+  security.csp: accepted_recommendation
+  security.rate_limit_scope: accepted_recommendation
+  security.input_sanitization: accepted_recommendation
+  security.password_policy: accepted_recommendation
+  payment.provider: accepted_recommendation
+  payment.abstraction_pattern: accepted_recommendation
+  payment.event_persistence: accepted_recommendation
+  email.template_strategy: accepted_recommendation
+  email.marketing_provider: accepted_recommendation
+  integrations.webhook_ingress_contract.signature_verification: accepted_recommendation
+  integrations.webhook_ingress_contract.replay_window: accepted_recommendation
+  integrations.webhook_ingress_contract.idempotency: accepted_recommendation
+  integrations.outbound_http_policy.timeout_seconds: accepted_recommendation
+  integrations.outbound_http_policy.retry: accepted_recommendation
+  integrations.outbound_http_policy.max_retries: accepted_recommendation
+  integrations.outbound_http_policy.circuit_breaker: accepted_recommendation
+  compliance.gdpr: accepted_recommendation
+  compliance.pci: accepted_recommendation
+  compliance.data_residency: accepted_recommendation

@@ -1,0 +1,189 @@
+openapi: 3.1.0
+info:
+  title: Plant Identification & Care API
+  version: 1.0.0
+  description: >
+    NestJS REST API for the Plant ID & Care web app. Errors use RFC7807
+    (application/problem+json). Lists use cursor pagination. Auth is JWT:
+    short-lived access token (Bearer) + rotating refresh token (httpOnly cookie).
+    All money is integer minor units (IRR). Resource ids in paths are opaque UUIDs.
+servers:
+  - url: /v1
+tags: [auth, scans, plants, chat, credits, subscriptions, payments, notifications, account, admin]
+
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  responses:
+    Problem:
+      description: RFC7807 error
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    Problem:
+      type: object
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        requestId: { type: string }
+    CursorPage:
+      type: object
+      properties:
+        data: { type: array, items: {} }
+        nextCursor: { type: [string, "null"] }
+    ScanJob:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, enum: [identify, comparison] }
+        status: { type: string, enum: [pending, completed, failed] }
+        confidence: { type: [number, "null"] }
+        species: { type: [object, "null"] }
+        careGuide: { type: [object, "null"] }
+        lowConfidence: { type: boolean, description: true when confidence < 0.70 }
+    Plant:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        nickname: { type: [string, "null"] }
+        species: { type: [object, "null"] }
+        photos: { type: array, items: { type: object } }
+    Plan:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        key: { type: string, enum: [free, pro, max] }
+        monthlyCreditAllowance: { type: integer }
+        priceMinor: { type: integer }
+        currency: { type: string }
+    CreditBalance:
+      type: object
+      properties:
+        balance: { type: integer }
+        tier: { type: string, enum: [free, pro, max] }
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      tags: [auth]
+      security: []
+      summary: Register (email/password). Merges current guest session's scans.
+      responses: { '201': { description: created }, '409': { $ref: '#/components/responses/Problem' } }
+  /auth/login:
+    post: { tags: [auth], security: [], summary: Login, responses: { '200': { description: ok }, '401': { $ref: '#/components/responses/Problem' } } }
+  /auth/refresh:
+    post: { tags: [auth], security: [], summary: Rotate refresh token (httpOnly cookie) → new access token, responses: { '200': { description: ok }, '401': { $ref: '#/components/responses/Problem' } } }
+  /auth/logout:
+    post: { tags: [auth], summary: Revoke refresh token (denylist), responses: { '204': { description: no content } } }
+
+  /scans:
+    post:
+      tags: [scans]
+      security: []
+      summary: Submit a photo for identification (guest allowed up to 2). Debits credit (registered) and enqueues an async AI job.
+      requestBody:
+        content: { multipart/form-data: { schema: { type: object, properties: { photo: { type: string, format: binary } } } } }
+      responses:
+        '202': { description: 'accepted; returns ScanJob {status: pending}', content: { application/json: { schema: { $ref: '#/components/schemas/ScanJob' } } } }
+        '402': { $ref: '#/components/responses/Problem', description: insufficient credit → upgrade modal }
+        '403': { $ref: '#/components/responses/Problem', description: guest scan limit reached → registration wall }
+        '415': { $ref: '#/components/responses/Problem', description: disallowed file type }
+  /scans/{id}:
+    get:
+      tags: [scans]
+      security: []
+      summary: Poll scan job status/result.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { description: ok, content: { application/json: { schema: { $ref: '#/components/schemas/ScanJob' } } } } }
+
+  /plants:
+    get:
+      tags: [plants]
+      summary: List saved plants (cursor paginated).
+      parameters: [{ name: cursor, in: query, schema: { type: string } }, { name: limit, in: query, schema: { type: integer, default: 20 } }]
+      responses: { '200': { description: ok, content: { application/json: { schema: { $ref: '#/components/schemas/CursorPage' } } } } }
+    post: { tags: [plants], summary: Save an identified plant, responses: { '201': { description: created } } }
+  /plants/{id}:
+    get:
+      tags: [plants]
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { description: ok, content: { application/json: { schema: { $ref: '#/components/schemas/Plant' } } } }, '404': { $ref: '#/components/responses/Problem' } }
+  /plants/{id}/photos:
+    post:
+      tags: [plants]
+      summary: Upload a follow-up photo → adds to history and enqueues a comparison (health trend). Debits credit.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '202': { description: 'accepted; ScanJob {type: comparison}' }, '402': { $ref: '#/components/responses/Problem' } }
+
+  /plants/{id}/chat:
+    post:
+      tags: [chat]
+      summary: Send a chat message about a plant (≤2 context photos). Debits credit; 11th free-tier message → paywall.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '202': { description: accepted }, '402': { $ref: '#/components/responses/Problem' } }
+  /plants/{id}/chat/messages:
+    get:
+      tags: [chat]
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }, { name: cursor, in: query, schema: { type: string } }]
+      responses: { '200': { description: ok, content: { application/json: { schema: { $ref: '#/components/schemas/CursorPage' } } } } }
+
+  /credits/balance:
+    get: { tags: [credits], summary: Current credit balance + tier, responses: { '200': { description: ok, content: { application/json: { schema: { $ref: '#/components/schemas/CreditBalance' } } } } } }
+
+  /subscriptions/plans:
+    get:
+      tags: [subscriptions]
+      security: []
+      summary: Live plans from DB (drives the upgrade modal — no hardcoded data).
+      responses: { '200': { description: ok, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Plan' } } } } } }
+
+  /payments/checkout:
+    post:
+      tags: [payments]
+      summary: Initiate a (mock Zarinpal) checkout for a plan. Snapshots price+allowance; returns a redirect URL.
+      responses: { '201': { description: 'created; { redirectUrl }' } }
+  /payments/verify:
+    get:
+      tags: [payments]
+      security: []
+      summary: Zarinpal callback. Server-to-server verify (never trust redirect). Idempotent credit grant + tier change on success.
+      parameters: [{ name: Authority, in: query, schema: { type: string } }, { name: Status, in: query, schema: { type: string } }]
+      responses: { '200': { description: verified }, '400': { $ref: '#/components/responses/Problem' } }
+
+  /notifications/preferences:
+    get: { tags: [notifications], responses: { '200': { description: ok } } }
+    patch: { tags: [notifications], summary: Toggle email/push notifications, responses: { '200': { description: ok } } }
+
+  /account/deletion:
+    post: { tags: [account], summary: Request account deletion (starts 7-day grace), responses: { '202': { description: accepted } } }
+    delete: { tags: [account], summary: Cancel a pending deletion within the grace window, responses: { '204': { description: no content } } }
+
+  /misidentification-reports:
+    post: { tags: [scans], summary: Report a misidentification (photo + AI result), responses: { '201': { description: created } } }
+
+  # ---- Admin (role=admin) ----
+  /admin/species:
+    get: { tags: [admin], summary: List/search species catalog, responses: { '200': { description: ok } } }
+    post: { tags: [admin], summary: Create species/care guide, responses: { '201': { description: created } } }
+  /admin/species/{id}:
+    patch:
+      tags: [admin]
+      summary: Edit care guide (reflected in future results).
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { description: ok } }
+  /admin/misidentification-reports:
+    get: { tags: [admin], summary: Review reports (with photo + AI result), responses: { '200': { description: ok } } }
+  /admin/users:
+    get: { tags: [admin], summary: Find/view user accounts + status, responses: { '200': { description: ok } } }
+  /admin/config:
+    get: { tags: [admin], summary: Read operational config, responses: { '200': { description: ok } } }
+    patch:
+      tags: [admin]
+      summary: Update config (allowed file types, per-tier credit allowances, credit costs, notification templates/timing) — applies without deploy.
+      responses: { '200': { description: ok } }
