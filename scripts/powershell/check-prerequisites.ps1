@@ -1,0 +1,437 @@
+﻿#!/usr/bin/env pwsh
+
+# Consolidated prerequisite checking script (PowerShell)
+#
+# This script provides unified prerequisite checking for Spec-Driven Development workflow.
+# It replaces the functionality previously spread across multiple scripts.
+#
+# Usage: ./check-prerequisites.ps1 [OPTIONS]
+#
+# OPTIONS:
+#   -Json               Output in JSON format
+#   -RequireTasks       Require tasks/ directory to exist (for implementation phase)
+#   -IncludeTasks       Include tasks/ in AVAILABLE_DOCS list
+#   -PathsOnly          Only output path variables (no validation)
+#   -CheckGates         Validate Knowledge Station gate criteria (blocks on failure)
+#   -GateContext CTX    Gate context: 'tasks' or 'implement' (which gates to check)
+#   -Help               Show help message
+
+[CmdletBinding()]
+param(
+    [switch]$Json,
+    [switch]$RequireTasks,
+    [switch]$IncludeTasks,
+    [switch]$PathsOnly,
+    [switch]$CheckGates,
+    [ValidateSet('tasks', 'implement')]
+    [string]$GateContext,
+    [switch]$Help
+)
+
+$ErrorActionPreference = 'Stop'
+
+# Show help if requested
+if ($Help) {
+    Write-Output @"
+Usage: check-prerequisites.ps1 [OPTIONS]
+
+Consolidated prerequisite checking for Spec-Driven Development workflow.
+
+OPTIONS:
+  -Json               Output in JSON format
+  -RequireTasks       Require tasks/ directory to exist (for implementation phase)
+  -IncludeTasks       Include tasks/ in AVAILABLE_DOCS list
+  -PathsOnly          Only output path variables (no prerequisite validation)
+  -CheckGates         Validate Knowledge Station gate criteria (blocks on failure)
+  -GateContext CTX    Gate context: 'tasks' or 'implement' (which gates to check)
+  -Help               Show this help message
+
+EXAMPLES:
+  # Check task prerequisites (plan.md required)
+  .\check-prerequisites.ps1 -Json
+
+  # Check with gate validation (Plan -> Tasks transition)
+  .\check-prerequisites.ps1 -Json -CheckGates -GateContext tasks
+
+  # Check implementation prerequisites (plan.md + tasks/ required)
+  .\check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
+
+  # Get feature paths only (no validation)
+  .\check-prerequisites.ps1 -PathsOnly
+
+"@
+    exit 0
+}
+
+# Source common functions
+. "$PSScriptRoot/common.ps1"
+
+# v0.3: self-healing orientation injection. Idempotent (~50ms when sentinel
+# exists in every existing agent file). Set $env:ATOMIC_SPEC_NO_INJECT=1
+# to skip. Failures here are best-effort -- never block the command.
+if (-not $env:ATOMIC_SPEC_NO_INJECT) {
+    $injectScript = Join-Path $PSScriptRoot 'inject-orientation.ps1'
+    if (Test-Path $injectScript -PathType Leaf) {
+        try {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $injectScript -Quiet 2>&1 | Out-Null
+        } catch {
+            # Best-effort: never block the command on injection failure.
+        }
+    }
+}
+
+# Get feature paths and validate branch
+$paths = Get-FeaturePathsEnv
+
+if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GIT)) {
+    exit 1
+}
+
+# If paths-only mode, output paths and exit (support combined -Json -PathsOnly)
+if ($PathsOnly) {
+    if ($Json) {
+        [PSCustomObject]@{
+            REPO_ROOT    = $paths.REPO_ROOT
+            BRANCH       = $paths.CURRENT_BRANCH
+            FEATURE_DIR  = $paths.FEATURE_DIR
+            FEATURE_SPEC = $paths.FEATURE_SPEC
+            IMPL_PLAN    = $paths.IMPL_PLAN
+            TASKS_DIR    = $paths.TASKS_DIR
+        } | ConvertTo-Json -Compress
+    } else {
+        Write-Output "REPO_ROOT: $($paths.REPO_ROOT)"
+        Write-Output "BRANCH: $($paths.CURRENT_BRANCH)"
+        Write-Output "FEATURE_DIR: $($paths.FEATURE_DIR)"
+        Write-Output "FEATURE_SPEC: $($paths.FEATURE_SPEC)"
+        Write-Output "IMPL_PLAN: $($paths.IMPL_PLAN)"
+        Write-Output "TASKS_DIR: $($paths.TASKS_DIR)"
+    }
+    exit 0
+}
+
+# Validate required directories and files
+if (-not (Test-Path $paths.FEATURE_DIR -PathType Container)) {
+    Write-Output "ERROR: Feature directory not found: $($paths.FEATURE_DIR)"
+    Write-Output "Run /atomicspec.specify first to create the feature structure."
+    exit 1
+}
+
+if (-not (Test-Path $paths.IMPL_PLAN -PathType Leaf)) {
+    Write-Output "ERROR: plan.md not found in $($paths.FEATURE_DIR)"
+    Write-Output "Run /atomicspec.plan first to create the implementation plan."
+    exit 1
+}
+
+#==============================================================================
+# Gate Validation (Knowledge Station Prerequisites)
+#==============================================================================
+
+# Returns $true if the named **Field**: line in $File has a real (non-placeholder)
+# value. Rejected placeholder forms:
+#   - empty or whitespace-only
+#   - starts with "[" (template convention: "[e.g., ...]", "[REQUIRED — ...]")
+#   - contains "NEEDS CLARIFICATION"
+# A trailing bracketed annotation (e.g., "Python 3.11 [checked 2026-04-20]") is
+# accepted — only a leading "[" signals an unfilled template slot.
+# $Field is regex-escaped before interpolation so future field names with regex
+# metacharacters cannot break the pattern (current names contain only letters,
+# spaces, and "/", so escaping is a no-op today but defensive for future additions).
+function Test-PlanField {
+    param([string]$File, [string]$Field)
+    if (-not (Test-Path $File -PathType Leaf)) { return $false }
+    $escaped = [regex]::Escape($Field)
+    $match = Select-String -Path $File -Pattern "^\*\*${escaped}\*\*:" -ErrorAction SilentlyContinue |
+             Select-Object -First 1
+    if (-not $match) { return $false }
+    $value = ($match.Line -replace '^\*\*[^*]+\*\*:\s*', '').Trim()
+    if ([string]::IsNullOrWhiteSpace($value)) { return $false }
+    if ($value.StartsWith('[')) { return $false }
+    if ($value -match 'NEEDS CLARIFICATION') { return $false }
+    return $true
+}
+
+# Classifies specs/_defaults/registry.yaml into one of three states:
+#   - "missing"   (file does not exist)
+#   - "empty"     (file exists but every value is null / [] / empty)
+#   - "populated" (at least one non-null scalar value is set)
+#
+# Structural heuristic — no YAML parser. Matches the template's shape of
+# `  key: value` lines, skipping comments, section headers, and null placeholders.
+function Get-RegistryState {
+    param([string]$RepoRoot)
+    $file = Join-Path $RepoRoot 'specs/_defaults/registry.yaml'
+    if (-not (Test-Path $file -PathType Leaf)) { return 'missing' }
+    $lines = Get-Content -LiteralPath $file
+    foreach ($line in $lines) {
+        $trim = $line.Trim()
+        if ($trim -eq '' -or $trim.StartsWith('#')) { continue }
+        # Section header ("foo:") — skip
+        if ($trim -match ':\s*$') { continue }
+        # Null placeholders — skip
+        if ($trim -match ':\s*null\s*$') { continue }
+        if ($trim -match ':\s*\[\]\s*$') { continue }
+        # "{}" empty-mapping placeholder. Populated dicts like {k: v} don't match this.
+        if ($trim -match ':\s*\{\}\s*$') { continue }
+        if ($trim -match ':\s*~\s*$') { continue }
+        # Skip structural / lifecycle markers — not project decisions.
+        if ($trim -match '^(version|schema_version|last_updated|last_updated_by|created|applied_to|interview_completed):') { continue }
+        # Leaf with a real value
+        if ($trim -match ':') { return 'populated' }
+    }
+    return 'empty'
+}
+
+function Test-Gates {
+    param(
+        [string]$Context,
+        [PSCustomObject]$Paths
+    )
+
+    $gateFailures = 0
+
+    # Registry gate — applies to both tasks and implement contexts.
+    # Directive 7 (Project Defaults Registry) requires the file to exist.
+    # Escape hatch: $env:ATOMIC_SPEC_NO_REGISTRY='1' downgrades MISSING to a warning.
+    if ($Context -eq 'tasks' -or $Context -eq 'implement') {
+        $registryState = Get-RegistryState -RepoRoot $Paths.REPO_ROOT
+        switch ($registryState) {
+            'missing' {
+                if ($env:ATOMIC_SPEC_NO_REGISTRY -eq '1') {
+                    Write-Host "⚠ GATE WARN: specs/_defaults/registry.yaml missing (ATOMIC_SPEC_NO_REGISTRY=1 override active)"
+                    # Append an audit trail entry so overrides are never silent
+                    $clDir = Join-Path $Paths.REPO_ROOT 'specs/_defaults'
+                    $null = New-Item -Path $clDir -ItemType Directory -Force -ErrorAction SilentlyContinue
+                    $clPath = Join-Path $clDir 'changelog.md'
+                    $entry = "`n## [$(Get-Date -Format 'yyyy-MM-dd')] - ATOMIC_SPEC_NO_REGISTRY=1 override active (gate: $Context)`n`n- Registry file absent. Override suppressed BLOCK -> WARN for this run.`n"
+                    Add-Content -LiteralPath $clPath -Value $entry -ErrorAction SilentlyContinue
+                } else {
+                    Write-Host "✗ GATE FAIL: specs/_defaults/registry.yaml not found"
+                    Write-Host "  → Run /atomicspec.registry to discover project defaults and create the file"
+                    Write-Host "  → Or set `$env:ATOMIC_SPEC_NO_REGISTRY='1' to proceed with graceful degradation"
+                    $gateFailures++
+                }
+            }
+            'empty' {
+                Write-Host "⚠ GATE WARN: registry.yaml exists but is empty (all values null)"
+                Write-Host "  → Run /atomicspec.registry to populate, or let /atomicspec.plan Phase 0.9 populate from decisions"
+            }
+            'populated' {
+                Write-Host "✓ GATE PASS: registry.yaml populated"
+            }
+        }
+    }
+
+    Write-Host ""
+    Write-Host "════════════════════════════════════════════════════════════"
+    Write-Host "🛑 GATE VALIDATION - $Context"
+    Write-Host "════════════════════════════════════════════════════════════"
+
+    switch ($Context) {
+        'tasks' {
+            # Plan → Tasks gate criteria
+
+            # Check if spec.md exists and has requirements
+            if ((Test-Path $Paths.FEATURE_SPEC) -and
+                (Select-String -Path $Paths.FEATURE_SPEC -Pattern "^## (Functional Requirements|User Stories)" -Quiet)) {
+                Write-Host "✓ GATE PASS: spec.md has requirements defined"
+            } else {
+                Write-Host "✗ GATE FAIL: spec.md missing or lacks requirements section"
+                $gateFailures++
+            }
+
+            # Check that plan.md Technical Context fields are actually filled (not [placeholder])
+            $requiredFields = @(
+                'Language/Version',
+                'Primary Dependencies',
+                'Storage',
+                'Testing',
+                'Target Platform',
+                'Project Type'
+            )
+            foreach ($field in $requiredFields) {
+                if (Test-PlanField -File $Paths.IMPL_PLAN -Field $field) {
+                    Write-Host "✓ GATE PASS: plan.md field '$field' filled"
+                } else {
+                    Write-Host "✗ GATE FAIL: plan.md field '$field' is missing, empty, or still a [placeholder]"
+                    Write-Host "  → Edit $($Paths.IMPL_PLAN) and replace the [...] placeholder with a real value"
+                    $gateFailures++
+                }
+            }
+
+            # Check Tech Stack Approval (HITL checkpoint)
+            if ((Test-Path $Paths.IMPL_PLAN) -and
+                (Select-String -Path $Paths.IMPL_PLAN -Pattern "^\*\*Approval Status\*\*: Approved" -Quiet)) {
+                Write-Host "✓ GATE PASS: Tech Stack approved by user"
+            } else {
+                Write-Host "✗ GATE FAIL: Tech Stack not approved (HITL checkpoint)"
+                Write-Host "  → Run /atomicspec.plan and complete Phase 0.5 approval"
+                $gateFailures++
+            }
+
+            # Check Tech Stack Validation (Phase 0.6/0.7)
+            if ((Test-Path $Paths.IMPL_PLAN) -and
+                (Select-String -Path $Paths.IMPL_PLAN -Pattern "^\*\*Validation Status\*\*: (PASS|PASS_WITH_WARNINGS|PASS_WITH_OVERRIDES)" -Quiet)) {
+                Write-Host "✓ GATE PASS: Tech Stack validation completed"
+            } else {
+                Write-Host "✗ GATE FAIL: Tech Stack validation not completed"
+                Write-Host "  → Run /atomicspec.plan and complete Phase 0.6/0.7 validation"
+                $gateFailures++
+            }
+        }
+
+        'implement' {
+            # Tasks → Implementation gate criteria
+
+            # Check for atomic task structure
+            if ((Test-Path $Paths.TASKS_DIR -PathType Container) -and
+                (Get-ChildItem -Path $Paths.TASKS_DIR -ErrorAction SilentlyContinue | Select-Object -First 1)) {
+                Write-Host "✓ GATE PASS: tasks/ directory exists with task files"
+            } else {
+                Write-Host "✗ GATE FAIL: tasks/ directory missing or empty"
+                $gateFailures++
+            }
+
+            # Check for index.md
+            if (Test-Path $Paths.INDEX -PathType Leaf) {
+                Write-Host "✓ GATE PASS: index.md exists"
+            } else {
+                Write-Host "✗ GATE FAIL: index.md missing (required for navigation)"
+                $gateFailures++
+            }
+
+            # Check for traceability.md
+            if (Test-Path $Paths.TRACEABILITY -PathType Leaf) {
+                Write-Host "✓ GATE PASS: traceability.md exists"
+            } else {
+                Write-Host "✗ GATE FAIL: traceability.md missing (required for coverage)"
+                $gateFailures++
+            }
+        }
+
+        default {
+            Write-Host "WARNING: Unknown gate context '$Context'. Skipping validation."
+            return $true
+        }
+    }
+
+    Write-Host "════════════════════════════════════════════════════════════"
+
+    if ($gateFailures -gt 0) {
+        Write-Host ""
+        Write-Host "❌ BLOCKED: $gateFailures gate(s) failed. Fix issues before proceeding."
+        Write-Host ""
+        return $false
+    } else {
+        Write-Host ""
+        Write-Host "✅ All gates passed. Proceeding..."
+        Write-Host ""
+        return $true
+    }
+}
+
+# Run gate validation if requested
+if ($CheckGates) {
+    if (-not $GateContext) {
+        Write-Output "ERROR: -CheckGates requires -GateContext (tasks|implement)"
+        exit 1
+    }
+
+    if (-not (Test-Gates -Context $GateContext -Paths $paths)) {
+        exit 1
+    }
+}
+
+#==============================================================================
+# Task Structure Validation
+#==============================================================================
+
+# Check for atomic task structure if required (Constitution Article IX compliance)
+if ($RequireTasks) {
+    # Per Constitution Article IX (Directive 2: Atomic Injunction), the canonical
+    # output is a tasks/ directory of T-XXX-[name].md files. A single tasks.md
+    # is FORBIDDEN.
+    $hasAtomicTasks = (Test-Path $paths.TASKS_DIR -PathType Container) -and
+                      (Get-ChildItem -Path $paths.TASKS_DIR -ErrorAction SilentlyContinue | Select-Object -First 1)
+    $legacyTasksPath = Join-Path $paths.FEATURE_DIR 'tasks.md'
+    $hasLegacyTasks = Test-Path $legacyTasksPath -PathType Leaf
+
+    if ($hasAtomicTasks) {
+        # Atomic structure exists - this is the correct format
+    } elseif ($hasLegacyTasks) {
+        # Legacy tasks.md detected - refuse to proceed; require explicit migration
+        Write-Output "ERROR: Found legacy tasks.md in $($paths.FEATURE_DIR)"
+        Write-Output "Per Constitution Article IX (Directive 2), a single tasks.md is FORBIDDEN."
+        Write-Output "Run: scripts/powershell/migrate-legacy-tasks.ps1 -FeatureDir `"$($paths.FEATURE_DIR)`""
+        Write-Output "to convert it to the atomic tasks/ directory structure."
+        exit 1
+    } else {
+        Write-Output "ERROR: No task structure found in $($paths.FEATURE_DIR)"
+        Write-Output "Run /atomicspec.tasks first to create atomic task files."
+        exit 1
+    }
+
+    # Also check for required Atomic Traceability files
+    if (-not (Test-Path $paths.INDEX -PathType Leaf)) {
+        Write-Warning "index.md not found. Required for Atomic Traceability Model."
+    }
+    if (-not (Test-Path $paths.TRACEABILITY -PathType Leaf)) {
+        Write-Warning "traceability.md not found. Required for Atomic Traceability Model."
+    }
+}
+
+#==============================================================================
+# Build Available Documents List
+#==============================================================================
+
+$docs = @()
+
+# Always check these optional docs
+if (Test-Path $paths.RESEARCH) { $docs += 'research.md' }
+if (Test-Path $paths.DATA_MODEL) { $docs += 'data-model.md' }
+
+# Check contracts directory (only if it exists and has files)
+if ((Test-Path $paths.CONTRACTS_DIR) -and (Get-ChildItem -Path $paths.CONTRACTS_DIR -ErrorAction SilentlyContinue | Select-Object -First 1)) {
+    $docs += 'contracts/'
+}
+
+if (Test-Path $paths.QUICKSTART) { $docs += 'quickstart.md' }
+
+# Include atomic traceability files if they exist
+if (Test-Path $paths.INDEX) { $docs += 'index.md' }
+if (Test-Path $paths.TRACEABILITY) { $docs += 'traceability.md' }
+
+# Include tasks/ if requested and it exists (Atomic Traceability Model)
+if ($IncludeTasks) {
+    if ((Test-Path $paths.TASKS_DIR -PathType Container) -and
+        (Get-ChildItem -Path $paths.TASKS_DIR -ErrorAction SilentlyContinue | Select-Object -First 1)) {
+        $docs += 'tasks/'
+    }
+}
+
+#==============================================================================
+# Output Results
+#==============================================================================
+
+if ($Json) {
+    # JSON output
+    [PSCustomObject]@{
+        FEATURE_DIR = $paths.FEATURE_DIR
+        AVAILABLE_DOCS = $docs
+    } | ConvertTo-Json -Compress
+} else {
+    # Text output
+    Write-Output "FEATURE_DIR:$($paths.FEATURE_DIR)"
+    Write-Output "AVAILABLE_DOCS:"
+
+    # Show status of each potential document
+    Test-FileExists -Path $paths.RESEARCH -Description 'research.md' | Out-Null
+    Test-FileExists -Path $paths.DATA_MODEL -Description 'data-model.md' | Out-Null
+    Test-DirHasFiles -Path $paths.CONTRACTS_DIR -Description 'contracts/' | Out-Null
+    Test-FileExists -Path $paths.QUICKSTART -Description 'quickstart.md' | Out-Null
+    Test-FileExists -Path $paths.INDEX -Description 'index.md' | Out-Null
+    Test-FileExists -Path $paths.TRACEABILITY -Description 'traceability.md' | Out-Null
+
+    if ($IncludeTasks) {
+        Test-DirHasFiles -Path $paths.TASKS_DIR -Description 'tasks/' | Out-Null
+    }
+}

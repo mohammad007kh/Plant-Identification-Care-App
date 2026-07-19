@@ -1,0 +1,14 @@
+{
+    "chat.promptFilesRecommendations": {
+        "atomicspec.constitution": true,
+        "atomicspec.specify": true,
+        "atomicspec.plan": true,
+        "atomicspec.tasks": true,
+        "atomicspec.implement": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        ".specify/scripts/bash/": true,
+        ".specify/scripts/powershell/": true
+    }
+}
+
