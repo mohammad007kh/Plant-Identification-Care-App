@@ -2,10 +2,29 @@
   "name": "backend",
   "version": "0.1.0",
   "private": true,
-  "description": "NestJS API for the Plant Identification & Care app. Dependencies + scripts are populated by T-002/T-004.",
+  "description": "NestJS API for the Plant Identification & Care app.",
   "scripts": {
-    "start:dev": "echo \"backend start:dev not configured yet (see T-002)\" && exit 0",
-    "build": "echo \"backend build not configured yet (see T-002)\" && exit 0",
-    "test": "echo \"backend tests not configured yet (see T-004)\" && exit 0"
+    "start:dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.11",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.11",
+    "@nestjs/platform-express": "^11.0.11",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.2",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.4"
   }
 }
