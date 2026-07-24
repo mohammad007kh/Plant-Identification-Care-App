@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 4     |
-| Verified    | 4     |
-| Coverage    | 9%    |
+| Completed   | 5     |
+| Verified    | 5     |
+| Coverage    | 11%   |
 
 ## 📚 Knowledge Resources
 
@@ -49,7 +49,7 @@ _Need guidance on specific rules?_
 
 | ID | Story | Description | Status | Verification |
 |----|-------|-------------|--------|--------------|
-| [T-010](./tasks/T-010-db-schema-core.md) | Foundation | Drizzle schema: users, guest_session, plant, species, photo, scan | 🔴 Todo | `cd backend && npm run db:generate && npm test -- schema` |
+| [T-010](./tasks/T-010-db-schema-core.md) | Foundation | Drizzle schema: users, guest_session, plant, species, photo, scan | ✅ Done | `cd backend && npm run db:generate && npm test -- schema` |
 | [T-011](./tasks/T-011-db-schema-credits-billing.md) | Foundation | Schema: subscription_tier, credit_transaction, usage_record, payment_event | 🔴 Todo | `cd backend && npm test -- schema-credits` |
 | [T-012](./tasks/T-012-db-schema-support.md) | Foundation | Schema: chat, comparison, notification, reports, config, analytics, audit | 🔴 Todo | `cd backend && npm test -- schema-support` |
 | [T-013](./tasks/T-013-shared-contracts-and-config.md) | Foundation | Shared Zod contracts + app_config service | 🔴 Todo | `cd shared && npx tsc --noEmit` |
