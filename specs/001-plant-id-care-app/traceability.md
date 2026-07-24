@@ -49,7 +49,7 @@
 | US9 | P3 | FR-026 | T-141, T-142 | 🔴 Pending |
 | US9 | P3 | FR-027 | T-140, T-142 | 🔴 Pending |
 | Cross | — | FR-028 | T-160, T-191 | 🔴 Pending |
-| Cross | — | FR-029 | T-003, T-191 | 🔴 Pending |
+| Cross | — | FR-029 | T-003 ✅, T-191 | 🟡 In progress (T-003 done: Next.js App Router, dir=rtl lang=fa, MUI+Emotion RTL, i18n scaffold) |
 | Cross | — | FR-030 | T-161, T-191 | 🔴 Pending |
 
 **Coverage: 30 / 30 functional requirements mapped (100%).** No uncovered requirements; no orphan tasks (every task maps to an FR, a foundation dependency, or a wiring/integration/verification role).
@@ -58,7 +58,7 @@
 
 | Task | Role |
 | ---- | ---- |
-| T-001 ✅, T-002, T-004 | Setup / infrastructure (enable all stories) — T-001 done 2026-07-24 (compose config valid, scaffold + .env.example present) |
+| T-001 ✅, T-002 ✅, T-004 | Setup / infrastructure (enable all stories) — T-001/T-002 done 2026-07-24 (compose valid; NestJS skeleton typechecks: /v1 prefix, RFC7807 filter, health) |
 | T-010, T-012 | Data foundation (schema for US1–US9) |
 | T-037, T-057, T-077, T-097, T-107, T-117, T-127, T-137, T-147 | Per-story wiring (routes, nav, stores, workers) |
 | T-190, T-191 | Final verification (E2E + coverage/traceability gate) |

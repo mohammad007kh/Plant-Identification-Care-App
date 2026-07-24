@@ -2,10 +2,30 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "Next.js (App Router, Persian/RTL) web client. Dependencies + scripts are populated by T-003/T-004.",
+  "description": "Next.js App Router web client (Persian/RTL) for the Plant Identification & Care app. MUI + Emotion RTL theme, self-hosted Vazirmatn font, i18n scaffold (fa-only, extensible).",
   "scripts": {
-    "dev": "echo \"frontend dev not configured yet (see T-003)\" && exit 0",
-    "build": "echo \"frontend build not configured yet (see T-003)\" && exit 0",
-    "start": "echo \"frontend start not configured yet (see T-003)\" && exit 0"
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.0",
+    "next": "^15.1.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stylis": "^4.3.4",
+    "stylis-plugin-rtl": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/stylis": "^4.2.7",
+    "typescript": "^5.7.3"
   }
 }

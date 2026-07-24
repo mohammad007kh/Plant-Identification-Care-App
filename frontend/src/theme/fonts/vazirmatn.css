@@ -1,0 +1,38 @@
+/*
+ * Self-hosted Vazirmatn @font-face declarations (FR-029, RTL requirement).
+ *
+ * TODO(follow-up task): vendor the actual Vazirmatn .woff2 binaries into
+ * this directory:
+ *   - Vazirmatn-Regular.woff2 (400)
+ *   - Vazirmatn-Medium.woff2  (500)
+ *   - Vazirmatn-Bold.woff2    (700)
+ * Source: https://github.com/rastikerdar/vazirmatn (SIL OFL 1.1 license).
+ * This file only wires the @font-face + fontFamily plumbing today.
+ *
+ * Iran-reachability constraint: do NOT reference Google Fonts or any other
+ * external font CDN in this file — fonts must be self-hosted.
+ */
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./Vazirmatn-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
