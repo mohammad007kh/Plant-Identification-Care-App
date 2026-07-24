@@ -5,3 +5,5 @@
  *   T-012 → support (chat, comparison_result, notification, misidentification_report, app_config, analytics_event, deletion_audit)
  */
 export * from './core';
+export * from './credits';
+export * from './support';

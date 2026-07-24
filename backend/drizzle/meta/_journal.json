@@ -8,6 +8,13 @@
       "when": 1784929026105,
       "tag": "0000_messy_psynapse",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784929788713,
+      "tag": "0001_parched_chameleon",
+      "breakpoints": true
     }
   ]
 }
