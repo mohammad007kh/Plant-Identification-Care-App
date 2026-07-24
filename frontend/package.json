@@ -1,0 +1,11 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Next.js (App Router, Persian/RTL) web client. Dependencies + scripts are populated by T-003/T-004.",
+  "scripts": {
+    "dev": "echo \"frontend dev not configured yet (see T-003)\" && exit 0",
+    "build": "echo \"frontend build not configured yet (see T-003)\" && exit 0",
+    "start": "echo \"frontend start not configured yet (see T-003)\" && exit 0"
+  }
+}

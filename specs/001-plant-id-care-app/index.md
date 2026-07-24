@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 0     |
-| Verified    | 0     |
-| Coverage    | 0%    |
+| Completed   | 1     |
+| Verified    | 1     |
+| Coverage    | 2%    |
 
 ## 📚 Knowledge Resources
 
@@ -40,7 +40,7 @@ _Need guidance on specific rules?_
 
 | ID | Story | Description | Status | Verification |
 |----|-------|-------------|--------|--------------|
-| [T-001](./tasks/T-001-scaffold-repo-and-infra.md) | Setup | Scaffold repo layout + Docker Compose (pg/redis/minio/mailpit) | 🔴 Todo | `docker compose config -q` |
+| [T-001](./tasks/T-001-scaffold-repo-and-infra.md) | Setup | Scaffold repo layout + Docker Compose (pg/redis/minio/mailpit) | ✅ Done | `docker compose config -q` |
 | [T-002](./tasks/T-002-backend-nestjs-skeleton.md) | Setup | NestJS skeleton: /v1 prefix, RFC7807 filter, health | 🔴 Todo | `cd backend && npx tsc --noEmit` |
 | [T-003](./tasks/T-003-frontend-nextjs-rtl-skeleton.md) | Setup | Next.js RTL skeleton + MUI theme + Vazirmatn + i18n | 🔴 Todo | `cd frontend && npx tsc --noEmit` |
 | [T-004](./tasks/T-004-tooling-testing-seed.md) | Setup | ESLint/Prettier/tsc, Vitest/Supertest/Playwright, seed | 🔴 Todo | `npm run lint && npm run typecheck` |

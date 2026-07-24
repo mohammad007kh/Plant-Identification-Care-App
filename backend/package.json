@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NestJS API for the Plant Identification & Care app. Dependencies + scripts are populated by T-002/T-004.",
+  "scripts": {
+    "start:dev": "echo \"backend start:dev not configured yet (see T-002)\" && exit 0",
+    "build": "echo \"backend build not configured yet (see T-002)\" && exit 0",
+    "test": "echo \"backend tests not configured yet (see T-004)\" && exit 0"
+  }
+}

@@ -58,7 +58,7 @@
 
 | Task | Role |
 | ---- | ---- |
-| T-001, T-002, T-004 | Setup / infrastructure (enable all stories) |
+| T-001 ✅, T-002, T-004 | Setup / infrastructure (enable all stories) — T-001 done 2026-07-24 (compose config valid, scaffold + .env.example present) |
 | T-010, T-012 | Data foundation (schema for US1–US9) |
 | T-037, T-057, T-077, T-097, T-107, T-117, T-127, T-137, T-147 | Per-story wiring (routes, nav, stores, workers) |
 | T-190, T-191 | Final verification (E2E + coverage/traceability gate) |
