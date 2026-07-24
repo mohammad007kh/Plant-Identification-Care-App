@@ -34,7 +34,7 @@
 | US5 | P3 | FR-011 | T-100, T-101 | 🔴 Pending |
 | US6 | P3 | FR-012 | T-110, T-111 | 🔴 Pending |
 | US6 | P3 | FR-013 | T-110, T-111 | 🔴 Pending |
-| US4 | P2 | FR-014 | T-011, T-080, T-140 | 🔴 Pending |
+| US4 | P2 | FR-014 | T-011 ✅, T-080, T-140 | 🟡 In progress (T-011 schema done: subscription_tier + append-only credit_transaction ledger + usage_record refund-once + payment_event) |
 | US4 | P2 | FR-015 | T-015, T-020, T-100, T-110 | 🔴 Pending |
 | US4 | P2 | FR-016 | T-080, T-082, T-083, T-097 | 🔴 Pending |
 | US4 | P2 | FR-017 | T-015, T-020 | 🔴 Pending |
@@ -59,7 +59,7 @@
 | Task | Role |
 | ---- | ---- |
 | T-001 ✅, T-002 ✅, T-004 ✅ | Setup / infrastructure (enable all stories) — all setup done 2026-07-24 (compose valid; NestJS skeleton; Next.js RTL skeleton; ESLint/Prettier/Vitest(80%)/Playwright/Husky + seed skeleton; `npm run lint && npm run typecheck` green) |
-| T-010 ✅, T-012 | Data foundation (schema for US1–US9) — T-010 done 2026-07-24 (6 core tables generated + 6 schema tests pass; ULID PK + UUID public_id + user_id tenancy) |
+| T-010 ✅, T-012 ✅ | Data foundation (schema for US1–US9) — T-010/T-012 done 2026-07-24 (18 tables total across core+credits+support; migration 0001; 21 schema tests pass) |
 | T-037, T-057, T-077, T-097, T-107, T-117, T-127, T-137, T-147 | Per-story wiring (routes, nav, stores, workers) |
 | T-190, T-191 | Final verification (E2E + coverage/traceability gate) |
 
