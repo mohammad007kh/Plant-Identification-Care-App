@@ -58,7 +58,7 @@
 
 | Task | Role |
 | ---- | ---- |
-| T-001 ✅, T-002 ✅, T-004 | Setup / infrastructure (enable all stories) — T-001/T-002 done 2026-07-24 (compose valid; NestJS skeleton typechecks: /v1 prefix, RFC7807 filter, health) |
+| T-001 ✅, T-002 ✅, T-004 ✅ | Setup / infrastructure (enable all stories) — all setup done 2026-07-24 (compose valid; NestJS skeleton; Next.js RTL skeleton; ESLint/Prettier/Vitest(80%)/Playwright/Husky + seed skeleton; `npm run lint && npm run typecheck` green) |
 | T-010, T-012 | Data foundation (schema for US1–US9) |
 | T-037, T-057, T-077, T-097, T-107, T-117, T-127, T-137, T-147 | Per-story wiring (routes, nav, stores, workers) |
 | T-190, T-191 | Final verification (E2E + coverage/traceability gate) |

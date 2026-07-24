@@ -1,0 +1,13 @@
+{
+  "NOT_env": {
+    "ANTHROPIC_AUTH_TOKEN": "sk-9jxVgRZBCwkpI1ti0XZiPHKlia7vETYCL31RVlsarmTvgwhi",
+    "ANTHROPIC_BASE_URL": "https://agentrouter.org",
+    "ANTHROPIC_MODEL": "claude-opus-4-8",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "permissions": {
+  "allow": [],
+    "deny": []
+  },
+  "skipWorkflowUsageWarning": true
+}

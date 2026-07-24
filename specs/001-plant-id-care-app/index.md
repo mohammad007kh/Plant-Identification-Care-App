@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 3     |
-| Verified    | 3     |
-| Coverage    | 6%    |
+| Completed   | 4     |
+| Verified    | 4     |
+| Coverage    | 9%    |
 
 ## 📚 Knowledge Resources
 
@@ -43,7 +43,7 @@ _Need guidance on specific rules?_
 | [T-001](./tasks/T-001-scaffold-repo-and-infra.md) | Setup | Scaffold repo layout + Docker Compose (pg/redis/minio/mailpit) | ✅ Done | `docker compose config -q` |
 | [T-002](./tasks/T-002-backend-nestjs-skeleton.md) | Setup | NestJS skeleton: /v1 prefix, RFC7807 filter, health | ✅ Done | `cd backend && npx tsc --noEmit` |
 | [T-003](./tasks/T-003-frontend-nextjs-rtl-skeleton.md) | Setup | Next.js RTL skeleton + MUI theme + Vazirmatn + i18n | ✅ Done | `cd frontend && npx tsc --noEmit` |
-| [T-004](./tasks/T-004-tooling-testing-seed.md) | Setup | ESLint/Prettier/tsc, Vitest/Supertest/Playwright, seed | 🔴 Todo | `npm run lint && npm run typecheck` |
+| [T-004](./tasks/T-004-tooling-testing-seed.md) | Setup | ESLint/Prettier/tsc, Vitest/Supertest/Playwright, seed | ✅ Done | `npm run lint && npm run typecheck` |
 
 ### Foundation (T-010–T-015)
 

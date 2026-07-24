@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "test": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -22,10 +24,14 @@
     "stylis-plugin-rtl": "^2.1.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.10.7",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@types/stylis": "^4.2.7",
-    "typescript": "^5.7.3"
+    "@vitest/coverage-v8": "^4.1.10",
+    "msw": "^2.15.0",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.10"
   }
 }

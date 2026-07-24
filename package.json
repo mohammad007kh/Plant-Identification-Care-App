@@ -12,13 +12,21 @@
     "dev": "concurrently -n api,web -c blue,magenta \"npm run start:dev --workspace backend\" \"npm run dev --workspace frontend\"",
     "build": "npm run build --workspace shared && npm run build --workspace backend && npm run build --workspace frontend",
     "test": "npm run test --workspace shared --if-present && npm run test --workspace backend --if-present && npm run test --workspace frontend --if-present",
-    "lint": "npm run lint --workspaces --if-present",
+    "lint": "eslint .",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:migrate": "npm run db:migrate --workspace backend --if-present",
-    "db:seed": "npm run db:seed --workspace backend --if-present"
+    "db:seed": "npm run db:seed --workspace backend --if-present",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^9.1.0",
+    "eslint": "^10.8.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.6",
+    "typescript-eslint": "^8.65.0"
   },
   "engines": {
     "node": ">=22"
