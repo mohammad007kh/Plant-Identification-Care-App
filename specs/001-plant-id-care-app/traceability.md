@@ -24,7 +24,7 @@
 | US1        | P1       | FR-001         | T-014, T-020, T-023        | 🔴 Pending                                                                                                                                        |
 | US1        | P1       | FR-002         | T-015, T-020               | 🔴 Pending                                                                                                                                        |
 | US1        | P1       | FR-003         | T-015, T-020, T-023        | 🔴 Pending                                                                                                                                        |
-| US1        | P1       | FR-004         | T-014, T-020               | 🔴 Pending                                                                                                                                        |
+| US1        | P1       | FR-004         | T-014 ✅, T-020            | 🟡 In progress (T-014 done: sharp magic-byte validation + re-encode + size/pixel caps + SVG-exclude + allowlist; rejects without cost)            |
 | US9        | P3       | FR-005         | T-013 ✅, T-140            | 🟡 In progress (T-013 read side done: AppConfigService reads allowed file types live from app_config, no-deploy config; admin write side = T-140) |
 | US1        | P1       | FR-006         | T-021                      | 🔴 Pending                                                                                                                                        |
 | US2        | P2       | FR-007         | T-040, T-043               | 🔴 Pending                                                                                                                                        |

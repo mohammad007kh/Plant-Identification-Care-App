@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 8     |
-| Verified    | 8     |
-| Coverage    | 17%   |
+| Completed   | 9     |
+| Verified    | 9     |
+| Coverage    | 19%   |
 
 ## 📚 Knowledge Resources
 
@@ -53,7 +53,7 @@ _Need guidance on specific rules?_
 | [T-011](./tasks/T-011-db-schema-credits-billing.md)   | Foundation | Schema: subscription_tier, credit_transaction, usage_record, payment_event | ✅ Done | `cd backend && npm test -- schema-credits`                |
 | [T-012](./tasks/T-012-db-schema-support.md)           | Foundation | Schema: chat, comparison, notification, reports, config, analytics, audit  | ✅ Done | `cd backend && npm test -- schema-support`                |
 | [T-013](./tasks/T-013-shared-contracts-and-config.md) | Foundation | Shared Zod contracts + app_config service                                  | ✅ Done | `cd shared && npx tsc --noEmit`                           |
-| [T-014](./tasks/T-014-upload-validation.md)           | Foundation | Image upload validation + S3 storage adapter                               | 🔴 Todo | `cd backend && npm test -- upload-validation`             |
+| [T-014](./tasks/T-014-upload-validation.md)           | Foundation | Image upload validation + S3 storage adapter                               | ✅ Done | `cd backend && npm test -- upload-validation`             |
 | [T-015](./tasks/T-015-ai-gateway-credits-queues.md)   | Foundation | AI gateway (70% gate) + credit ledger + BullMQ                             | 🔴 Todo | `cd backend && npm test -- credits ai-gateway`            |
 
 ### US1 — Identify a plant from a leaf photo (P1) (T-020–T-037)

@@ -21,25 +21,25 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T11:09:05Z by claude:opus-4-8
+- Implementation end: 2026-07-26T11:11:55Z by claude:opus-4-8
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (NestJS common module: `uploads`) |
-| `architecture.layers` | pipe/guard → service |
-| `code_patterns.error_handling` | exceptions → global filter → RFC7807 `application/problem+json` |
-| `code_patterns.validation_approach` | schema (Zod) + binary inspection |
-| `conventions.files` | kebab-case (`upload-validation.service.ts`) |
-| `conventions.variables` | camelCase |
-| `infrastructure.file_storage` | S3-compatible (MinIO in dev, ArvanCloud later) |
+| Key                                 | Value                                                           |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `architecture.pattern`              | modular_monolith (NestJS common module: `uploads`)              |
+| `architecture.layers`               | pipe/guard → service                                            |
+| `code_patterns.error_handling`      | exceptions → global filter → RFC7807 `application/problem+json` |
+| `code_patterns.validation_approach` | schema (Zod) + binary inspection                                |
+| `conventions.files`                 | kebab-case (`upload-validation.service.ts`)                     |
+| `conventions.variables`             | camelCase                                                       |
+| `infrastructure.file_storage`       | S3-compatible (MinIO in dev, ArvanCloud later)                  |
 
 ### Domain Rules (from Station 13 — Security)
 
@@ -102,6 +102,7 @@ Provide a reusable server-side upload validation + normalization + storage servi
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Component** → Service injected into `ScansModule` (T-020) and `PlantsModule` (T-060) — those tasks own registration; this task exposes an injectable provider in a shared `UploadsModule`.
 
 ## ✅ Verification
