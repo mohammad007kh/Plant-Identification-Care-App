@@ -21,25 +21,25 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:31:18Z by claude
+- Implementation end: 2026-07-26T19:31:18Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (NestJS module: `chat`) |
-| `architecture.communication` | async (BullMQ chat job + polling) |
-| `code_patterns.data_access` | repository (scoped by `user_id`) |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `database.tenancy_model` | single_tenant — every query scoped by `user_id` |
-| `conventions.files` | kebab-case |
-| `database.primary_key_type` | ULID `id`; opaque UUID `public_id` |
+| Key                            | Value                                           |
+| ------------------------------ | ----------------------------------------------- |
+| `architecture.pattern`         | modular_monolith (NestJS module: `chat`)        |
+| `architecture.communication`   | async (BullMQ chat job + polling)               |
+| `code_patterns.data_access`    | repository (scoped by `user_id`)                |
+| `code_patterns.error_handling` | exceptions → RFC7807                            |
+| `database.tenancy_model`       | single_tenant — every query scoped by `user_id` |
+| `conventions.files`            | kebab-case                                      |
+| `database.primary_key_type`    | ULID `id`; opaque UUID `public_id`              |
 
 ### Domain Rules (from Station 10 — Metering, Station 07 — Data)
 
@@ -98,6 +98,7 @@ Implement plant-scoped AI chat: a metered send endpoint (with Free-tier 10-messa
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → registered in `app.module.ts` via T-117
 - [ ] **API endpoint** → consumed by the chat UI (T-111)
 

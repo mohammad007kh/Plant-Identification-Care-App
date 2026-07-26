@@ -6,6 +6,12 @@ export const QUEUE_NAMES = {
   reminders: 'reminders',
   purge: 'purge',
   reconcile: 'reconcile',
+  // Dedicated queue for chat-reply jobs (T-110): the `ai` queue's only current
+  // consumer (IdentifyWorker) does not dispatch by `job.name`, so sharing it
+  // would let identify/chat jobs be picked up by the wrong worker and silently
+  // mis-processed. A separate queue keeps ChatWorker's consumption isolated.
+  chat: 'chat',
+  monthlyReset: 'monthly-reset',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
