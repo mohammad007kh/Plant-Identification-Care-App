@@ -29,6 +29,10 @@ export default defineConfig({
     environment: 'node',
     passWithNoTests: true,
     env: testEnv,
+    // Integration suites share one Postgres + Redis and some global `app_config`
+    // rows; running test files serially removes cross-suite races (e.g. one
+    // suite upserting a config key another suite is asserting on).
+    fileParallelism: false,
     include: ['**/*.{test,spec}.{ts,tsx}'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/e2e/**'],
     coverage: {

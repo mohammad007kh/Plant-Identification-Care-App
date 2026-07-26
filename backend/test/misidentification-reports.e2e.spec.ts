@@ -20,8 +20,13 @@ const createdUsers: string[] = [];
 const createdScans: string[] = [];
 const createdReports: string[] = [];
 
+const publicIdByUser = new Map<string, string>();
+
+// Access-token `sub` is the user's public_id + a `typ: 'access'` claim (T-040).
+// Callers pass the internal id, which we map to the public_id here.
 function bearer(userId: string): string {
-  return `Bearer ${jwt.sign({ sub: userId }, SECRET)}`;
+  const publicId = publicIdByUser.get(userId) ?? userId;
+  return `Bearer ${jwt.sign({ sub: publicId, typ: 'access' }, SECRET)}`;
 }
 
 async function makeUser(): Promise<string> {
@@ -29,8 +34,9 @@ async function makeUser(): Promise<string> {
   const [u] = await db
     .insert(users)
     .values({ email, passwordHash: 'x' })
-    .returning({ id: users.id });
+    .returning({ id: users.id, publicId: users.publicId });
   createdUsers.push(u.id);
+  publicIdByUser.set(u.id, u.publicId);
   return u.id;
 }
 
