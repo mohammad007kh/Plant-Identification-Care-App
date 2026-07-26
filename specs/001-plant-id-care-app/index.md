@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 14    |
-| Verified    | 14    |
-| Coverage    | 30%   |
+| Completed   | 17    |
+| Verified    | 17    |
+| Coverage    | 36%   |
 
 ## 📚 Knowledge Resources
 
@@ -70,9 +70,9 @@ _Need guidance on specific rules?_
 
 | ID                                            | Story | Description                                        | Status  | Verification                            |
 | --------------------------------------------- | ----- | -------------------------------------------------- | ------- | --------------------------------------- |
-| [T-040](./tasks/T-040-auth-jwt-endpoints.md)  | US2   | Auth JWT endpoints (register/login/refresh/logout) | 🔴 Todo | `cd backend && npm test -- auth`        |
-| [T-041](./tasks/T-041-guest-account-merge.md) | US2   | Guest→account scan merge (single tx)               | 🔴 Todo | `cd backend && npm test -- guest-merge` |
-| [T-043](./tasks/T-043-frontend-auth.md)       | US2   | Frontend auth + registration wall + carryover      | 🔴 Todo | `cd frontend && npm test -- auth`       |
+| [T-040](./tasks/T-040-auth-jwt-endpoints.md)  | US2   | Auth JWT endpoints (register/login/refresh/logout) | ✅ Done | `cd backend && npm test -- auth`        |
+| [T-041](./tasks/T-041-guest-account-merge.md) | US2   | Guest→account scan merge (single tx)               | ✅ Done | `cd backend && npm test -- guest-merge` |
+| [T-043](./tasks/T-043-frontend-auth.md)       | US2   | Frontend auth + registration wall + carryover      | ✅ Done | `cd frontend && npm test -- auth`       |
 | [T-057](./tasks/T-057-wire-us2.md)            | US2   | Wire US2 (auth routes/guard, auth store, nav)      | 🔴 Todo | `curl .../v1/auth/login`                |
 
 ### US3 — Save plants & photo history (P2) (T-060–T-077)

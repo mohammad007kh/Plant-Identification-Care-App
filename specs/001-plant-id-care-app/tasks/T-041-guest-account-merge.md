@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T18:32:07Z by claude
+- Implementation end: 2026-07-26T18:39:13Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith |
-| `architecture.layers` | not layered; extends `backend/src/modules/guests` |
-| `code_patterns.data_access` | repository |
-| `code_patterns.error_handling` | exceptions → RFC7807 `application/problem+json` |
-| `database.tenancy_model` | single_tenant; this task is the exact moment a guest's anonymous data becomes user-owned |
-| `conventions.files` | kebab-case |
+| Key                            | Value                                                                                    |
+| ------------------------------ | ---------------------------------------------------------------------------------------- |
+| `architecture.pattern`         | modular_monolith                                                                         |
+| `architecture.layers`          | not layered; extends `backend/src/modules/guests`                                        |
+| `code_patterns.data_access`    | repository                                                                               |
+| `code_patterns.error_handling` | exceptions → RFC7807 `application/problem+json`                                          |
+| `database.tenancy_model`       | single_tenant; this task is the exact moment a guest's anonymous data becomes user-owned |
+| `conventions.files`            | kebab-case                                                                               |
 
 ### Domain Rules
 
@@ -56,13 +56,14 @@ POST /v1/auth/register
 ```
 
 Relevant tables (data-model.md):
+
 ```
 guest_session: id (ulid PK, = guest-id cookie value), status enum(active, converted), converted_to_user_id (ulid FK → user, null until converted)
 scan: user_id (ulid FK null), guest_session_id (ulid FK null) — exactly one set (DB CHECK)
 ```
 
-Critical invariant (data-model.md #3): *"Guest scan limit = 2, server-authoritative; all guest scans transfer on registration (zero loss)."*
-Merge note (data-model.md, `guest_session` section): *"Merge: at registration, re-parent owned `scan`/`plant` rows to the new user in one tx; set status=converted (unique guard prevents double-convert)."*
+Critical invariant (data-model.md #3): _"Guest scan limit = 2, server-authoritative; all guest scans transfer on registration (zero loss)."_
+Merge note (data-model.md, `guest_session` section): _"Merge: at registration, re-parent owned `scan`/`plant` rows to the new user in one tx; set status=converted (unique guard prevents double-convert)."_
 
 ### Feature Summary
 
@@ -97,18 +98,19 @@ On registration, re-parent all of the current guest session's scans/photos to th
 
 ### Code/Logic Requirements
 
-- **FR-008**: *"Upon registration, System MUST save and link all scans the user performed as a guest in that session to the new account."* → verified end-to-end: after registration, a subsequent authenticated `GET /v1/plants` / scan-history read (once available) must include the pre-registration scans; this task's own test asserts the re-parenting at the data layer directly (querying `scan` rows by the new `user_id`).
+- **FR-008**: _"Upon registration, System MUST save and link all scans the user performed as a guest in that session to the new account."_ → verified end-to-end: after registration, a subsequent authenticated `GET /v1/plants` / scan-history read (once available) must include the pre-registration scans; this task's own test asserts the re-parenting at the data layer directly (querying `scan` rows by the new `user_id`).
 - Depends on **T-040** (auth endpoints — provides the registration hook point) and **T-021** (guest scan limit — provides the `guest_session` row and cookie contract being merged).
 - The row lock (`FOR UPDATE`) and the convert-once check MUST be inside the same transaction as the re-parent + status flip — no separate "check then act" outside the lock (classic TOCTOU race otherwise).
 
 ## 🔌 Wiring Checklist
 
 ### Web
-- [ ] **Backend route** → Registered in main app/router file *(no new route; this task modifies the behavior behind the existing `/v1/auth/register` route from T-040, itself wired in T-057)*
-- [ ] **Frontend page** → Added to app router configuration *(not applicable — backend-only)*
-- [ ] **Navigation** → Link added to sidebar/nav component *(not applicable — backend-only)*
-- [ ] **API endpoint** → Frontend store/hook calls this endpoint *(not applicable — no new endpoint; consumed implicitly wherever T-043 calls register)*
-- [ ] **Component** → Rendered by a parent component *(not applicable — backend-only)*
+
+- [ ] **Backend route** → Registered in main app/router file _(no new route; this task modifies the behavior behind the existing `/v1/auth/register` route from T-040, itself wired in T-057)_
+- [ ] **Frontend page** → Added to app router configuration _(not applicable — backend-only)_
+- [ ] **Navigation** → Link added to sidebar/nav component _(not applicable — backend-only)_
+- [ ] **API endpoint** → Frontend store/hook calls this endpoint _(not applicable — no new endpoint; consumed implicitly wherever T-043 calls register)_
+- [ ] **Component** → Rendered by a parent component _(not applicable — backend-only)_
 
 ## ✅ Verification
 
