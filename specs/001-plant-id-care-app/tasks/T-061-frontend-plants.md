@@ -21,29 +21,29 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:55:19Z by claude
+- Implementation end: 2026-07-26T19:55:19Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | nextjs (App Router) |
-| `frontend.ui_library` / `styling` | MUI + Emotion, RTL via `stylis-plugin-rtl` |
-| `frontend.state_management` | zustand (client state) |
-| `frontend.data_fetching` | tanstack-query (server state / caching) |
-| `frontend.form_library` / `validation_library` | react-hook-form + Zod |
-| `conventions.files` | kebab-case (`plant-list.tsx`) |
-| `conventions.variables` | camelCase |
-| `conventions.classes` | PascalCase (React components) |
-| `ui_specs.accessibility` | WCAG AA |
-| `ui_specs.responsive` | true — mobile-first |
-| Testing | Vitest (unit/component), colocated tests, 80% coverage target |
+| Key                                            | Value                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| `frontend.framework`                           | nextjs (App Router)                                           |
+| `frontend.ui_library` / `styling`              | MUI + Emotion, RTL via `stylis-plugin-rtl`                    |
+| `frontend.state_management`                    | zustand (client state)                                        |
+| `frontend.data_fetching`                       | tanstack-query (server state / caching)                       |
+| `frontend.form_library` / `validation_library` | react-hook-form + Zod                                         |
+| `conventions.files`                            | kebab-case (`plant-list.tsx`)                                 |
+| `conventions.variables`                        | camelCase                                                     |
+| `conventions.classes`                          | PascalCase (React components)                                 |
+| `ui_specs.accessibility`                       | WCAG AA                                                       |
+| `ui_specs.responsive`                          | true — mobile-first                                           |
+| Testing                                        | Vitest (unit/component), colocated tests, 80% coverage target |
 
 ### Domain Rules (from plan.md — Frontend/UI Specifications)
 
@@ -115,6 +115,7 @@ Build the profile plant list (with an empty-state prompt guiding a new user to s
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → N/A (frontend-only task; consumes `T-060`)
 - [ ] **Frontend page** → Added to app router configuration — _deferred to `T-077`_
 - [ ] **Navigation** → Link added to sidebar/nav component — _deferred to `T-077`_

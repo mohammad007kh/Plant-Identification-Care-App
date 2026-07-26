@@ -79,5 +79,46 @@
     "guestScansRestored": {
       "message": "خوش آمدید! عکس‌های شناسایی‌شده‌ی قبلی شما اکنون در حساب کاربری‌تان ذخیره شده‌اند."
     }
+  },
+  "plants": {
+    "list": {
+      "loadingLabel": "در حال بارگذاری گیاهان شما...",
+      "errorMessage": "دریافت فهرست گیاهان با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "loadMoreButton": "نمایش موارد بیشتر",
+      "loadingMoreButton": "در حال بارگذاری...",
+      "emptyState": {
+        "title": "هنوز گیاهی ذخیره نکرده‌اید",
+        "description": "با شناسایی اولین گیاه خود، آن را در پروفایل خود ذخیره کنید و روند رشدش را دنبال کنید.",
+        "ctaButton": "شناسایی اولین گیاه"
+      }
+    },
+    "card": {
+      "unknownSpeciesName": "گیاه ذخیره‌شده",
+      "photoCountSuffix": "عکس"
+    },
+    "detail": {
+      "loadingLabel": "در حال بارگذاری اطلاعات گیاه...",
+      "errorMessage": "دریافت اطلاعات گیاه با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "unknownSpeciesName": "گیاه ذخیره‌شده"
+    },
+    "careGuide": {
+      "heading": "راهنمای نگهداری",
+      "emptyState": "راهنمای نگهداری برای این گیاه هنوز در دسترس نیست.",
+      "fields": {
+        "watering": "آبیاری",
+        "light": "نور",
+        "soil": "خاک",
+        "humidity": "رطوبت",
+        "temperature": "دما",
+        "notes": "یادداشت‌ها"
+      }
+    },
+    "photoHistory": {
+      "heading": "تاریخچه عکس‌ها",
+      "emptyState": "هنوز عکسی برای این گیاه ثبت نشده است.",
+      "unknownDate": "تاریخ نامشخص"
+    }
   }
 }
