@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import ThemeRegistry from '@/theme/theme-provider';
+import { AppErrorBoundary } from '@/components/errors/error-boundary';
+import { OfflineBanner } from '@/components/errors/offline-banner';
 import '@/theme/fonts/vazirmatn.css';
 
 export const metadata: Metadata = {
@@ -21,7 +23,13 @@ export default function FaLocaleLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <ThemeRegistry>
+          {/* T-161/FR-030: app-wide crash fallback + connectivity banner, above
+              every page so no route can end up with a blank screen or a
+              silent hang on a render crash or an offline connection. */}
+          <OfflineBanner />
+          <AppErrorBoundary>{children}</AppErrorBoundary>
+        </ThemeRegistry>
       </body>
     </html>
   );

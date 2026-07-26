@@ -21,23 +21,23 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T20:16:18Z by claude
+- Implementation end: 2026-07-26T20:16:18Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (cross-cutting: frontend error boundaries + backend filters) |
-| `code_patterns.error_handling` | exceptions → RFC7807; typed error codes |
-| `frontend.data_fetching` | TanStack Query (retry/error states) |
-| `error_handling.logging` | structured JSON logs |
-| `conventions.files` | kebab-case |
+| Key                            | Value                                                                         |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| `architecture.pattern`         | modular_monolith (cross-cutting: frontend error boundaries + backend filters) |
+| `code_patterns.error_handling` | exceptions → RFC7807; typed error codes                                       |
+| `frontend.data_fetching`       | TanStack Query (retry/error states)                                           |
+| `error_handling.logging`       | structured JSON logs                                                          |
+| `conventions.files`            | kebab-case                                                                    |
 
 ### Domain Rules (from Station 15 — Performance/Resilience, Station 11 — Observability)
 
@@ -99,6 +99,7 @@ Harden connectivity/service-failure handling end-to-end: backend timeouts + type
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Component** → error boundary + offline banner mounted in the app shell
 - [ ] **API endpoint** → central client applies error mapping + retry
 - [ ] **Backend route** → global filter emits typed codes
