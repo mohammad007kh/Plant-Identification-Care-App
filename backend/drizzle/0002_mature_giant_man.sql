@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD CONSTRAINT "users_credit_balance_nonneg" CHECK ("users"."credit_balance" >= 0);

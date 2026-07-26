@@ -17,16 +17,13 @@ import {
   jsonb,
   boolean,
   numeric,
+  check,
 } from 'drizzle-orm/pg-core';
 import { ulid } from 'ulid';
 
 // --- enums ---
 export const userRole = pgEnum('user_role', ['user', 'admin']);
-export const deletionStatus = pgEnum('deletion_status', [
-  'active',
-  'pending_deletion',
-  'purged',
-]);
+export const deletionStatus = pgEnum('deletion_status', ['active', 'pending_deletion', 'purged']);
 export const guestStatus = pgEnum('guest_status', ['active', 'converted']);
 export const scanType = pgEnum('scan_type', ['identify', 'comparison']);
 export const scanStatus = pgEnum('scan_status', ['pending', 'completed', 'failed']);
@@ -44,23 +41,32 @@ const audit = () => ({
 });
 
 // --- users ---
-export const users = pgTable('users', {
-  ...pk(),
-  email: text('email').notNull().unique(),
-  passwordHash: text('password_hash').notNull(),
-  role: userRole('role').notNull().default('user'),
-  // subscription_tier FK is added by T-011 (subscription_tier table); kept as a
-  // plain nullable column here to avoid a T-010 → T-011 circular dependency.
-  subscriptionTierId: text('subscription_tier_id'),
-  // denormalized cache of SUM(credit_transaction.amount); source of truth is the
-  // ledger introduced in T-011. Integer minor units (credits are integers).
-  creditBalance: integer('credit_balance').notNull().default(0),
-  notifEmailEnabled: boolean('notif_email_enabled').notNull().default(true),
-  notifPushEnabled: boolean('notif_push_enabled').notNull().default(true),
-  deletionStatus: deletionStatus('deletion_status').notNull().default('active'),
-  deletionRequestedAt: timestamp('deletion_requested_at', { withTimezone: true }),
-  ...audit(),
-});
+export const users = pgTable(
+  'users',
+  {
+    ...pk(),
+    email: text('email').notNull().unique(),
+    passwordHash: text('password_hash').notNull(),
+    role: userRole('role').notNull().default('user'),
+    // subscription_tier FK is added by T-011 (subscription_tier table); kept as a
+    // plain nullable column here to avoid a T-010 → T-011 circular dependency.
+    subscriptionTierId: text('subscription_tier_id'),
+    // denormalized cache of SUM(credit_transaction.amount); source of truth is the
+    // ledger introduced in T-011. Integer minor units (credits are integers).
+    creditBalance: integer('credit_balance').notNull().default(0),
+    notifEmailEnabled: boolean('notif_email_enabled').notNull().default(true),
+    notifPushEnabled: boolean('notif_push_enabled').notNull().default(true),
+    deletionStatus: deletionStatus('deletion_status').notNull().default('active'),
+    deletionRequestedAt: timestamp('deletion_requested_at', { withTimezone: true }),
+    ...audit(),
+  },
+  (t) => [
+    // Defense-in-depth: the conditional debit in CreditLedgerRepository already
+    // enforces the floor in application code, but this backstops any future direct
+    // writer (migration, admin tool, seed) against driving the cache negative.
+    check('users_credit_balance_nonneg', sql`${t.creditBalance} >= 0`),
+  ],
+);
 
 // --- guest_session ---
 export const guestSession = pgTable('guest_session', {

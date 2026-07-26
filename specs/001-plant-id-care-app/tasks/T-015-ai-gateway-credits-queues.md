@@ -21,26 +21,26 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T11:18:57Z by claude:opus-4-8
+- Implementation end: 2026-07-26T11:41:10Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (NestJS modules: `ai-gateway`, `credits`, `jobs`) |
-| `architecture.communication` | async (BullMQ jobs + client status polling) |
-| `code_patterns.data_access` | repository (no naked Drizzle queries) |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `backend.job_queue` | bull (BullMQ over Redis) |
-| `backend.job_durability_semantics` | at_least_once + idempotent ledger writes |
-| `database.primary_key_type` | ULID internal `id`; opaque UUID `public_id` |
-| `domain.money_representation` | integer minor units (credits are integers) |
+| Key                                | Value                                                              |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| `architecture.pattern`             | modular_monolith (NestJS modules: `ai-gateway`, `credits`, `jobs`) |
+| `architecture.communication`       | async (BullMQ jobs + client status polling)                        |
+| `code_patterns.data_access`        | repository (no naked Drizzle queries)                              |
+| `code_patterns.error_handling`     | exceptions → RFC7807                                               |
+| `backend.job_queue`                | bull (BullMQ over Redis)                                           |
+| `backend.job_durability_semantics` | at_least_once + idempotent ledger writes                           |
+| `database.primary_key_type`        | ULID internal `id`; opaque UUID `public_id`                        |
+| `domain.money_representation`      | integer minor units (credits are integers)                         |
 
 ### Domain Rules (from Station 10 — Metering & Limits, Station 07 — Data)
 
@@ -112,6 +112,7 @@ Build the AI gateway (PlantAIProvider + OpenAI/LangChain adapter + 70% gate), th
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → N/A (no HTTP surface); modules registered in `app.module.ts`
 - [ ] **Service** → `AiGatewayService` + `CreditsService` exported for injection by US1/US4/US5/US6 modules
 - [ ] **Environment var** → added to `.env.example`

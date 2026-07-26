@@ -15,6 +15,13 @@
       "when": 1784929788713,
       "tag": "0001_parched_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785065997029,
+      "tag": "0002_mature_giant_man",
+      "breakpoints": true
     }
   ]
 }
