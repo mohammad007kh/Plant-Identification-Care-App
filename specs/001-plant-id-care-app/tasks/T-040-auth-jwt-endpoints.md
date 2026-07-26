@@ -21,28 +21,28 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T18:19:06Z by claude
+- Implementation end: 2026-07-26T18:35:42Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith |
-| `architecture.layers` | not layered; feature-module boundaries (`backend/src/modules/auth`) |
-| `code_patterns.data_access` | repository |
-| `code_patterns.error_handling` | exceptions → RFC7807 `application/problem+json` |
-| `code_patterns.validation_approach` | schema (Zod) |
-| `database.tenancy_model` | single_tenant |
-| `conventions.files` | kebab-case |
-| `conventions.variables` | camelCase |
-| `security.password_policy` | strong |
-| `security.csrf` | token |
+| Key                                 | Value                                                               |
+| ----------------------------------- | ------------------------------------------------------------------- |
+| `architecture.pattern`              | modular_monolith                                                    |
+| `architecture.layers`               | not layered; feature-module boundaries (`backend/src/modules/auth`) |
+| `code_patterns.data_access`         | repository                                                          |
+| `code_patterns.error_handling`      | exceptions → RFC7807 `application/problem+json`                     |
+| `code_patterns.validation_approach` | schema (Zod)                                                        |
+| `database.tenancy_model`            | single_tenant                                                       |
+| `conventions.files`                 | kebab-case                                                          |
+| `conventions.variables`             | camelCase                                                           |
+| `security.password_policy`          | strong                                                              |
+| `security.csrf`                     | token                                                               |
 
 ### Domain Rules
 
@@ -106,7 +106,7 @@ Implement `POST /v1/auth/register` (email/password, argon2id hash), `POST /v1/au
 
 ### Code/Logic Requirements
 
-- **FR-007**: *"Users MUST be able to register and log in via email + password. Third-party (Google) sign-in is deferred beyond v1 (see Clarifications 2026-07-19); the auth layer SHOULD be structured to admit an additional login provider later without a rebuild."* → implement only email/password in this task; isolate credential verification behind a narrow interface (e.g., `CredentialVerifier`) so a Google strategy can be added later as a sibling implementation, not a rewrite.
+- **FR-007**: _"Users MUST be able to register and log in via email + password. Third-party (Google) sign-in is deferred beyond v1 (see Clarifications 2026-07-19); the auth layer SHOULD be structured to admit an additional login provider later without a rebuild."_ → implement only email/password in this task; isolate credential verification behind a narrow interface (e.g., `CredentialVerifier`) so a Google strategy can be added later as a sibling implementation, not a rewrite.
 - Depends on **T-010** (core schema — `user` table must exist) and **T-013** (shared contracts package must exist for `shared/src/schemas/auth.schema.ts` to land in).
 - Refresh-token rotation MUST be atomic (old token invalidated and new token issued in one transaction/operation) to prevent a race where a stolen-but-not-yet-used old token and a legitimate refresh both succeed.
 - All new DB access goes through repositories (`users.repository.ts`, `refresh-token.repository.ts`) per `code_patterns.data_access`.
@@ -114,11 +114,12 @@ Implement `POST /v1/auth/register` (email/password, argon2id hash), `POST /v1/au
 ## 🔌 Wiring Checklist
 
 ### Web
-- [ ] **Backend route** → Registered in main app/router file *(deferred to T-057)*
-- [ ] **Frontend page** → Added to app router configuration *(not applicable — backend-only)*
-- [ ] **Navigation** → Link added to sidebar/nav component *(not applicable — backend-only)*
-- [ ] **API endpoint** → Frontend store/hook calls this endpoint *(consumed by T-043, wired in T-057)*
-- [ ] **Component** → Rendered by a parent component *(not applicable — backend-only)*
+
+- [ ] **Backend route** → Registered in main app/router file _(deferred to T-057)_
+- [ ] **Frontend page** → Added to app router configuration _(not applicable — backend-only)_
+- [ ] **Navigation** → Link added to sidebar/nav component _(not applicable — backend-only)_
+- [ ] **API endpoint** → Frontend store/hook calls this endpoint _(consumed by T-043, wired in T-057)_
+- [ ] **Component** → Rendered by a parent component _(not applicable — backend-only)_
 
 ## ✅ Verification
 

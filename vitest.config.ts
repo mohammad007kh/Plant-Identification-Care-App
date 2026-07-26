@@ -10,6 +10,7 @@ const testEnv = {
   DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:5433/plant',
   REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:6379',
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET ?? 'test-access-secret',
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET ?? 'test-refresh-secret',
   DISABLE_WORKERS: process.env.DISABLE_WORKERS ?? '1',
 };
 

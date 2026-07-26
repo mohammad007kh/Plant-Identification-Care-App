@@ -62,19 +62,25 @@ let seededSpeciesId: string;
 const createdUsers: string[] = [];
 let pngBuffer: Buffer;
 
+const publicIdByUser = new Map<string, string>();
+
 async function makeUserWithCredits(amount: number): Promise<string> {
   const email = `scan-${Date.now()}-${Math.random().toString(36).slice(2)}@test.local`;
   const [u] = await db
     .insert(users)
     .values({ email, passwordHash: 'x', creditBalance: 0 })
-    .returning({ id: users.id });
+    .returning({ id: users.id, publicId: users.publicId });
   createdUsers.push(u.id);
+  publicIdByUser.set(u.id, u.publicId);
   await credits.grant(u.id, amount, { idempotencyKey: `grant:${u.id}` });
   return u.id;
 }
 
+// Access-token `sub` is the user's public_id (T-040); callers still pass the
+// internal id, which we map to the public_id here.
 function bearer(userId: string): string {
-  return `Bearer ${jwt.sign({ sub: userId }, SECRET)}`;
+  const publicId = publicIdByUser.get(userId) ?? userId;
+  return `Bearer ${jwt.sign({ sub: publicId, typ: 'access' }, SECRET)}`;
 }
 
 let idemCounter = 0;
