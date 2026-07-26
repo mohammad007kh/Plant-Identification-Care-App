@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T20:16:18Z by claude
+- Implementation end: 2026-07-26T20:16:18Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (NestJS module: `analytics`) |
+| Key                          | Value                                                              |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `architecture.pattern`       | modular_monolith (NestJS module: `analytics`)                      |
 | `architecture.communication` | async (fire-and-forget event emission; never blocks the user path) |
-| `code_patterns.data_access` | repository |
-| `error_handling.logging` | structured JSON logs |
-| `analytics.provider` | self-hosted (`analytics_event` table; external tool deferred) |
-| `conventions.files` | kebab-case |
+| `code_patterns.data_access`  | repository                                                         |
+| `error_handling.logging`     | structured JSON logs                                               |
+| `analytics.provider`         | self-hosted (`analytics_event` table; external tool deferred)      |
+| `conventions.files`          | kebab-case                                                         |
 
 ### Domain Rules (from Station 16 — Analytics, Station 11 — Observability)
 
@@ -95,6 +95,7 @@ Add a non-blocking analytics service and wire event emission for all FR-028 acti
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **New service** → `AnalyticsModule` registered globally in `app.module.ts`
 - [ ] **Component** → track() calls added at each FR-028 source flow
 
