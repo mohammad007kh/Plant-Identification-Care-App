@@ -21,25 +21,25 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:31:18Z by claude
+- Implementation end: 2026-07-26T19:31:18Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (extends `plants` / `scans` modules) |
-| `architecture.communication` | async (BullMQ comparison job + client polling) |
-| `code_patterns.data_access` | repository (scoped by `user_id`) |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `database.tenancy_model` | single_tenant — every query scoped by `user_id` |
-| `conventions.files` | kebab-case |
-| `database.primary_key_type` | ULID `id`; opaque UUID `public_id` |
+| Key                            | Value                                                 |
+| ------------------------------ | ----------------------------------------------------- |
+| `architecture.pattern`         | modular_monolith (extends `plants` / `scans` modules) |
+| `architecture.communication`   | async (BullMQ comparison job + client polling)        |
+| `code_patterns.data_access`    | repository (scoped by `user_id`)                      |
+| `code_patterns.error_handling` | exceptions → RFC7807                                  |
+| `database.tenancy_model`       | single_tenant — every query scoped by `user_id`       |
+| `conventions.files`            | kebab-case                                            |
+| `database.primary_key_type`    | ULID `id`; opaque UUID `public_id`                    |
 
 ### Domain Rules (from Station 10 — Metering, Station 07 — Data)
 
@@ -100,6 +100,7 @@ Implement the BullMQ comparison worker and result-fetch path that turns a follow
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **API endpoint** → comparison result surfaced via `GET /v1/scans/:id` (T-020 envelope); worker registered in T-107
 
 ## ✅ Verification
