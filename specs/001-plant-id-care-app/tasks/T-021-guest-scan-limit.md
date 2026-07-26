@@ -21,27 +21,27 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T17:53:58Z by claude
+- Implementation end: 2026-07-26T18:05:48Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith |
-| `architecture.layers` | not layered; feature-module boundaries (`backend/src/modules/guests`) |
-| `code_patterns.data_access` | repository |
-| `code_patterns.error_handling` | exceptions → RFC7807 `application/problem+json` |
-| `code_patterns.validation_approach` | schema (Zod) |
-| `database.tenancy_model` | single_tenant; guest activity scoped to an anonymous session until transfer |
-| `conventions.files` | kebab-case |
-| `conventions.variables` | camelCase |
-| `security.rate_limit_scope` | ip (registry) — used for the per-IP daily backstop below |
+| Key                                 | Value                                                                       |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| `architecture.pattern`              | modular_monolith                                                            |
+| `architecture.layers`               | not layered; feature-module boundaries (`backend/src/modules/guests`)       |
+| `code_patterns.data_access`         | repository                                                                  |
+| `code_patterns.error_handling`      | exceptions → RFC7807 `application/problem+json`                             |
+| `code_patterns.validation_approach` | schema (Zod)                                                                |
+| `database.tenancy_model`            | single_tenant; guest activity scoped to an anonymous session until transfer |
+| `conventions.files`                 | kebab-case                                                                  |
+| `conventions.variables`             | camelCase                                                                   |
+| `security.rate_limit_scope`         | ip (registry) — used for the per-IP daily backstop below                    |
 
 ### Domain Rules
 
@@ -55,20 +55,21 @@
 ```yaml
 # This task extends the endpoint built in T-020 — no new routes, only guard logic:
 POST /v1/scans
-  # 403 → Problem (guest scan limit reached → registration wall) — NEW response this task adds
+# 403 → Problem (guest scan limit reached → registration wall) — NEW response this task adds
 ```
 
 Relevant `guest_session` table (data-model.md):
-| Column | Type | Notes |
-|---|---|---|
-| id | ulid PK | matches httpOnly guest-id cookie |
-| ip_hash | text | per-IP backstop |
-| scan_count | integer | server-authoritative (limit 2) |
-| status | enum(active, converted) | |
-| converted_to_user_id | ulid FK → user null | convert-once |
-| created_at | timestamptz | |
 
-Critical invariant (data-model.md #3): *"Guest scan limit = 2, server-authoritative; all guest scans transfer on registration (zero loss)."*
+| Column               | Type                    | Notes                            |
+| -------------------- | ----------------------- | -------------------------------- |
+| id                   | ulid PK                 | matches httpOnly guest-id cookie |
+| ip_hash              | text                    | per-IP backstop                  |
+| scan_count           | integer                 | server-authoritative (limit 2)   |
+| status               | enum(active, converted) |                                  |
+| converted_to_user_id | ulid FK → user null     | convert-once                     |
+| created_at           | timestamptz             |                                  |
+
+Critical invariant (data-model.md #3): _"Guest scan limit = 2, server-authoritative; all guest scans transfer on registration (zero loss)."_
 
 ### Feature Summary
 
@@ -105,7 +106,7 @@ Enforce exactly 2 guest scans per guest session via a server-set httpOnly guest-
 
 ### Code/Logic Requirements
 
-- **FR-006**: *"System MUST allow a guest exactly 2 scans before requiring registration; the 3rd attempt MUST present a registration wall instead of scanning."* → enforced entirely server-side; the increment-with-guard query must be atomic (no read-then-write race that could let a 3rd scan through under concurrent requests from the same session).
+- **FR-006**: _"System MUST allow a guest exactly 2 scans before requiring registration; the 3rd attempt MUST present a registration wall instead of scanning."_ → enforced entirely server-side; the increment-with-guard query must be atomic (no read-then-write race that could let a 3rd scan through under concurrent requests from the same session).
 - Cookie: httpOnly, `SameSite=Lax`, `Secure` in production, no client-readable guest identity beyond the opaque cookie value.
 - `ip_hash` MUST be a hash (not raw IP) at rest, consistent with `security.input_sanitization: strict` and avoiding storing raw PII longer than necessary.
 - Station Rule: tenancy — `guest_session` rows are never joined against another guest's or user's rows; scoping is always by the session's own `id`.
@@ -113,11 +114,12 @@ Enforce exactly 2 guest scans per guest session via a server-set httpOnly guest-
 ## 🔌 Wiring Checklist
 
 ### Web
-- [ ] **Backend route** → Registered in main app/router file *(GuestsModule import deferred to T-037; the guard logic itself is wired directly into T-020's `ScansController` above)*
-- [ ] **Frontend page** → Added to app router configuration *(not applicable — backend-only)*
-- [ ] **Navigation** → Link added to sidebar/nav component *(not applicable — backend-only)*
-- [ ] **API endpoint** → Frontend store/hook calls this endpoint *(the 403 response is handled by T-023's frontend flow, wired in T-037)*
-- [ ] **Component** → Rendered by a parent component *(not applicable — backend-only)*
+
+- [ ] **Backend route** → Registered in main app/router file _(GuestsModule import deferred to T-037; the guard logic itself is wired directly into T-020's `ScansController` above)_
+- [ ] **Frontend page** → Added to app router configuration _(not applicable — backend-only)_
+- [ ] **Navigation** → Link added to sidebar/nav component _(not applicable — backend-only)_
+- [ ] **API endpoint** → Frontend store/hook calls this endpoint _(the 403 response is handled by T-023's frontend flow, wired in T-037)_
+- [ ] **Component** → Rendered by a parent component _(not applicable — backend-only)_
 
 ## ✅ Verification
 

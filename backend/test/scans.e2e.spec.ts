@@ -138,8 +138,9 @@ afterAll(async () => {
     await db.delete(users).where(eq(users.id, id));
   }
   await db.delete(species).where(eq(species.id, seededSpeciesId));
-  await db.delete(appConfig).where(eq(appConfig.key, 'allowed_photo_file_types'));
-  await db.delete(appConfig).where(eq(appConfig.key, 'credit_costs'));
+  // NOTE: the shared app_config keys are intentionally NOT deleted here — they are
+  // global settings seeded idempotently by several e2e suites that run in parallel;
+  // deleting them would race and break a sibling suite mid-run.
   await pool.end();
 });
 

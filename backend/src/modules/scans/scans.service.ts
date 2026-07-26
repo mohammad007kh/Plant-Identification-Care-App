@@ -17,6 +17,8 @@ export interface SubmitIdentifyParams {
   image: NormalizedImage;
   /** Authenticated user id, or null for a guest (guests are not charged). */
   userId: string | null;
+  /** Guest session id when unauthenticated (set on scan.guest_session_id). */
+  guestSessionId?: string | null;
   /** Optional client Idempotency-Key header — dedupes the credit debit on retry. */
   idempotencyKey?: string;
 }
@@ -47,7 +49,7 @@ export class ScansService {
   ) {}
 
   async submitIdentify(params: SubmitIdentifyParams): Promise<ScanJob> {
-    const { image, userId, idempotencyKey } = params;
+    const { image, userId, guestSessionId = null, idempotencyKey } = params;
     const scanId = ulid();
 
     // Authenticated submits are charged, so they MUST be replay-safe: require a
@@ -79,7 +81,7 @@ export class ScansService {
     const { publicId } = await this.repo.createIdentifyScan({
       scanId,
       userId,
-      guestSessionId: null, // guest session resolution is T-021's concern
+      guestSessionId,
       storageKey,
       image,
     });

@@ -3,6 +3,7 @@ import { AppConfigModule } from '../../common/config/app-config.module';
 import { UploadsModule } from '../../common/uploads/uploads.module';
 import { AiGatewayModule } from '../../ai-gateway/ai-gateway.module';
 import { CreditsModule } from '../../credits/credits.module';
+import { GuestsModule } from '../guests/guests.module';
 import { ScansController } from './scans.controller';
 import { ScansService } from './scans.service';
 import { ScansRepository } from './scans.repository';
@@ -16,9 +17,9 @@ import { IdentifyWorker } from './identify.worker';
  * — T-037 registers it once the rest of US1 (T-021, T-022) exists.
  */
 @Module({
-  imports: [AppConfigModule, UploadsModule, AiGatewayModule, CreditsModule],
+  imports: [AppConfigModule, UploadsModule, AiGatewayModule, CreditsModule, GuestsModule],
   controllers: [ScansController],
   providers: [ScansService, ScansRepository, IdentifyService, IdentifyQueue, IdentifyWorker],
-  exports: [ScansService, IdentifyService],
+  exports: [ScansService, IdentifyService, ScansRepository],
 })
 export class ScansModule {}
