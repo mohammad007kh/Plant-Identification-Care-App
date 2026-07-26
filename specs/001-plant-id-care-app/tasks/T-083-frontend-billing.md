@@ -21,25 +21,25 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T20:16:18Z by claude
+- Implementation end: 2026-07-26T20:16:18Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | nextjs (App Router) |
-| `frontend.ui_library` / `styling` | MUI + Emotion, RTL |
-| `frontend.state_management` | zustand (modal open/close + selected-plan state) |
-| `frontend.data_fetching` | tanstack-query (plans, balance, checkout mutation) |
-| `conventions.files` | kebab-case |
-| `ui_specs.accessibility` | WCAG AA (modal focus trap, labeled CTAs) |
-| Testing | Vitest + Testing Library, colocated, 80% coverage target |
+| Key                               | Value                                                    |
+| --------------------------------- | -------------------------------------------------------- |
+| `frontend.framework`              | nextjs (App Router)                                      |
+| `frontend.ui_library` / `styling` | MUI + Emotion, RTL                                       |
+| `frontend.state_management`       | zustand (modal open/close + selected-plan state)         |
+| `frontend.data_fetching`          | tanstack-query (plans, balance, checkout mutation)       |
+| `conventions.files`               | kebab-case                                               |
+| `ui_specs.accessibility`          | WCAG AA (modal focus trap, labeled CTAs)                 |
+| Testing                           | Vitest + Testing Library, colocated, 80% coverage target |
 
 ### Domain Rules
 
@@ -110,6 +110,7 @@ Build the upgrade modal (rendering live plans from `GET /v1/subscriptions/plans`
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → N/A (frontend-only task; consumes `T-080`/`T-081`)
 - [ ] **Frontend page** → Added to app router configuration — _N/A; this is a modal/badge mounted globally by `T-097`, not a standalone route_
 - [ ] **Navigation** → Link added to sidebar/nav component — _deferred to `T-097`_

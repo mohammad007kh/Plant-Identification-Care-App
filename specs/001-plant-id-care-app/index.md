@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 28    |
-| Verified    | 28    |
-| Coverage    | 60%   |
+| Completed   | 31    |
+| Verified    | 31    |
+| Coverage    | 66%   |
 
 ## 📚 Knowledge Resources
 
@@ -90,7 +90,7 @@ _Need guidance on specific rules?_
 | [T-080](./tasks/T-080-subscriptions-credits-endpoints.md) | US4   | Plans (live from DB) + credit balance endpoints | ✅ Done | `cd backend && npm test -- subscriptions credits-balance`   |
 | [T-081](./tasks/T-081-payments-port-zarinpal-mock.md)     | US4   | PaymentPort + Zarinpal-mock (checkout + verify) | ✅ Done | `cd backend && npm test -- payments`                        |
 | [T-082](./tasks/T-082-credit-exhaustion-and-reset.md)     | US4   | 402 credit-exhaustion guard + monthly reset job | ✅ Done | `cd backend && npm test -- credit-exhaustion monthly-reset` |
-| [T-083](./tasks/T-083-frontend-billing.md)                | US4   | Frontend upgrade modal + checkout + balance     | 🔴 Todo | `cd frontend && npm test -- billing`                        |
+| [T-083](./tasks/T-083-frontend-billing.md)                | US4   | Frontend upgrade modal + checkout + balance     | ✅ Done | `cd frontend && npm test -- billing`                        |
 | [T-097](./tasks/T-097-wire-us4.md)                        | US4   | Wire US4                                        | 🔴 Todo | `curl .../v1/subscriptions/plans`                           |
 
 ### US5 — Health comparison (P3) (T-100–T-107)
@@ -138,8 +138,8 @@ _Need guidance on specific rules?_
 
 | ID                                             | Story | Description                                       | Status  | Verification                                       |
 | ---------------------------------------------- | ----- | ------------------------------------------------- | ------- | -------------------------------------------------- |
-| [T-160](./tasks/T-160-analytics-tracking.md)   | Cross | Activity tracking / analytics (FR-028)            | 🔴 Todo | `cd backend && npm test -- analytics`              |
-| [T-161](./tasks/T-161-graceful-degradation.md) | Cross | Connectivity/service-failure degradation (FR-030) | 🔴 Todo | `npm test -- error-mapping error-boundary offline` |
+| [T-160](./tasks/T-160-analytics-tracking.md)   | Cross | Activity tracking / analytics (FR-028)            | ✅ Done | `cd backend && npm test -- analytics`              |
+| [T-161](./tasks/T-161-graceful-degradation.md) | Cross | Connectivity/service-failure degradation (FR-030) | ✅ Done | `npm test -- error-mapping error-boundary offline` |
 
 ### Final Verification (T-190–T-191)
 
