@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 17    |
-| Verified    | 17    |
-| Coverage    | 36%   |
+| Completed   | 20    |
+| Verified    | 20    |
+| Coverage    | 43%   |
 
 ## 📚 Knowledge Resources
 
@@ -79,7 +79,7 @@ _Need guidance on specific rules?_
 
 | ID                                         | Story | Description                                  | Status  | Verification                        |
 | ------------------------------------------ | ----- | -------------------------------------------- | ------- | ----------------------------------- |
-| [T-060](./tasks/T-060-plants-endpoints.md) | US3   | Plants CRUD + photo history (tenancy-scoped) | 🔴 Todo | `cd backend && npm test -- plants`  |
+| [T-060](./tasks/T-060-plants-endpoints.md) | US3   | Plants CRUD + photo history (tenancy-scoped) | ✅ Done | `cd backend && npm test -- plants`  |
 | [T-061](./tasks/T-061-frontend-plants.md)  | US3   | Frontend profile + plant detail              | 🔴 Todo | `cd frontend && npm test -- plants` |
 | [T-077](./tasks/T-077-wire-us3.md)         | US3   | Wire US3                                     | 🔴 Todo | `curl .../v1/plants`                |
 
@@ -121,7 +121,7 @@ _Need guidance on specific rules?_
 
 | ID                                                  | Story | Description                               | Status  | Verification                                |
 | --------------------------------------------------- | ----- | ----------------------------------------- | ------- | ------------------------------------------- |
-| [T-130](./tasks/T-130-account-deletion.md)          | US8   | Deletion request/cancel + 7-day purge job | 🔴 Todo | `cd backend && npm test -- deletion purge`  |
+| [T-130](./tasks/T-130-account-deletion.md)          | US8   | Deletion request/cancel + 7-day purge job | ✅ Done | `cd backend && npm test -- deletion purge`  |
 | [T-131](./tasks/T-131-frontend-account-deletion.md) | US8   | Frontend deletion flow + pending banner   | 🔴 Todo | `cd frontend && npm test -- delete-account` |
 | [T-137](./tasks/T-137-wire-us8.md)                  | US8   | Wire US8                                  | 🔴 Todo | `curl .../v1/account/deletion`              |
 
@@ -129,7 +129,7 @@ _Need guidance on specific rules?_
 
 | ID                                             | Story | Description                                 | Status  | Verification                                                       |
 | ---------------------------------------------- | ----- | ------------------------------------------- | ------- | ------------------------------------------------------------------ |
-| [T-140](./tasks/T-140-admin-catalog-config.md) | US9   | Admin catalog + live config (behind RBAC)   | 🔴 Todo | `cd backend && npm test -- admin-catalog admin-config admin-guard` |
+| [T-140](./tasks/T-140-admin-catalog-config.md) | US9   | Admin catalog + live config (behind RBAC)   | ✅ Done | `cd backend && npm test -- admin-catalog admin-config admin-guard` |
 | [T-141](./tasks/T-141-admin-users-reports.md)  | US9   | Admin user management + report review       | 🔴 Todo | `cd backend && npm test -- admin-users admin-reports`              |
 | [T-142](./tasks/T-142-admin-frontend.md)       | US9   | Admin panel frontend                        | 🔴 Todo | `cd frontend && npm test -- admin`                                 |
 | [T-147](./tasks/T-147-wire-us9.md)             | US9   | Wire US9 (module + guard, /admin route/nav) | 🔴 Todo | `curl .../v1/admin/species`                                        |
