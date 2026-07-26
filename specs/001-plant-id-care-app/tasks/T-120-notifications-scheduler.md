@@ -21,26 +21,26 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:55:19Z by claude
+- Implementation end: 2026-07-26T19:55:19Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (NestJS module: `notifications`) |
-| `architecture.communication` | async (BullMQ repeatable/delayed jobs) |
-| `backend.scheduling` | app_scheduler (BullMQ repeatable jobs) |
+| Key                            | Value                                                            |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `architecture.pattern`         | modular_monolith (NestJS module: `notifications`)                |
+| `architecture.communication`   | async (BullMQ repeatable/delayed jobs)                           |
+| `backend.scheduling`           | app_scheduler (BullMQ repeatable jobs)                           |
 | `email.transactional_provider` | SMTP behind a `MailPort` (Iranian relay in prod, Mailpit in dev) |
-| `code_patterns.data_access` | repository (scoped by `user_id`) |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `conventions.files` | kebab-case |
-| `domain.timezone` | UTC internally; `Asia/Tehran` for user-facing schedule times |
+| `code_patterns.data_access`    | repository (scoped by `user_id`)                                 |
+| `code_patterns.error_handling` | exceptions → RFC7807                                             |
+| `conventions.files`            | kebab-case                                                       |
+| `domain.timezone`              | UTC internally; `Asia/Tehran` for user-facing schedule times     |
 
 ### Domain Rules (from Station 11 — Observability/Notifications, Station 14 — Data Lifecycle)
 
@@ -103,6 +103,7 @@ Implement the reminder scheduler (BullMQ) and the email (MailPort) + best-effort
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → prefs endpoints registered via T-127
 - [ ] **API endpoint** → consumed by the settings UI (T-121)
 

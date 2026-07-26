@@ -3,8 +3,10 @@ import { eq } from 'drizzle-orm';
 import {
   allowedPhotoFileTypesConfigSchema,
   creditCostsConfigSchema,
+  notificationConfigSchema,
   type AllowedPhotoFileTypesConfig,
   type CreditCostsConfig,
+  type NotificationConfig,
 } from 'shared';
 import { db } from '../../db/client';
 import { appConfig } from '../../db/schema';
@@ -13,6 +15,10 @@ import { appConfig } from '../../db/schema';
 const CONFIG_KEYS = {
   allowedPhotoFileTypes: 'allowed_photo_file_types',
   creditCosts: 'credit_costs',
+  // Mirrors the literal key in admin/admin-config.repository.ts (kept local
+  // there deliberately to avoid coupling the admin module to this service's
+  // internals — see that file's comment).
+  notification: 'notification_config',
 } as const;
 
 /**
@@ -33,6 +39,12 @@ export class AppConfigService {
   async getCreditCosts(): Promise<CreditCostsConfig> {
     const value = await this.readConfigValue(CONFIG_KEYS.creditCosts);
     return creditCostsConfigSchema.parse(value);
+  }
+
+  /** Reminder templates + local send hour (FR-021), read live by the reminder worker (T-120). */
+  async getNotificationConfig(): Promise<NotificationConfig> {
+    const value = await this.readConfigValue(CONFIG_KEYS.notification);
+    return notificationConfigSchema.parse(value);
   }
 
   private async readConfigValue(key: string): Promise<unknown> {

@@ -11,3 +11,4 @@ export * from './misidentification-report';
 export * from './deletion';
 export * from './payment';
 export * from './comparison';
+export * from './notification';

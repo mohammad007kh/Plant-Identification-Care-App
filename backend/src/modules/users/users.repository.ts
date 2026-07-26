@@ -13,6 +13,11 @@ export interface UserRecord {
 
 export type PublicUser = Omit<UserRecord, 'passwordHash'>;
 
+export interface NotificationPreferencesRow {
+  notifEmailEnabled: boolean;
+  notifPushEnabled: boolean;
+}
+
 /** Drizzle access for the `users` table (shared by auth and later user features). */
 @Injectable()
 export class UsersRepository {
@@ -53,5 +58,26 @@ export class UsersRepository {
       role: users.role,
     });
     return row;
+  }
+
+  /** Care-reminder channel toggles (US7, FR-020/FR-022). Null if the user no longer exists. */
+  async getNotificationPreferences(userId: string): Promise<NotificationPreferencesRow | null> {
+    const [row] = await db
+      .select({
+        notifEmailEnabled: users.notifEmailEnabled,
+        notifPushEnabled: users.notifPushEnabled,
+      })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    return row ?? null;
+  }
+
+  /** Partial update — only the provided toggle(s) change (FR-022: takes effect immediately). */
+  async updateNotificationPreferences(
+    userId: string,
+    patch: Partial<NotificationPreferencesRow>,
+  ): Promise<void> {
+    await db.update(users).set(patch).where(eq(users.id, userId));
   }
 }
