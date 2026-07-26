@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:55:19Z by claude
+- Implementation end: 2026-07-26T19:55:19Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (extends `admin` module) |
-| `code_patterns.data_access` | repository |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `backend.authorization` | role-based; `role=admin` (AdminGuard from T-140) |
-| `api.pagination` | cursor |
-| `conventions.files` | kebab-case |
+| Key                            | Value                                            |
+| ------------------------------ | ------------------------------------------------ |
+| `architecture.pattern`         | modular_monolith (extends `admin` module)        |
+| `code_patterns.data_access`    | repository                                       |
+| `code_patterns.error_handling` | exceptions → RFC7807                             |
+| `backend.authorization`        | role-based; `role=admin` (AdminGuard from T-140) |
+| `api.pagination`               | cursor                                           |
+| `conventions.files`            | kebab-case                                       |
 
 ### Domain Rules (from Station 17 — Admin Tooling, Station 13 — Security)
 
@@ -95,6 +95,7 @@ Implement admin endpoints (behind RBAC) to search/view/act on user accounts and 
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → registered via T-147
 - [ ] **API endpoint** → consumed by admin UI (T-142)
 

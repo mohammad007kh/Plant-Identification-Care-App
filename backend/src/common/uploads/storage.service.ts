@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { createHmac, randomUUID } from 'node:crypto';
 import {
   S3Client,
   PutObjectCommand,
@@ -25,6 +25,12 @@ export class StorageService {
   });
 
   private readonly bucket = process.env.MINIO_BUCKET ?? process.env.S3_BUCKET ?? 'plant-photos';
+
+  // Secret for `getSignedUrl`'s HMAC. Falls back to the access-token secret
+  // (already required app-wide) rather than a bespoke env var, since no
+  // dedicated photo-serving route exists yet to consume it (see note below).
+  private readonly signingSecret =
+    process.env.PHOTO_SIGNING_SECRET ?? process.env.JWT_ACCESS_SECRET ?? 'dev-photo-signing-secret';
 
   /** Stores the buffer and returns its randomized storage key. */
   async put(buffer: Buffer, contentType: string): Promise<string> {
@@ -63,5 +69,23 @@ export class StorageService {
     const chunks: Uint8Array[] = [];
     for await (const chunk of body) chunks.push(chunk);
     return Buffer.concat(chunks);
+  }
+
+  /**
+   * Builds a time-limited signed URL for a stored photo (used by the admin
+   * misidentification-report review surface, T-141/FR-025). This is an
+   * app-level HMAC signature over `key:expiresAt` — NOT an S3 presigned URL:
+   * `@aws-sdk/s3-request-presigner` is not a project dependency, and adding
+   * one is out of scope for the task that introduced this method. The result
+   * is a relative path (`/v1/photos/:key`) plus `expires`/`signature` query
+   * params; a future photo-serving route (verifying the same HMAC before
+   * streaming `getBytes`) is what actually resolves it — not built yet.
+   */
+  getSignedUrl(key: string, ttlSeconds = 900): string {
+    const expiresAt = Date.now() + ttlSeconds * 1000;
+    const signature = createHmac('sha256', this.signingSecret)
+      .update(`${key}:${expiresAt}`)
+      .digest('hex');
+    return `/v1/photos/${encodeURIComponent(key)}?expires=${expiresAt}&signature=${signature}`;
   }
 }
