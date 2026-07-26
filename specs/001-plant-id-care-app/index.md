@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 11    |
-| Verified    | 11    |
-| Coverage    | 23%   |
+| Completed   | 14    |
+| Verified    | 14    |
+| Coverage    | 30%   |
 
 ## 📚 Knowledge Resources
 
@@ -61,9 +61,9 @@ _Need guidance on specific rules?_
 | ID                                                          | Story | Description                                              | Status  | Verification                                          |
 | ----------------------------------------------------------- | ----- | -------------------------------------------------------- | ------- | ----------------------------------------------------- |
 | [T-020](./tasks/T-020-scan-identify-endpoints.md)           | US1   | Scan + identify endpoints; identify job; confidence gate | ✅ Done | `cd backend && npm test -- scans`                     |
-| [T-021](./tasks/T-021-guest-scan-limit.md)                  | US1   | Guest 2-scan limit (cookie + IP backstop + free pool)    | 🔴 Todo | `cd backend && npm test -- guest-scan-limit`          |
-| [T-022](./tasks/T-022-misidentification-report-endpoint.md) | US1   | Misidentification report endpoint                        | 🔴 Todo | `cd backend && npm test -- misidentification-reports` |
-| [T-023](./tasks/T-023-frontend-scan-flow.md)                | US1   | Frontend scan flow (upload → result / low-confidence)    | 🔴 Todo | `cd frontend && npm test -- scan`                     |
+| [T-021](./tasks/T-021-guest-scan-limit.md)                  | US1   | Guest 2-scan limit (cookie + IP backstop + free pool)    | ✅ Done | `cd backend && npm test -- guest-scan-limit`          |
+| [T-022](./tasks/T-022-misidentification-report-endpoint.md) | US1   | Misidentification report endpoint                        | ✅ Done | `cd backend && npm test -- misidentification-reports` |
+| [T-023](./tasks/T-023-frontend-scan-flow.md)                | US1   | Frontend scan flow (upload → result / low-confidence)    | ✅ Done | `cd frontend && npm test -- scan`                     |
 | [T-037](./tasks/T-037-wire-us1.md)                          | US1   | Wire US1 (routes, nav, api hooks)                        | 🔴 Todo | `curl .../v1/health`                                  |
 
 ### US2 — Register after guest limit + keep prior scans (P2) (T-040–T-057)

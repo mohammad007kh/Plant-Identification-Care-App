@@ -21,27 +21,27 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T17:53:58Z by claude
+- Implementation end: 2026-07-26T18:13:05Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | nextjs (App Router) |
-| `frontend.ui_library` / `styling` | mui + emotion (RTL via `stylis-plugin-rtl`) |
-| `frontend.state_management` | zustand (client) |
-| `frontend.data_fetching` | tanstack-query (server state, polling) |
-| `frontend.form_library` / `validation_library` | react-hook-form + zod |
-| `conventions.files` | kebab-case (`photo-uploader.tsx`) |
-| `conventions.variables` | camelCase |
-| `ui_specs.accessibility` | wcag-aa |
-| `ui_specs.animations` | css only |
+| Key                                            | Value                                       |
+| ---------------------------------------------- | ------------------------------------------- |
+| `frontend.framework`                           | nextjs (App Router)                         |
+| `frontend.ui_library` / `styling`              | mui + emotion (RTL via `stylis-plugin-rtl`) |
+| `frontend.state_management`                    | zustand (client)                            |
+| `frontend.data_fetching`                       | tanstack-query (server state, polling)      |
+| `frontend.form_library` / `validation_library` | react-hook-form + zod                       |
+| `conventions.files`                            | kebab-case (`photo-uploader.tsx`)           |
+| `conventions.variables`                        | camelCase                                   |
+| `ui_specs.accessibility`                       | wcag-aa                                     |
+| `ui_specs.animations`                          | css only                                    |
 
 ### Domain Rules
 
@@ -61,9 +61,17 @@ GET  /v1/scans/{id}   # poll → ScanJob { status, confidence, species, careGuid
 ```
 
 `ScanJob` shape consumed here (from `shared/src/schemas/scan.schema.ts`, built in T-020):
+
 ```ts
-{ id: string; type: 'identify' | 'comparison'; status: 'pending' | 'completed' | 'failed';
-  confidence: number | null; species: object | null; careGuide: object | null; lowConfidence: boolean }
+{
+  id: string;
+  type: 'identify' | 'comparison';
+  status: 'pending' | 'completed' | 'failed';
+  confidence: number | null;
+  species: object | null;
+  careGuide: object | null;
+  lowConfidence: boolean;
+}
 ```
 
 ### Feature Summary
@@ -105,19 +113,20 @@ Build the scan UI: photo capture/upload, an in-progress/loading state while the 
 
 ### Code/Logic Requirements
 
-- **FR-001**: *"System MUST accept a single image upload (image formats only; no video) for identification."* → `photo-uploader.tsx` restricts the file input's `accept` attribute to image MIME types and performs a client-side type check before calling `useCreateScan`, matching the server-side contract from T-014/T-020.
-- **FR-003**: *"System MUST present an identification result only when AI confidence is ≥ 70%; when confidence is < 70%, it MUST show a low-confidence prompt and MUST NOT display any species result."* → `scan-result.tsx` branches strictly on `job.lowConfidence` (never re-derives confidence client-side); write a test proving the species/care-guide markup is entirely absent from the DOM in the low-confidence case (not just visually hidden).
+- **FR-001**: _"System MUST accept a single image upload (image formats only; no video) for identification."_ → `photo-uploader.tsx` restricts the file input's `accept` attribute to image MIME types and performs a client-side type check before calling `useCreateScan`, matching the server-side contract from T-014/T-020.
+- **FR-003**: _"System MUST present an identification result only when AI confidence is ≥ 70%; when confidence is < 70%, it MUST show a low-confidence prompt and MUST NOT display any species result."_ → `scan-result.tsx` branches strictly on `job.lowConfidence` (never re-derives confidence client-side); write a test proving the species/care-guide markup is entirely absent from the DOM in the low-confidence case (not just visually hidden).
 - Polling must stop (no further requests) once a terminal status is reached, to avoid wasted requests/battery.
 - Depends on **T-020** (scan endpoints + `ScanJob` schema) and **T-003** (frontend skeleton — app shell, theme, RTL setup, TanStack Query provider).
 
 ## 🔌 Wiring Checklist
 
 ### Web
-- [ ] **Backend route** → Registered in main app/router file *(not applicable — frontend-only task)*
-- [ ] **Frontend page** → Added to app router configuration *(deferred to T-037 — `ScanFlow` is exported but not yet routed)*
-- [ ] **Navigation** → Link added to sidebar/nav component *(deferred to T-037)*
-- [ ] **API endpoint** → Frontend store/hook calls this endpoint *(hooks call `/v1/scans` and `/v1/scans/:id` directly in this task; end-to-end route wiring is T-037)*
-- [ ] **Component** → Rendered by a parent component *(deferred to T-037 — no route renders `ScanFlow` yet)*
+
+- [ ] **Backend route** → Registered in main app/router file _(not applicable — frontend-only task)_
+- [ ] **Frontend page** → Added to app router configuration _(deferred to T-037 — `ScanFlow` is exported but not yet routed)_
+- [ ] **Navigation** → Link added to sidebar/nav component _(deferred to T-037)_
+- [ ] **API endpoint** → Frontend store/hook calls this endpoint _(hooks call `/v1/scans` and `/v1/scans/:id` directly in this task; end-to-end route wiring is T-037)_
+- [ ] **Component** → Rendered by a parent component _(deferred to T-037 — no route renders `ScanFlow` yet)_
 
 ## ✅ Verification
 
