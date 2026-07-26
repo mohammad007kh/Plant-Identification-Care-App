@@ -1,4 +1,12 @@
-import { problemSchema, type Problem } from 'shared';
+import { z } from 'zod';
+import {
+  comparisonResultSchema,
+  deletionStatusResponseSchema,
+  problemSchema,
+  scanJobSchema,
+  type DeletionStatusResponse,
+  type Problem,
+} from 'shared';
 import { isBrowserOffline, mapErrorCode, type MappedError } from './error-map';
 
 export { mapErrorCode, isBrowserOffline };
@@ -86,4 +94,110 @@ export async function apiFetch<T>(
   }
 
   return parse(await response.json());
+}
+
+function authHeaders(accessToken: string): HeadersInit {
+  return { Authorization: `Bearer ${accessToken}` };
+}
+
+/** `POST/DELETE/GET /v1/account/deletion` all share this path (US8, FR-023, T-130). */
+const ACCOUNT_DELETION_PATH = '/v1/account/deletion';
+
+/**
+ * `POST /v1/account/deletion` — requests account deletion, starting the
+ * 7-day grace period (US8, FR-023). Never performs the destructive purge
+ * itself: only a backend-scheduled job does that once the grace period
+ * elapses. Resolves with the resulting `deletionStatus` (`pending_deletion`)
+ * and `purgeScheduledFor` so the caller can show the grace deadline
+ * immediately, without a second round trip.
+ */
+export async function requestAccountDeletion(accessToken: string): Promise<DeletionStatusResponse> {
+  return apiFetch(
+    ACCOUNT_DELETION_PATH,
+    { method: 'POST', headers: authHeaders(accessToken), credentials: 'include' },
+    (body) => deletionStatusResponseSchema.parse(body),
+  );
+}
+
+/**
+ * `DELETE /v1/account/deletion` — cancels a pending deletion request. Per the
+ * domain rule, cancelling must restore the normal UI immediately; this
+ * resolves with the resulting `active` status so the caller can update its
+ * local state without waiting on a fresh `GET`.
+ */
+export async function cancelAccountDeletion(accessToken: string): Promise<DeletionStatusResponse> {
+  return apiFetch(
+    ACCOUNT_DELETION_PATH,
+    { method: 'DELETE', headers: authHeaders(accessToken), credentials: 'include' },
+    (body) => deletionStatusResponseSchema.parse(body),
+  );
+}
+
+/**
+ * `GET /v1/account/deletion` — the caller's current deletion status
+ * (`active` | `pending_deletion` | `purged`) plus the scheduled purge date,
+ * if any (US8, FR-023).
+ */
+export async function getAccountDeletionStatus(
+  accessToken: string,
+): Promise<DeletionStatusResponse> {
+  return apiFetch(
+    ACCOUNT_DELETION_PATH,
+    { headers: authHeaders(accessToken), credentials: 'include' },
+    (body) => deletionStatusResponseSchema.parse(body),
+  );
+}
+
+/**
+ * `ScanJob` extended with the nested comparison verdict (US5/FR-011). The
+ * shared `scanJobSchema` (`shared/src/contracts/scan.ts`) does not carry this
+ * field yet — exposing it end-to-end on `GET /v1/scans/:id` is T-107's wiring
+ * task — so this task's embedded API contract (`result: { verdict,
+ * referencedPhotoIds }`) is modeled here as a local extension rather than by
+ * editing the shared package. `result` is present only once a `comparison`
+ * scan resolves with a computed verdict; a completed scan with fewer than two
+ * photos (FR-011 "follow-up needed") or a failed one omits it and relies on
+ * the base `message` field instead.
+ */
+const comparisonScanJobSchema = scanJobSchema.extend({
+  result: comparisonResultSchema.nullable().optional(),
+});
+export type ComparisonScanJob = z.infer<typeof comparisonScanJobSchema>;
+
+/**
+ * `POST /v1/plants/:id/photos` — submits a follow-up photo for health-trend
+ * comparison against a saved plant's prior photos (US5, FR-011, T-060).
+ * Requires an authenticated session; the backend enqueues an async
+ * `comparison` scan job and responds `202 Accepted` with `status: 'pending'`
+ * — the caller polls `getScanJob` for the terminal result.
+ */
+export async function submitFollowUpPhoto(
+  accessToken: string,
+  plantId: string,
+  photo: File,
+): Promise<ComparisonScanJob> {
+  const formData = new FormData();
+  formData.append('photo', photo);
+
+  return apiFetch<ComparisonScanJob>(
+    `/v1/plants/${plantId}/photos`,
+    { method: 'POST', headers: authHeaders(accessToken), credentials: 'include', body: formData },
+    (body) => comparisonScanJobSchema.parse(body),
+  );
+}
+
+/**
+ * `GET /v1/scans/:id` — polls a scan job (identify or comparison) to its
+ * terminal status (T-100). Parsed with the comparison-aware schema so a
+ * `result` verdict survives parsing when present; identify-type jobs simply
+ * omit that field. The route itself carries no auth guard server-side
+ * (`ScansController`), matching the sibling `scan` feature's `getScan` —
+ * kept as an independent implementation here (routed through the shared
+ * `apiFetch` wrapper) so the `comparison` feature does not reach into
+ * `features/scan`'s internals.
+ */
+export async function getScanJob(scanId: string): Promise<ComparisonScanJob> {
+  return apiFetch<ComparisonScanJob>(`/v1/scans/${scanId}`, {}, (body) =>
+    comparisonScanJobSchema.parse(body),
+  );
 }

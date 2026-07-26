@@ -21,23 +21,23 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T20:29:50Z by claude
+- Implementation end: 2026-07-26T20:29:50Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | Next.js App Router (React 18) |
-| `frontend.ui_library` | MUI + Emotion (RTL) |
-| `frontend.data_fetching` | TanStack Query |
-| `conventions.files` | kebab-case |
-| `ui_specs.accessibility` | WCAG-AA |
+| Key                      | Value                         |
+| ------------------------ | ----------------------------- |
+| `frontend.framework`     | Next.js App Router (React 18) |
+| `frontend.ui_library`    | MUI + Emotion (RTL)           |
+| `frontend.data_fetching` | TanStack Query                |
+| `conventions.files`      | kebab-case                    |
+| `ui_specs.accessibility` | WCAG-AA                       |
 
 ### Domain Rules (from Station 05 — User Flows)
 
@@ -92,6 +92,7 @@ Build the account-deletion request/confirm UI and the pending-deletion banner wi
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Component** → delete action on settings; banner mounted in app shell (T-137)
 - [ ] **API endpoint** → hook connected to deletion endpoints
 
