@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AppConfigService } from './app-config.service';
 
 /** Keys that every environment (dev/CI/prod) must provide — fail fast if absent. */
 const REQUIRED_ENV_KEYS = ['DATABASE_URL', 'REDIS_URL', 'NODE_ENV'] as const;
@@ -9,9 +10,7 @@ const REQUIRED_ENV_KEYS = ['DATABASE_URL', 'REDIS_URL', 'NODE_ENV'] as const;
  * Throws (crashing the process before it can serve traffic) if any are missing,
  * per the project's "fail fast" error-handling standard.
  */
-function validateEnv(
-  config: Record<string, unknown>,
-): Record<string, unknown> {
+function validateEnv(config: Record<string, unknown>): Record<string, unknown> {
   const missingKeys = REQUIRED_ENV_KEYS.filter((key) => {
     const value = config[key];
     return value === undefined || value === null || value === '';
@@ -40,5 +39,7 @@ function validateEnv(
       validate: validateEnv,
     }),
   ],
+  providers: [AppConfigService],
+  exports: [AppConfigService],
 })
 export class AppConfigModule {}

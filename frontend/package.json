@@ -20,8 +20,10 @@
     "next": "^15.1.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "shared": "*",
     "stylis": "^4.3.4",
-    "stylis-plugin-rtl": "^2.1.1"
+    "stylis-plugin-rtl": "^2.1.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

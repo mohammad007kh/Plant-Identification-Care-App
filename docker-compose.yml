@@ -17,11 +17,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-plant}
       POSTGRES_DB: ${POSTGRES_DB:-plant}
     ports:
-      - "5432:5432"
+      # Host 5433 → container 5432 to avoid clashing with a native Postgres on 5432.
+      - '5433:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-plant}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-plant}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,11 +31,11 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -47,12 +48,12 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - '9000:9000'
+      - '9001:9001'
     volumes:
       - minio_data:/data
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ['CMD', 'mc', 'ready', 'local']
       interval: 15s
       timeout: 5s
       retries: 5
@@ -61,8 +62,8 @@ services:
     image: axllent/mailpit
     restart: unless-stopped
     ports:
-      - "8025:8025"
-      - "1025:1025"
+      - '8025:8025'
+      - '1025:1025'
 
 volumes:
   postgres_data:

@@ -14,67 +14,67 @@
   artifact, treated as `legacy_closed`.
 -->
 
+- Authored start: 2026-07-24T20:15:36Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:36Z by claude:opus-4-8
 
-- Authored start:        2026-07-24T20:15:36Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:36Z by claude:opus-4-8
 ## 🗺️ Requirement Coverage
 
-| User Story | Priority | Requirement ID | Covered By Tasks | Status |
-| ---------- | -------- | -------------- | ---------------- | ------ |
-| US1 | P1 | FR-001 | T-014, T-020, T-023 | 🔴 Pending |
-| US1 | P1 | FR-002 | T-015, T-020 | 🔴 Pending |
-| US1 | P1 | FR-003 | T-015, T-020, T-023 | 🔴 Pending |
-| US1 | P1 | FR-004 | T-014, T-020 | 🔴 Pending |
-| US9 | P3 | FR-005 | T-013, T-140 | 🔴 Pending |
-| US1 | P1 | FR-006 | T-021 | 🔴 Pending |
-| US2 | P2 | FR-007 | T-040, T-043 | 🔴 Pending |
-| US2 | P2 | FR-008 | T-041, T-043 | 🔴 Pending |
-| US3 | P2 | FR-009 | T-060, T-061 | 🔴 Pending |
-| US3 | P2 | FR-010 | T-060, T-100 | 🔴 Pending |
-| US5 | P3 | FR-011 | T-100, T-101 | 🔴 Pending |
-| US6 | P3 | FR-012 | T-110, T-111 | 🔴 Pending |
-| US6 | P3 | FR-013 | T-110, T-111 | 🔴 Pending |
-| US4 | P2 | FR-014 | T-011 ✅, T-080, T-140 | 🟡 In progress (T-011 schema done: subscription_tier + append-only credit_transaction ledger + usage_record refund-once + payment_event) |
-| US4 | P2 | FR-015 | T-015, T-020, T-100, T-110 | 🔴 Pending |
-| US4 | P2 | FR-016 | T-080, T-082, T-083, T-097 | 🔴 Pending |
-| US4 | P2 | FR-017 | T-015, T-020 | 🔴 Pending |
-| US4 | P2 | FR-018 | T-081 | 🔴 Pending |
-| US4 | P2 | FR-019 | T-082 | 🔴 Pending |
-| US7 | P3 | FR-020 | T-120 | 🔴 Pending |
-| US7 | P3 | FR-021 | T-120, T-140 | 🔴 Pending |
-| US7 | P3 | FR-022 | T-120, T-121 | 🔴 Pending |
-| US8 | P3 | FR-023 | T-130, T-131 | 🔴 Pending |
-| US9 | P3 | FR-024 | T-140, T-142 | 🔴 Pending |
-| US9 | P3 | FR-025 | T-022, T-141, T-142 | 🔴 Pending |
-| US9 | P3 | FR-026 | T-141, T-142 | 🔴 Pending |
-| US9 | P3 | FR-027 | T-140, T-142 | 🔴 Pending |
-| Cross | — | FR-028 | T-160, T-191 | 🔴 Pending |
-| Cross | — | FR-029 | T-003 ✅, T-191 | 🟡 In progress (T-003 done: Next.js App Router, dir=rtl lang=fa, MUI+Emotion RTL, i18n scaffold) |
-| Cross | — | FR-030 | T-161, T-191 | 🔴 Pending |
+| User Story | Priority | Requirement ID | Covered By Tasks           | Status                                                                                                                                            |
+| ---------- | -------- | -------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| US1        | P1       | FR-001         | T-014, T-020, T-023        | 🔴 Pending                                                                                                                                        |
+| US1        | P1       | FR-002         | T-015, T-020               | 🔴 Pending                                                                                                                                        |
+| US1        | P1       | FR-003         | T-015, T-020, T-023        | 🔴 Pending                                                                                                                                        |
+| US1        | P1       | FR-004         | T-014, T-020               | 🔴 Pending                                                                                                                                        |
+| US9        | P3       | FR-005         | T-013 ✅, T-140            | 🟡 In progress (T-013 read side done: AppConfigService reads allowed file types live from app_config, no-deploy config; admin write side = T-140) |
+| US1        | P1       | FR-006         | T-021                      | 🔴 Pending                                                                                                                                        |
+| US2        | P2       | FR-007         | T-040, T-043               | 🔴 Pending                                                                                                                                        |
+| US2        | P2       | FR-008         | T-041, T-043               | 🔴 Pending                                                                                                                                        |
+| US3        | P2       | FR-009         | T-060, T-061               | 🔴 Pending                                                                                                                                        |
+| US3        | P2       | FR-010         | T-060, T-100               | 🔴 Pending                                                                                                                                        |
+| US5        | P3       | FR-011         | T-100, T-101               | 🔴 Pending                                                                                                                                        |
+| US6        | P3       | FR-012         | T-110, T-111               | 🔴 Pending                                                                                                                                        |
+| US6        | P3       | FR-013         | T-110, T-111               | 🔴 Pending                                                                                                                                        |
+| US4        | P2       | FR-014         | T-011 ✅, T-080, T-140     | 🟡 In progress (T-011 schema done: subscription_tier + append-only credit_transaction ledger + usage_record refund-once + payment_event)          |
+| US4        | P2       | FR-015         | T-015, T-020, T-100, T-110 | 🔴 Pending                                                                                                                                        |
+| US4        | P2       | FR-016         | T-080, T-082, T-083, T-097 | 🔴 Pending                                                                                                                                        |
+| US4        | P2       | FR-017         | T-015, T-020               | 🔴 Pending                                                                                                                                        |
+| US4        | P2       | FR-018         | T-081                      | 🔴 Pending                                                                                                                                        |
+| US4        | P2       | FR-019         | T-082                      | 🔴 Pending                                                                                                                                        |
+| US7        | P3       | FR-020         | T-120                      | 🔴 Pending                                                                                                                                        |
+| US7        | P3       | FR-021         | T-120, T-140               | 🔴 Pending                                                                                                                                        |
+| US7        | P3       | FR-022         | T-120, T-121               | 🔴 Pending                                                                                                                                        |
+| US8        | P3       | FR-023         | T-130, T-131               | 🔴 Pending                                                                                                                                        |
+| US9        | P3       | FR-024         | T-140, T-142               | 🔴 Pending                                                                                                                                        |
+| US9        | P3       | FR-025         | T-022, T-141, T-142        | 🔴 Pending                                                                                                                                        |
+| US9        | P3       | FR-026         | T-141, T-142               | 🔴 Pending                                                                                                                                        |
+| US9        | P3       | FR-027         | T-140, T-142               | 🔴 Pending                                                                                                                                        |
+| Cross      | —        | FR-028         | T-160, T-191               | 🔴 Pending                                                                                                                                        |
+| Cross      | —        | FR-029         | T-003 ✅, T-191            | 🟡 In progress (T-003 done: Next.js App Router, dir=rtl lang=fa, MUI+Emotion RTL, i18n scaffold)                                                  |
+| Cross      | —        | FR-030         | T-161, T-191               | 🔴 Pending                                                                                                                                        |
 
 **Coverage: 30 / 30 functional requirements mapped (100%).** No uncovered requirements; no orphan tasks (every task maps to an FR, a foundation dependency, or a wiring/integration/verification role).
 
 ### Supporting / Non-FR Tasks (infrastructure, wiring, verification)
 
-| Task | Role |
-| ---- | ---- |
-| T-001 ✅, T-002 ✅, T-004 ✅ | Setup / infrastructure (enable all stories) — all setup done 2026-07-24 (compose valid; NestJS skeleton; Next.js RTL skeleton; ESLint/Prettier/Vitest(80%)/Playwright/Husky + seed skeleton; `npm run lint && npm run typecheck` green) |
-| T-010 ✅, T-012 ✅ | Data foundation (schema for US1–US9) — T-010/T-012 done 2026-07-24 (18 tables total across core+credits+support; migration 0001; 21 schema tests pass) |
-| T-037, T-057, T-077, T-097, T-107, T-117, T-127, T-137, T-147 | Per-story wiring (routes, nav, stores, workers) |
-| T-190, T-191 | Final verification (E2E + coverage/traceability gate) |
+| Task                                                          | Role                                                                                                                                                                                                                                    |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T-001 ✅, T-002 ✅, T-004 ✅                                  | Setup / infrastructure (enable all stories) — all setup done 2026-07-24 (compose valid; NestJS skeleton; Next.js RTL skeleton; ESLint/Prettier/Vitest(80%)/Playwright/Husky + seed skeleton; `npm run lint && npm run typecheck` green) |
+| T-010 ✅, T-012 ✅                                            | Data foundation (schema for US1–US9) — T-010/T-012 done 2026-07-24 (18 tables total across core+credits+support; migration 0001; 21 schema tests pass)                                                                                  |
+| T-037, T-057, T-077, T-097, T-107, T-117, T-127, T-137, T-147 | Per-story wiring (routes, nav, stores, workers)                                                                                                                                                                                         |
+| T-190, T-191                                                  | Final verification (E2E + coverage/traceability gate)                                                                                                                                                                                   |
 
 ## 🛡️ Gate Verification Log
 
-| Transition | Gate | Status | Verified By |
-| ---------- | ---- | ------ | ----------- |
-| Spec → Plan | Stn 03 (Discovery) | ✅ Pass | AI Agent |
-| Spec → Plan | Stn 04 (PRD) | ✅ Pass | AI Agent |
-| Spec → Plan | Stn 05 (User Flows) | ✅ Pass | AI Agent |
-| Plan → Tasks | Stn 06 (API Contracts) | ✅ Pass | check-prerequisites (tasks) |
-| Plan → Tasks | Stn 07 (Data Architecture) | ✅ Pass | check-prerequisites (tasks) |
-| Plan → Tasks | Stn 08 (Auth & RBAC) | ✅ Pass | check-prerequisites (tasks) |
-| Plan → Tasks | Stn 12 (CI/CD) | ✅ Pass | check-prerequisites (tasks) |
-| Plan → Tasks | Stn 13 (Security) | ✅ Pass | check-prerequisites (tasks) |
+| Transition        | Gate                                 | Status  | Verified By                  |
+| ----------------- | ------------------------------------ | ------- | ---------------------------- |
+| Spec → Plan       | Stn 03 (Discovery)                   | ✅ Pass | AI Agent                     |
+| Spec → Plan       | Stn 04 (PRD)                         | ✅ Pass | AI Agent                     |
+| Spec → Plan       | Stn 05 (User Flows)                  | ✅ Pass | AI Agent                     |
+| Plan → Tasks      | Stn 06 (API Contracts)               | ✅ Pass | check-prerequisites (tasks)  |
+| Plan → Tasks      | Stn 07 (Data Architecture)           | ✅ Pass | check-prerequisites (tasks)  |
+| Plan → Tasks      | Stn 08 (Auth & RBAC)                 | ✅ Pass | check-prerequisites (tasks)  |
+| Plan → Tasks      | Stn 12 (CI/CD)                       | ✅ Pass | check-prerequisites (tasks)  |
+| Plan → Tasks      | Stn 13 (Security)                    | ✅ Pass | check-prerequisites (tasks)  |
 | Tasks → Implement | All tasks have verification commands | ✅ Pass | /atomicspec.tasks validation |
 
 ## 🕒 Lifecycle Ledger (v0.3+)
