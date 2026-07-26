@@ -1,0 +1,1 @@
+ALTER TABLE "misidentification_report" ALTER COLUMN "user_id" DROP NOT NULL;

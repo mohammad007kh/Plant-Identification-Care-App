@@ -14,15 +14,7 @@
  * except `deletion_audit` (see the deliberate deviation documented there).
  */
 import { sql } from 'drizzle-orm';
-import {
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  jsonb,
-  check,
-} from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, text, timestamp, uuid, jsonb, check } from 'drizzle-orm/pg-core';
 import { ulid } from 'ulid';
 import { users, plant, scan, photo } from './core';
 
@@ -123,11 +115,11 @@ export const notification = pgTable('notification', {
 });
 
 // --- misidentification_report (US9 — admin review) ---
+// user_id is nullable (T-022 correction): guest-submitted reports (US1, before
+// registration) have no authenticated user, only the reported scan's public id.
 export const misidentificationReport = pgTable('misidentification_report', {
   ...pk(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
+  userId: text('user_id').references(() => users.id),
   scanId: text('scan_id')
     .notNull()
     .references(() => scan.id),

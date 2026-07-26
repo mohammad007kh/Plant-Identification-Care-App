@@ -23,6 +23,15 @@ export interface ScanRow {
   result: unknown;
 }
 
+/** Raw (internal-id) scan shape for read-only reuse by sibling modules (e.g. T-022). */
+export interface RawScanRow {
+  id: string;
+  userId: string | null;
+  guestSessionId: string | null;
+  photoId: string | null;
+  result: unknown;
+}
+
 export interface SpeciesRow {
   publicId: string;
   scientificName: string;
@@ -83,6 +92,26 @@ export class ScansRepository {
         status: scan.status,
         confidence: scan.confidence,
         speciesId: scan.speciesId,
+        result: scan.result,
+      })
+      .from(scan)
+      .where(eq(scan.publicId, publicId))
+      .limit(1);
+    return row ?? null;
+  }
+
+  /**
+   * Internal-id scan lookup (ownership fields included) for read-only reuse by
+   * other modules that need to validate/snapshot a scan without duplicating
+   * `scan` table access (repository pattern — T-022 misidentification reports).
+   */
+  async findRawByPublicId(publicId: string): Promise<RawScanRow | null> {
+    const [row] = await db
+      .select({
+        id: scan.id,
+        userId: scan.userId,
+        guestSessionId: scan.guestSessionId,
+        photoId: scan.photoId,
         result: scan.result,
       })
       .from(scan)

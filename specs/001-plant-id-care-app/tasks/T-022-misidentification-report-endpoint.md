@@ -21,26 +21,26 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T17:53:58Z by claude
+- Implementation end: 2026-07-26T18:05:48Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith |
-| `architecture.layers` | not layered; feature-module boundaries (`backend/src/modules/misidentification-reports`) |
-| `code_patterns.data_access` | repository |
-| `code_patterns.error_handling` | exceptions → RFC7807 `application/problem+json` |
-| `code_patterns.validation_approach` | schema (Zod) |
-| `database.tenancy_model` | single_tenant; reports scoped by `user_id` where present, but guest-submitted reports are also accepted (see below) |
-| `conventions.files` | kebab-case |
-| `conventions.variables` | camelCase |
+| Key                                 | Value                                                                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `architecture.pattern`              | modular_monolith                                                                                                    |
+| `architecture.layers`               | not layered; feature-module boundaries (`backend/src/modules/misidentification-reports`)                            |
+| `code_patterns.data_access`         | repository                                                                                                          |
+| `code_patterns.error_handling`      | exceptions → RFC7807 `application/problem+json`                                                                     |
+| `code_patterns.validation_approach` | schema (Zod)                                                                                                        |
+| `database.tenancy_model`            | single_tenant; reports scoped by `user_id` where present, but guest-submitted reports are also accepted (see below) |
+| `conventions.files`                 | kebab-case                                                                                                          |
+| `conventions.variables`             | camelCase                                                                                                           |
 
 ### Domain Rules
 
@@ -60,17 +60,18 @@ POST /v1/misidentification-reports
 ```
 
 Relevant `misidentification_report` table (data-model.md):
-| Column | Type | Notes |
-|---|---|---|
-| id | ulid PK | |
-| public_id | uuid | |
-| user_id | ulid FK | (nullable in practice for guest-submitted reports — see Domain Rules) |
-| scan_id | ulid FK | the scan being reported |
-| photo_id | ulid FK | the photo from that scan |
-| ai_result | jsonb | snapshot of the AI's result at report time |
-| note | text null | optional user-supplied note |
-| status | enum(open, reviewed) | default `open` |
-| created_at | timestamptz | |
+
+| Column     | Type                 | Notes                                                                 |
+| ---------- | -------------------- | --------------------------------------------------------------------- |
+| id         | ulid PK              |                                                                       |
+| public_id  | uuid                 |                                                                       |
+| user_id    | ulid FK              | (nullable in practice for guest-submitted reports — see Domain Rules) |
+| scan_id    | ulid FK              | the scan being reported                                               |
+| photo_id   | ulid FK              | the photo from that scan                                              |
+| ai_result  | jsonb                | snapshot of the AI's result at report time                            |
+| note       | text null            | optional user-supplied note                                           |
+| status     | enum(open, reviewed) | default `open`                                                        |
+| created_at | timestamptz          |                                                                       |
 
 ### Feature Summary
 
@@ -108,7 +109,7 @@ Implement `POST /v1/misidentification-reports`, storing the reported photo, a sn
 
 ### Code/Logic Requirements
 
-- Supports **FR-025**: *"Admins MUST be able to view user-submitted misidentification reports, each shown with the associated photo and AI result."* → this task is the write side that guarantees the `photo` and `ai_result` snapshot exist and are queryable for that future admin read endpoint; it does not implement the admin GET.
+- Supports **FR-025**: _"Admins MUST be able to view user-submitted misidentification reports, each shown with the associated photo and AI result."_ → this task is the write side that guarantees the `photo` and `ai_result` snapshot exist and are queryable for that future admin read endpoint; it does not implement the admin GET.
 - Depends on **T-012** (support schema — misidentification report data shape) and **T-020** (scans endpoints — to resolve/validate `scanId`).
 - All new DB access goes through `misidentification-reports.repository.ts` (repository pattern per `code_patterns.data_access`).
 - Input validation at the boundary via the shared Zod schema (per `code_patterns.validation_approach`); reject before touching the database.
@@ -116,11 +117,12 @@ Implement `POST /v1/misidentification-reports`, storing the reported photo, a sn
 ## 🔌 Wiring Checklist
 
 ### Web
-- [ ] **Backend route** → Registered in main app/router file *(deferred to T-037)*
-- [ ] **Frontend page** → Added to app router configuration *(not applicable — backend-only)*
-- [ ] **Navigation** → Link added to sidebar/nav component *(not applicable — backend-only)*
-- [ ] **API endpoint** → Frontend store/hook calls this endpoint *(the "report misidentification" UI action, if surfaced in T-023's result view, is wired in T-037)*
-- [ ] **Component** → Rendered by a parent component *(not applicable — backend-only)*
+
+- [ ] **Backend route** → Registered in main app/router file _(deferred to T-037)_
+- [ ] **Frontend page** → Added to app router configuration _(not applicable — backend-only)_
+- [ ] **Navigation** → Link added to sidebar/nav component _(not applicable — backend-only)_
+- [ ] **API endpoint** → Frontend store/hook calls this endpoint _(the "report misidentification" UI action, if surfaced in T-023's result view, is wired in T-037)_
+- [ ] **Component** → Rendered by a parent component _(not applicable — backend-only)_
 
 ## ✅ Verification
 

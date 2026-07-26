@@ -7,3 +7,4 @@ export * from './credit';
 export * from './plan';
 export * from './chat';
 export * from './admin';
+export * from './misidentification-report';
