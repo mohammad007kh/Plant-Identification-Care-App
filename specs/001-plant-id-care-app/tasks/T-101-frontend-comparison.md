@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T20:29:50Z by claude
+- Implementation end: 2026-07-26T20:29:50Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | Next.js App Router (React 18) |
-| `frontend.ui_library` | MUI + Emotion (RTL, `dir="rtl" lang="fa"`) |
+| Key                      | Value                                      |
+| ------------------------ | ------------------------------------------ |
+| `frontend.framework`     | Next.js App Router (React 18)              |
+| `frontend.ui_library`    | MUI + Emotion (RTL, `dir="rtl" lang="fa"`) |
 | `frontend.data_fetching` | TanStack Query (polls `GET /v1/scans/:id`) |
-| `frontend.form_library` | React Hook Form + Zod |
-| `conventions.files` | kebab-case |
-| `ui_specs.accessibility` | WCAG-AA |
+| `frontend.form_library`  | React Hook Form + Zod                      |
+| `conventions.files`      | kebab-case                                 |
+| `ui_specs.accessibility` | WCAG-AA                                    |
 
 ### Domain Rules (from Station 05 — User Flows)
 
@@ -92,6 +92,7 @@ Build the follow-up-photo upload + health-trend result UI within the plant detai
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Component** → Rendered by `plant-detail.tsx`
 - [ ] **API endpoint** → Hook calls `POST /v1/plants/:id/photos` + polls `GET /v1/scans/:id`
 

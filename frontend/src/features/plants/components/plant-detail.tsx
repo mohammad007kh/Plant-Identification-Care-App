@@ -7,6 +7,11 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { defaultLocale, getMessages } from '@/i18n';
+// No barrel exists yet for the `comparison` feature (T-101 adds only the
+// panel + its hook); a direct file import is used here rather than adding an
+// unrequested `index.ts`, matching how `photo-uploader.tsx` reaches into
+// `../../auth` today for its own cross-feature dependency.
+import { ComparisonPanel } from '../../comparison/comparison-panel';
 import { usePlantDetail } from '../hooks/use-plant-detail';
 import { readStringField, readUnknownField } from '../lib/plant-fields';
 import { CareGuideCard } from './care-guide-card';
@@ -83,6 +88,10 @@ export function PlantDetail({ plantId }: PlantDetailProps) {
       <Divider />
 
       <PhotoHistory photos={plant.photos} />
+
+      <Divider />
+
+      <ComparisonPanel plantId={plant.id} />
     </Stack>
   );
 }

@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 31    |
-| Verified    | 31    |
-| Coverage    | 66%   |
+| Completed   | 33    |
+| Verified    | 33    |
+| Coverage    | 70%   |
 
 ## 📚 Knowledge Resources
 
@@ -98,7 +98,7 @@ _Need guidance on specific rules?_
 | ID                                             | Story | Description                              | Status  | Verification                            |
 | ---------------------------------------------- | ----- | ---------------------------------------- | ------- | --------------------------------------- |
 | [T-100](./tasks/T-100-comparison-endpoints.md) | US5   | Comparison worker + health-trend verdict | ✅ Done | `cd backend && npm test -- comparison`  |
-| [T-101](./tasks/T-101-frontend-comparison.md)  | US5   | Frontend follow-up upload + trend view   | 🔴 Todo | `cd frontend && npm test -- comparison` |
+| [T-101](./tasks/T-101-frontend-comparison.md)  | US5   | Frontend follow-up upload + trend view   | ✅ Done | `cd frontend && npm test -- comparison` |
 | [T-107](./tasks/T-107-wire-us5.md)             | US5   | Wire US5                                 | 🔴 Todo | `npm run test:e2e -- --grep comparison` |
 
 ### US6 — Plant chat (P3) (T-110–T-117)
@@ -122,7 +122,7 @@ _Need guidance on specific rules?_
 | ID                                                  | Story | Description                               | Status  | Verification                                |
 | --------------------------------------------------- | ----- | ----------------------------------------- | ------- | ------------------------------------------- |
 | [T-130](./tasks/T-130-account-deletion.md)          | US8   | Deletion request/cancel + 7-day purge job | ✅ Done | `cd backend && npm test -- deletion purge`  |
-| [T-131](./tasks/T-131-frontend-account-deletion.md) | US8   | Frontend deletion flow + pending banner   | 🔴 Todo | `cd frontend && npm test -- delete-account` |
+| [T-131](./tasks/T-131-frontend-account-deletion.md) | US8   | Frontend deletion flow + pending banner   | ✅ Done | `cd frontend && npm test -- delete-account` |
 | [T-137](./tasks/T-137-wire-us8.md)                  | US8   | Wire US8                                  | 🔴 Todo | `curl .../v1/account/deletion`              |
 
 ### US9 — Admin panel (P3) (T-140–T-147)
