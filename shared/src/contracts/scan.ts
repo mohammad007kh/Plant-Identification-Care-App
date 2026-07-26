@@ -12,6 +12,8 @@ export const scanJobSchema = z.object({
   species: z.unknown().nullable(),
   careGuide: z.unknown().nullable(),
   lowConfidence: z.boolean(),
+  /** User-facing prompt: the low-confidence guidance (FR-003) or a retry message on failure (FR-017). */
+  message: z.string().nullish(),
 });
 export type ScanJob = z.infer<typeof scanJobSchema>;
 

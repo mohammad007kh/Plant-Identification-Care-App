@@ -58,19 +58,23 @@ export class CreditsService {
     return this.ledger.credit({ userId, amount, type: 'grant', ...opts });
   }
 
-  async runMeteredAction<T>(params: MeteredActionParams<T>): Promise<T> {
-    const { userId, action, cost, idempotencyKey, work } = params;
-
-    // Reserve: conditional debit + a `pending` usage_record, atomically.
-    // The idempotency key identifies ONE metered attempt. A repeat of the same
-    // key (client double-submit, at-least-once job redelivery, replay) must NOT
-    // re-run the paid `work()` — doing so would deliver a second billed AI call
-    // for free and corrupt the usage-record state machine. A genuine retry after
-    // a failure is a NEW attempt and must carry a fresh key. So: any pre-existing
-    // record for this key is a conflict, not a resume.
-    let usageRecordId: string;
+  /**
+   * Reserve credit for an ASYNC metered action (e.g. a BullMQ scan job): a
+   * conditional debit + a `pending` usage_record, committed atomically. Returns
+   * the usage_record id so a later worker can `complete` it on success or
+   * `refundUsage` it on failure. The idempotency key identifies ONE attempt — a
+   * repeat is a 409 conflict, never a silent second debit. Throws
+   * InsufficientCreditException when the balance is too low (→ RFC7807 402).
+   */
+  async reserve(params: {
+    userId: string;
+    action: UsageAction;
+    cost: number;
+    idempotencyKey: string;
+  }): Promise<{ usageRecordId: string }> {
+    const { userId, action, cost, idempotencyKey } = params;
     try {
-      usageRecordId = await db.transaction(async (tx) => {
+      const usageRecordId = await db.transaction(async (tx) => {
         const existing = await tx
           .select({ id: usageRecord.id })
           .from(usageRecord)
@@ -92,17 +96,12 @@ export class CreditsService {
 
         const [record] = await tx
           .insert(usageRecord)
-          .values({
-            userId,
-            action,
-            status: 'pending',
-            debitTxnId: debit.txnId,
-            idempotencyKey,
-          })
+          .values({ userId, action, status: 'pending', debitTxnId: debit.txnId, idempotencyKey })
           .returning({ id: usageRecord.id });
 
         return record.id;
       });
+      return { usageRecordId };
     } catch (err) {
       // TOCTOU: a concurrent request with the same key won the insert race.
       // Postgres rolled our reserve tx back (ledger stays consistent) — surface
@@ -115,13 +114,28 @@ export class CreditsService {
       }
       throw err;
     }
+  }
+
+  /** Mark a reserved usage_record `completed` (async success path). */
+  async complete(usageRecordId: string): Promise<void> {
+    await db
+      .update(usageRecord)
+      .set({ status: 'completed', resolvedAt: new Date() })
+      .where(eq(usageRecord.id, usageRecordId));
+  }
+
+  /**
+   * Sync metered action: reserve → run `work()` inline → complete on success or
+   * refund-once on failure. For async work (a job runs the AI call later), use
+   * `reserve` + `complete`/`refundUsage` directly instead.
+   */
+  async runMeteredAction<T>(params: MeteredActionParams<T>): Promise<T> {
+    const { userId, action, cost, idempotencyKey, work } = params;
+    const { usageRecordId } = await this.reserve({ userId, action, cost, idempotencyKey });
 
     try {
       const result = await work();
-      await db
-        .update(usageRecord)
-        .set({ status: 'completed', resolvedAt: new Date() })
-        .where(eq(usageRecord.id, usageRecordId));
+      await this.complete(usageRecordId);
       return result;
     } catch (err) {
       // Refund the reserved credit, but never let a refund hiccup mask the real

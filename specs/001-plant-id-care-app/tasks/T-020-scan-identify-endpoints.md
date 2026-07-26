@@ -21,26 +21,26 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T15:22:54Z by claude
+- Implementation end: 2026-07-26T16:32:33Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith |
-| `architecture.layers` | not layered; feature-module boundaries (`backend/src/modules/*`) |
-| `code_patterns.data_access` | repository (no naked ORM/Drizzle queries outside a `*.repository.ts`) |
-| `code_patterns.error_handling` | exceptions → mapped to RFC7807 `application/problem+json` |
-| `code_patterns.validation_approach` | schema (Zod, shared package) |
-| `database.tenancy_model` | single_tenant — every user-owned query filtered by `user_id` |
-| `conventions.files` | kebab-case (`scans.controller.ts`) |
-| `conventions.variables` | camelCase |
+| Key                                 | Value                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------- |
+| `architecture.pattern`              | modular_monolith                                                      |
+| `architecture.layers`               | not layered; feature-module boundaries (`backend/src/modules/*`)      |
+| `code_patterns.data_access`         | repository (no naked ORM/Drizzle queries outside a `*.repository.ts`) |
+| `code_patterns.error_handling`      | exceptions → mapped to RFC7807 `application/problem+json`             |
+| `code_patterns.validation_approach` | schema (Zod, shared package)                                          |
+| `database.tenancy_model`            | single_tenant — every user-owned query filtered by `user_id`          |
+| `conventions.files`                 | kebab-case (`scans.controller.ts`)                                    |
+| `conventions.variables`             | camelCase                                                             |
 
 ### Domain Rules
 
@@ -64,6 +64,7 @@ GET  /v1/scans/{id}   # security: [] (guest allowed) — poll status/result
 ```
 
 `ScanJob` schema (openapi.yaml `components.schemas.ScanJob`):
+
 ```yaml
 id: uuid
 type: identify | comparison
@@ -71,7 +72,7 @@ status: pending | completed | failed
 confidence: number | null
 species: object | null
 careGuide: object | null
-lowConfidence: boolean   # true when confidence < 0.70
+lowConfidence: boolean # true when confidence < 0.70
 ```
 
 Relevant `scan` table columns (data-model.md): `id`, `public_id`, `user_id` (null for guest), `guest_session_id` (null for authenticated; exactly one of the two is set — DB `CHECK`), `plant_id` (null on first identify), `type` (identify|comparison), `status` (pending|completed|failed), `photo_id`, `species_id` (null unless confidence ≥ 0.70), `confidence` numeric(4,3), `result` jsonb, `usage_record_id`.
@@ -117,22 +118,23 @@ Implement `POST /v1/scans` (photo submission, guest-allowed) and `GET /v1/scans/
 
 ### Code/Logic Requirements
 
-- **FR-001**: *"System MUST accept a single image upload (image formats only; no video) for identification."* → controller accepts exactly one `photo` field (multipart), delegates format/type checking to T-014's validation pipe (do not duplicate MIME-sniffing logic here).
-- **FR-002**: *"System MUST send the submitted photo to an AI identification service and return the plant's species identity and a structured care guide in a consistent format on success."* → worker calls `PlantAIProvider.identify()`, persists `result.careGuide` in the fixed `ScanJobSchema` shape.
-- **FR-003**: *"System MUST present an identification result only when AI confidence is ≥ 70%; when confidence is < 70%, it MUST show a low-confidence prompt and MUST NOT display any species result."* → worker MUST branch on `confidence >= 0.70` before ever setting `species_id`; write a unit test asserting `species` is `null`/absent at exactly `confidence = 0.699` and present at `0.700`.
-- **FR-015**: *"System MUST deduct credit from the user's monthly balance for every AI-powered action (scan, chat message, comparison) by the configured amount for that action."* → `scans.service.ts` debits via `CreditsService.debit({ userId, action: 'identify', idempotencyKey })` before enqueueing, only for authenticated requests; on 402 (insufficient credit) return RFC7807 problem, do not enqueue.
-- **FR-017**: *"When an AI-powered action fails due to a service error, System MUST refund the consumed credit (leaving the balance unchanged from before the attempt) and show a retry message."* → `identify.processor.ts` MUST call `CreditsService.refund()` in a catch block around the `PlantAIProvider` call, and the `ScanJob.status = 'failed'` response MUST include a retry-oriented message.
+- **FR-001**: _"System MUST accept a single image upload (image formats only; no video) for identification."_ → controller accepts exactly one `photo` field (multipart), delegates format/type checking to T-014's validation pipe (do not duplicate MIME-sniffing logic here).
+- **FR-002**: _"System MUST send the submitted photo to an AI identification service and return the plant's species identity and a structured care guide in a consistent format on success."_ → worker calls `PlantAIProvider.identify()`, persists `result.careGuide` in the fixed `ScanJobSchema` shape.
+- **FR-003**: _"System MUST present an identification result only when AI confidence is ≥ 70%; when confidence is < 70%, it MUST show a low-confidence prompt and MUST NOT display any species result."_ → worker MUST branch on `confidence >= 0.70` before ever setting `species_id`; write a unit test asserting `species` is `null`/absent at exactly `confidence = 0.699` and present at `0.700`.
+- **FR-015**: _"System MUST deduct credit from the user's monthly balance for every AI-powered action (scan, chat message, comparison) by the configured amount for that action."_ → `scans.service.ts` debits via `CreditsService.debit({ userId, action: 'identify', idempotencyKey })` before enqueueing, only for authenticated requests; on 402 (insufficient credit) return RFC7807 problem, do not enqueue.
+- **FR-017**: _"When an AI-powered action fails due to a service error, System MUST refund the consumed credit (leaving the balance unchanged from before the attempt) and show a retry message."_ → `identify.processor.ts` MUST call `CreditsService.refund()` in a catch block around the `PlantAIProvider` call, and the `ScanJob.status = 'failed'` response MUST include a retry-oriented message.
 - Idempotency: `POST /v1/scans` must not double-debit if retried with the same client-generated idempotency key (align with `api.idempotency: required` from registry).
 - All new DB access goes through `scans.repository.ts` (repository pattern per `code_patterns.data_access`).
 
 ## 🔌 Wiring Checklist
 
 ### Web
-- [ ] **Backend route** → Registered in main app/router file *(deferred to T-037 — see note above)*
-- [ ] **Frontend page** → Added to app router configuration *(not applicable to this backend-only task)*
-- [ ] **Navigation** → Link added to sidebar/nav component *(not applicable to this backend-only task)*
-- [ ] **API endpoint** → Frontend store/hook calls this endpoint *(consumed by T-023, wired in T-037)*
-- [ ] **Component** → Rendered by a parent component *(not applicable to this backend-only task)*
+
+- [ ] **Backend route** → Registered in main app/router file _(deferred to T-037 — see note above)_
+- [ ] **Frontend page** → Added to app router configuration _(not applicable to this backend-only task)_
+- [ ] **Navigation** → Link added to sidebar/nav component _(not applicable to this backend-only task)_
+- [ ] **API endpoint** → Frontend store/hook calls this endpoint _(consumed by T-023, wired in T-037)_
+- [ ] **Component** → Rendered by a parent component _(not applicable to this backend-only task)_
 
 ## ✅ Verification
 

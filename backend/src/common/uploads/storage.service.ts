@@ -40,4 +40,14 @@ export class StorageService {
   async getCommand(key: string): Promise<GetObjectCommand> {
     return new GetObjectCommand({ Bucket: this.bucket, Key: key });
   }
+
+  /** Fetches a stored blob's full bytes (used by the async identify worker, T-020). */
+  async getBytes(key: string): Promise<Buffer> {
+    const res = await this.client.send(new GetObjectCommand({ Bucket: this.bucket, Key: key }));
+    const body = res.Body as unknown as AsyncIterable<Uint8Array> | undefined;
+    if (!body) throw new Error(`storage object not found: ${key}`);
+    const chunks: Uint8Array[] = [];
+    for await (const chunk of body) chunks.push(chunk);
+    return Buffer.concat(chunks);
+  }
 }
