@@ -21,30 +21,30 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:00:56Z by claude
+- Implementation end: 2026-07-26T19:00:56Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (NestJS feature module: `plants`) |
-| `architecture.layers` | controller → service → repository |
-| `code_patterns.data_access` | repository (no naked Drizzle queries outside the repository) |
-| `code_patterns.error_handling` | exceptions → global filter → RFC7807 `application/problem+json` |
-| `code_patterns.validation_approach` | schema (Zod, defined in `shared/` and reused by NestJS pipes) |
-| `database.tenancy_model` | single_tenant — every query scoped by `user_id` |
-| `api.pagination` | cursor (`?cursor=&limit=`) |
-| `api.versioning` | URL (`/v1`) |
-| `conventions.files` | kebab-case (`plants.controller.ts`) |
-| `conventions.variables` | camelCase |
-| `database.naming_tables` / `naming_columns` | snake_case (`plant`, `photo`, `user_id`) |
-| `database.primary_key_type` | ULID internal `id`; opaque UUID `public_id` exposed in the API |
+| Key                                         | Value                                                           |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| `architecture.pattern`                      | modular_monolith (NestJS feature module: `plants`)              |
+| `architecture.layers`                       | controller → service → repository                               |
+| `code_patterns.data_access`                 | repository (no naked Drizzle queries outside the repository)    |
+| `code_patterns.error_handling`              | exceptions → global filter → RFC7807 `application/problem+json` |
+| `code_patterns.validation_approach`         | schema (Zod, defined in `shared/` and reused by NestJS pipes)   |
+| `database.tenancy_model`                    | single_tenant — every query scoped by `user_id`                 |
+| `api.pagination`                            | cursor (`?cursor=&limit=`)                                      |
+| `api.versioning`                            | URL (`/v1`)                                                     |
+| `conventions.files`                         | kebab-case (`plants.controller.ts`)                             |
+| `conventions.variables`                     | camelCase                                                       |
+| `database.naming_tables` / `naming_columns` | snake_case (`plant`, `photo`, `user_id`)                        |
+| `database.primary_key_type`                 | ULID internal `id`; opaque UUID `public_id` exposed in the API  |
 
 ### Domain Rules (from Station 07 — Tenancy + Data Architecture)
 
@@ -127,6 +127,7 @@ Implement the plants CRUD surface: `GET /v1/plants` (cursor-paginated list of th
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → Registered in main app/router file — _deferred to `T-077`, not part of this task_
 - [ ] **Frontend page** → N/A (backend-only task)
 - [ ] **Navigation** → N/A (backend-only task)
@@ -137,6 +138,7 @@ Implement the plants CRUD surface: `GET /v1/plants` (cursor-paginated list of th
 
 **Command**: `cd backend && npm test -- plants`
 **Success Criteria**: All Supertest cases in `plants.e2e-spec.ts` and Vitest unit tests in `plants.service.spec.ts` pass, including:
+
 - A logged-in user can list, save, and fetch their own plants
 - `POST /v1/plants/:id/photos` adds to the same plant's history (not a new plant)
 - **Tenancy isolation**: a second user's JWT cannot `GET /v1/plants/:id` for the first user's plant (`404`), cannot see it in `GET /v1/plants`, and cannot `POST` a photo to it (`404`)
