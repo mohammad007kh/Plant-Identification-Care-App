@@ -21,25 +21,25 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:00:56Z by claude
+- Implementation end: 2026-07-26T19:00:56Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (extends `users`/`account` module) |
-| `backend.scheduling` | app_scheduler (delayed purge job) |
-| `code_patterns.data_access` | repository (scoped by `user_id`) |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `domain.soft_delete` | targeted soft-delete via `users.deletion_status` for the 7-day grace |
-| `conventions.files` | kebab-case |
-| `compliance.data_residency` | ir-only (no GDPR scope, but full purge still required) |
+| Key                            | Value                                                                |
+| ------------------------------ | -------------------------------------------------------------------- |
+| `architecture.pattern`         | modular_monolith (extends `users`/`account` module)                  |
+| `backend.scheduling`           | app_scheduler (delayed purge job)                                    |
+| `code_patterns.data_access`    | repository (scoped by `user_id`)                                     |
+| `code_patterns.error_handling` | exceptions → RFC7807                                                 |
+| `domain.soft_delete`           | targeted soft-delete via `users.deletion_status` for the 7-day grace |
+| `conventions.files`            | kebab-case                                                           |
+| `compliance.data_residency`    | ir-only (no GDPR scope, but full purge still required)               |
 
 ### Domain Rules (from Station 14 — Data Lifecycle)
 
@@ -98,6 +98,7 @@ Implement account-deletion request/cancel endpoints, the 7-day-delayed purge job
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → deletion controller registered via T-137
 - [ ] **API endpoint** → consumed by the account UI (T-131)
 

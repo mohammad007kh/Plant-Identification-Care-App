@@ -8,3 +8,4 @@ export * from './plan';
 export * from './chat';
 export * from './admin';
 export * from './misidentification-report';
+export * from './deletion';

@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 
 /**
  * S3-compatible object storage (MinIO in dev, ArvanCloud in prod). Stores blobs
@@ -36,9 +41,18 @@ export class StorageService {
     return key;
   }
 
-  /** Deletes by key (used by the account-purge job, T-130). */
+  /** Returns a raw get command for a key (advanced/streaming callers). */
   async getCommand(key: string): Promise<GetObjectCommand> {
     return new GetObjectCommand({ Bucket: this.bucket, Key: key });
+  }
+
+  /**
+   * Deletes the object at `key` (used by the account-purge job, T-130). S3
+   * `DeleteObject` is idempotent by design — deleting an already-missing key is
+   * not an error — which keeps the purge job itself safely re-runnable.
+   */
+  async delete(key: string): Promise<void> {
+    await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
   }
 
   /** Fetches a stored blob's full bytes (used by the async identify worker, T-020). */
