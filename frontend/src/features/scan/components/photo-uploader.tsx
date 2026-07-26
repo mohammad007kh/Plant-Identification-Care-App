@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { defaultLocale, getMessages } from '@/i18n';
+import { RegistrationWall } from '../../auth';
 
 export interface PhotoUploaderProps {
   /** Called with the selected file only after it passes the image-type check. */
@@ -22,6 +23,12 @@ export interface PhotoUploaderProps {
   isSubmitting: boolean;
   /** Server-side submission error (e.g. 415), already translated to Persian. */
   submitError?: string | null;
+  /**
+   * True when the last submission was rejected by the guest-limit 403
+   * (T-021's server-authoritative guard). Renders the registration wall IN
+   * PLACE OF the uploader/error UI — never alongside it — per FR-007/FR-008.
+   */
+  isGuestLimitExceeded?: boolean;
 }
 
 /**
@@ -48,7 +55,12 @@ const visuallyHiddenInputStyle: CSSProperties = {
  * non-image files client-side (defense in depth; T-014 is the server-side
  * source of truth) before any `onSubmit`/network call.
  */
-export function PhotoUploader({ onSubmit, isSubmitting, submitError }: PhotoUploaderProps) {
+export function PhotoUploader({
+  onSubmit,
+  isSubmitting,
+  submitError,
+  isGuestLimitExceeded = false,
+}: PhotoUploaderProps) {
   const messages = getMessages(defaultLocale).scan.upload;
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -75,6 +87,10 @@ export function PhotoUploader({ onSubmit, isSubmitting, submitError }: PhotoUplo
     },
     [messages.errors.notAnImage],
   );
+
+  if (isGuestLimitExceeded) {
+    return <RegistrationWall />;
+  }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     acceptFile(event.target.files?.[0]);

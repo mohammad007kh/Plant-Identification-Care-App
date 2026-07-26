@@ -185,4 +185,29 @@ describe('ScanFlow', () => {
     // Retry returns the user to the uploader.
     expect(await screen.findByTestId('photo-uploader')).toBeInTheDocument();
   });
+
+  it('renders the registration wall — not a generic error — when the guest-scan limit 403 is returned', async () => {
+    server.use(
+      http.post('*/v1/scans', () =>
+        HttpResponse.json(
+          {
+            type: 'about:blank',
+            title: 'Forbidden',
+            status: 403,
+            detail: 'Guest scan limit reached.',
+            code: 'guest_scan_limit_exceeded',
+          },
+          { status: 403 },
+        ),
+      ),
+    );
+
+    renderScanFlow();
+    await uploadAndSubmit();
+
+    expect(await screen.findByTestId('registration-wall')).toBeInTheDocument();
+    // Replaces the uploader/generic-error UI entirely — not shown alongside it.
+    expect(screen.queryByTestId('photo-dropzone')).not.toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });

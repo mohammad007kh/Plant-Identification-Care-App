@@ -5,11 +5,15 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { defaultLocale, getMessages } from '@/i18n';
+import { ScanApiError } from './api/scans-api';
 import { PhotoUploader } from './components/photo-uploader';
 import { ScanProgress } from './components/scan-progress';
 import { ScanResult } from './components/scan-result';
 import { getScanSubmitErrorMessage, useCreateScan } from './hooks/use-create-scan';
 import { useScanStatus } from './hooks/use-scan-status';
+
+/** T-021's server-authoritative guest-scan-limit guard responds with this status. */
+const GUEST_LIMIT_STATUS = 403;
 
 /**
  * Orchestrates the visitor-facing scan experience: upload → poll → result.
@@ -42,11 +46,17 @@ export function ScanFlow() {
   }, [createScan]);
 
   if (scanId === null) {
+    const isGuestLimitExceeded =
+      createScan.isError &&
+      createScan.error instanceof ScanApiError &&
+      createScan.error.status === GUEST_LIMIT_STATUS;
+
     return (
       <PhotoUploader
         onSubmit={handleSubmit}
         isSubmitting={createScan.isPending}
         submitError={createScan.isError ? getScanSubmitErrorMessage(createScan.error) : null}
+        isGuestLimitExceeded={isGuestLimitExceeded}
       />
     );
   }
