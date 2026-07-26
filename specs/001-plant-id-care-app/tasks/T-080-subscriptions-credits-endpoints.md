@@ -21,26 +21,26 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:31:18Z by claude
+- Implementation end: 2026-07-26T19:31:18Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (new `subscriptions` module; extends existing `credits` module) |
-| `code_patterns.data_access` | repository — no naked queries |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `code_patterns.validation_approach` | schema (Zod) |
-| `database.tenancy_model` | single_tenant — credits balance scoped by `user_id` |
-| `api.pagination` | cursor (not needed here — plans list is small/unpaginated) |
-| `domain.money_representation` | integer minor units (IRR) |
-| `conventions.files` | kebab-case |
+| Key                                 | Value                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| `architecture.pattern`              | modular_monolith (new `subscriptions` module; extends existing `credits` module) |
+| `code_patterns.data_access`         | repository — no naked queries                                                    |
+| `code_patterns.error_handling`      | exceptions → RFC7807                                                             |
+| `code_patterns.validation_approach` | schema (Zod)                                                                     |
+| `database.tenancy_model`            | single_tenant — credits balance scoped by `user_id`                              |
+| `api.pagination`                    | cursor (not needed here — plans list is small/unpaginated)                       |
+| `domain.money_representation`       | integer minor units (IRR)                                                        |
+| `conventions.files`                 | kebab-case                                                                       |
 
 ### Domain Rules (from Station 09 — Billing + Payments, and Station 10 — Metering + Limits)
 
@@ -109,6 +109,7 @@ Implement `GET /v1/subscriptions/plans` (returns the live subscription tiers fro
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → Registered in main app/router file — _deferred to `T-097`, not part of this task_
 - [ ] **Frontend page** → N/A (backend-only task)
 - [ ] **Navigation** → N/A (backend-only task)

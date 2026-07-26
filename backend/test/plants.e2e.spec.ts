@@ -14,14 +14,16 @@ import * as jwt from 'jsonwebtoken';
 import sharp from 'sharp';
 import { eq } from 'drizzle-orm';
 import { db, pool } from '../src/db/client';
-import { appConfig, photo, plant, scan, species, users } from '../src/db/schema';
+import { appConfig, creditTransaction, photo, plant, scan, species, users } from '../src/db/schema';
 import { PlantsModule } from '../src/modules/plants/plants.module';
 import { ComparisonQueue } from '../src/modules/plants/comparison.queue';
 import { StorageService } from '../src/common/uploads/storage.service';
+import { CreditsService } from '../src/credits/credits.service';
 
 const SECRET = process.env.JWT_ACCESS_SECRET as string;
 
 let app: INestApplication;
+let credits: CreditsService;
 let seededSpeciesId: string;
 let pngBuffer: Buffer;
 
@@ -35,6 +37,7 @@ function bearer(userId: string): string {
   return `Bearer ${jwt.sign({ sub: publicId, typ: 'access' }, SECRET, { algorithm: 'HS256' })}`;
 }
 
+/** Creates a user with enough credit for the (T-082-guarded) follow-up-photo route. */
 async function makeUser(): Promise<string> {
   const email = `plants-${Date.now()}-${Math.random().toString(36).slice(2)}@test.local`;
   const [u] = await db
@@ -43,6 +46,7 @@ async function makeUser(): Promise<string> {
     .returning({ id: users.id, publicId: users.publicId });
   createdUserIds.push(u.id);
   publicIdByUser.set(u.id, u.publicId);
+  await credits.grant(u.id, 100, { idempotencyKey: `grant:${u.id}` });
   return u.id;
 }
 
@@ -93,6 +97,16 @@ beforeAll(async () => {
     .insert(appConfig)
     .values({ key: 'allowed_photo_file_types', value: ['image/png', 'image/jpeg'] })
     .onConflictDoUpdate({ target: appConfig.key, set: { value: ['image/png', 'image/jpeg'] } });
+  // Read live by CreditCheckGuard (T-082) on the follow-up-photo route — seeded
+  // idempotently here too, since suite execution order isn't guaranteed (see
+  // scans.e2e.spec.ts precedent).
+  await db
+    .insert(appConfig)
+    .values({ key: 'credit_costs', value: { identify: 1, chat: 1, comparison: 1 } })
+    .onConflictDoUpdate({
+      target: appConfig.key,
+      set: { value: { identify: 1, chat: 1, comparison: 1 } },
+    });
 
   const [sp] = await db
     .insert(species)
@@ -109,6 +123,7 @@ beforeAll(async () => {
 
   app = moduleRef.createNestApplication();
   await app.init();
+  credits = app.get(CreditsService);
 });
 
 afterAll(async () => {
@@ -123,6 +138,7 @@ afterAll(async () => {
     await db.delete(scan).where(eq(scan.id, scanId));
   }
   for (const id of createdUserIds) {
+    await db.delete(creditTransaction).where(eq(creditTransaction.userId, id));
     await db.delete(users).where(eq(users.id, id));
   }
   await db.delete(species).where(eq(species.id, seededSpeciesId));

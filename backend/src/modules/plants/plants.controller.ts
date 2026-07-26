@@ -15,6 +15,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { ScanJob } from 'shared';
 import { savePlantRequestSchema } from 'shared';
+import { CreditCost } from '../../common/decorators/credit-cost.decorator';
+import { CreditCheckGuard } from '../../common/guards/credit-check.guard';
 import { UploadValidationPipe } from '../../common/uploads/upload.pipe';
 import type { NormalizedImage } from '../../common/uploads/upload-validation.service';
 import { CurrentUserId } from '../auth/current-user.decorator';
@@ -56,6 +58,8 @@ export class PlantsController {
 
   @Post(':id/photos')
   @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(CreditCheckGuard)
+  @CreditCost('comparison')
   @UseInterceptors(FileInterceptor('photo'))
   addPhoto(
     @CurrentUserId() userId: string,

@@ -1,8 +1,13 @@
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
+import type { CreditBalance } from 'shared';
 import { db } from '../db/client';
 import { creditTransaction, usageRecord } from '../db/schema';
-import { CreditLedgerRepository, type CreditRelatedType } from './credit-ledger.repository';
+import {
+  CreditLedgerRepository,
+  type CreditRelatedType,
+  type Tx,
+} from './credit-ledger.repository';
 import { isUniqueViolation } from './db-errors';
 
 export type UsageAction = 'identify' | 'comparison' | 'chat';
@@ -42,6 +47,11 @@ export class CreditsService {
     return this.ledger.getBalance(userId);
   }
 
+  /** Balance + current tier (T-080, `GET /v1/credits/balance`). */
+  getBalanceAndTier(userId: string): Promise<CreditBalance> {
+    return this.ledger.getBalanceAndTier(userId);
+  }
+
   debit(
     userId: string,
     amount: number,
@@ -56,6 +66,59 @@ export class CreditsService {
     opts: { idempotencyKey: string; relatedType?: CreditRelatedType; relatedId?: string },
   ) {
     return this.ledger.credit({ userId, amount, type: 'grant', ...opts });
+  }
+
+  /**
+   * Atomic grant + tier change (T-081, verified-payment success path — used by
+   * `PaymentsService` outside of any caller-supplied transaction). The credit
+   * grant and the `user.subscription_tier_id` change happen in ONE DB
+   * transaction; idempotent by `idempotencyKey` (payment_event's own key).
+   */
+  grantAndSetTier(
+    userId: string,
+    opts: { amount: number; tierId: string; idempotencyKey: string },
+  ) {
+    return this.ledger.creditAndSetTier({
+      userId,
+      amount: opts.amount,
+      tierId: opts.tierId,
+      type: 'grant',
+      relatedType: 'subscription',
+      idempotencyKey: opts.idempotencyKey,
+    });
+  }
+
+  /**
+   * Tx-aware variant of `grantAndSetTier`, for callers (PaymentsService) that
+   * must also update OTHER tables (e.g. `payment_event.status`) in the exact
+   * same transaction as the grant + tier change.
+   */
+  grantAndSetTierTx(
+    tx: Tx,
+    userId: string,
+    opts: { amount: number; tierId: string; idempotencyKey: string },
+  ) {
+    return this.ledger.creditAndSetTierTx(tx, {
+      userId,
+      amount: opts.amount,
+      tierId: opts.tierId,
+      type: 'grant',
+      relatedType: 'subscription',
+      idempotencyKey: opts.idempotencyKey,
+    });
+  }
+
+  /**
+   * Monthly credit-reset grant (T-082, FR-019): a ledger `grant` row idempotent
+   * per `(userId, cycleKey)` — NEVER a direct `credit_balance` overwrite, so the
+   * invariant `credit_balance == SUM(ledger)` stays intact. Safe to retry/re-run
+   * for an already-processed cycle (no double grant).
+   */
+  grantMonthlyReset(userId: string, tierAllowance: number, cycleKey: string) {
+    return this.grant(userId, tierAllowance, {
+      idempotencyKey: `monthly_reset:${userId}:${cycleKey}`,
+      relatedType: 'monthly_reset',
+    });
   }
 
   /**

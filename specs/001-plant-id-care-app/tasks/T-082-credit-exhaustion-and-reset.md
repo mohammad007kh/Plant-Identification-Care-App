@@ -21,33 +21,33 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:31:18Z by claude
+- Implementation end: 2026-07-26T19:31:18Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `backend.job_queue` | bull (BullMQ) — reset job runs as a scheduled worker |
-| `backend.job_durability_semantics` | at_least_once — the reset job's writes must be idempotent |
-| `infrastructure.scheduling` | app_scheduler |
-| `code_patterns.error_handling` | exceptions → RFC7807 (`402 Payment Required` uses the same envelope) |
-| `api.error_format` | rfc7807 |
-| `database.tenancy_model` | single_tenant — every ledger write scoped by `user_id` |
+| Key                                | Value                                                                |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| `backend.job_queue`                | bull (BullMQ) — reset job runs as a scheduled worker                 |
+| `backend.job_durability_semantics` | at_least_once — the reset job's writes must be idempotent            |
+| `infrastructure.scheduling`        | app_scheduler                                                        |
+| `code_patterns.error_handling`     | exceptions → RFC7807 (`402 Payment Required` uses the same envelope) |
+| `api.error_format`                 | rfc7807                                                              |
+| `database.tenancy_model`           | single_tenant — every ledger write scoped by `user_id`               |
 
 ### Domain Rules (from Station 10 — Usage Metering + Limits)
 
 - **Enforce server-side, before expensive work** (Station 10 §10.6.1): the credit-exhaustion guard MUST run before any AI action executes — it is a guard/interceptor applied to AI-metered endpoints, not a UI-only check.
 - **Standard error response** (Station 10 §10.6.5, adapted to this project's RFC7807 convention instead of a custom `error.code` envelope): on insufficient credit, respond `402 Payment Required` as `application/problem+json`, and the `detail`/extension fields MUST carry the live plans payload (the exact same data `GET /v1/subscriptions/plans` from `T-080` returns) so the frontend upgrade modal (`T-083`) can render immediately without a second round trip.
-- **Atomic increment / conditional check** (Station 10 §10.8.2, Pattern A): the guard must check `current balance - cost >= 0` and only then allow the action to proceed to its debit step; this task owns the *check-and-block* (402) path — the actual debit transaction against the ledger is the action endpoint's own responsibility (already true for `scans`/`chat`/`comparison` endpoints built elsewhere), this task's guard sits in front of them.
+- **Atomic increment / conditional check** (Station 10 §10.8.2, Pattern A): the guard must check `current balance - cost >= 0` and only then allow the action to proceed to its debit step; this task owns the _check-and-block_ (402) path — the actual debit transaction against the ledger is the action endpoint's own responsibility (already true for `scans`/`chat`/`comparison` endpoints built elsewhere), this task's guard sits in front of them.
 - **Monthly reset = ledger grant, not a balance overwrite** (`data-model.md`): the reset job writes a new `credit_transaction(type=grant, related_type=monthly_reset)` row per user for their tier's `monthly_credit_allowance` — it never directly sets `user.credit_balance` (that denormalized value is derived from the ledger sum, so writing the grant transaction and recomputing/caching the sum keeps the invariant `credit_balance == SUM(ledger)` intact).
 - **Idempotent reset** (`data-model.md`, `job_durability_semantics: at_least_once`): the reset job must not double-grant if it is retried or re-triggered for the same billing cycle for the same user — use a deterministic `idempotency_key` (e.g. `monthly_reset:{userId}:{cycleYearMonth}`) on the `credit_transaction` unique constraint.
-- **Admin allowance changes apply on next cycle, not retroactively** (FR-019, Station 10 §10.7.3): the reset job reads the tier's *current* `monthly_credit_allowance` at the moment it runs for that user's cycle — it does not touch already-elapsed cycles. New subscribers get the current allowance immediately upon subscribing (handled by `T-081`'s grant-on-verify path, not this job).
+- **Admin allowance changes apply on next cycle, not retroactively** (FR-019, Station 10 §10.7.3): the reset job reads the tier's _current_ `monthly_credit_allowance` at the moment it runs for that user's cycle — it does not touch already-elapsed cycles. New subscribers get the current allowance immediately upon subscribing (handled by `T-081`'s grant-on-verify path, not this job).
 
 ### API Context
 
@@ -74,7 +74,7 @@ Persian/RTL web app for AI plant identification + care with a unified AI-credit 
 - [ ] Insufficient-credit path never partially performs the AI action
 - [ ] Monthly reset writes ledger `grant` rows, never overwrites `credit_balance` directly
 - [ ] Reset job is idempotent per `(userId, billing cycle)` — safe to retry/re-run
-- [ ] Reset job reads the tier's *current* admin-configured allowance at run time
+- [ ] Reset job reads the tier's _current_ admin-configured allowance at run time
 
 ---
 
@@ -110,6 +110,7 @@ Build a shared guard/interceptor that, when a user has insufficient credit for a
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [x] **Backend route** → Registered in main app/router file — _the guard is applied directly to `plants.controller.ts` in this task (see Files to Update); full cross-module registration of the `payments`/`subscriptions`/`credits` controllers happens in `T-097`_
 - [ ] **Frontend page** → N/A (backend-only task)
 - [ ] **Navigation** → N/A (backend-only task)

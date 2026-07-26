@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 20    |
-| Verified    | 20    |
-| Coverage    | 43%   |
+| Completed   | 25    |
+| Verified    | 25    |
+| Coverage    | 53%   |
 
 ## 📚 Knowledge Resources
 
@@ -87,9 +87,9 @@ _Need guidance on specific rules?_
 
 | ID                                                        | Story | Description                                     | Status  | Verification                                                |
 | --------------------------------------------------------- | ----- | ----------------------------------------------- | ------- | ----------------------------------------------------------- |
-| [T-080](./tasks/T-080-subscriptions-credits-endpoints.md) | US4   | Plans (live from DB) + credit balance endpoints | 🔴 Todo | `cd backend && npm test -- subscriptions credits-balance`   |
-| [T-081](./tasks/T-081-payments-port-zarinpal-mock.md)     | US4   | PaymentPort + Zarinpal-mock (checkout + verify) | 🔴 Todo | `cd backend && npm test -- payments`                        |
-| [T-082](./tasks/T-082-credit-exhaustion-and-reset.md)     | US4   | 402 credit-exhaustion guard + monthly reset job | 🔴 Todo | `cd backend && npm test -- credit-exhaustion monthly-reset` |
+| [T-080](./tasks/T-080-subscriptions-credits-endpoints.md) | US4   | Plans (live from DB) + credit balance endpoints | ✅ Done | `cd backend && npm test -- subscriptions credits-balance`   |
+| [T-081](./tasks/T-081-payments-port-zarinpal-mock.md)     | US4   | PaymentPort + Zarinpal-mock (checkout + verify) | ✅ Done | `cd backend && npm test -- payments`                        |
+| [T-082](./tasks/T-082-credit-exhaustion-and-reset.md)     | US4   | 402 credit-exhaustion guard + monthly reset job | ✅ Done | `cd backend && npm test -- credit-exhaustion monthly-reset` |
 | [T-083](./tasks/T-083-frontend-billing.md)                | US4   | Frontend upgrade modal + checkout + balance     | 🔴 Todo | `cd frontend && npm test -- billing`                        |
 | [T-097](./tasks/T-097-wire-us4.md)                        | US4   | Wire US4                                        | 🔴 Todo | `curl .../v1/subscriptions/plans`                           |
 
@@ -97,7 +97,7 @@ _Need guidance on specific rules?_
 
 | ID                                             | Story | Description                              | Status  | Verification                            |
 | ---------------------------------------------- | ----- | ---------------------------------------- | ------- | --------------------------------------- |
-| [T-100](./tasks/T-100-comparison-endpoints.md) | US5   | Comparison worker + health-trend verdict | 🔴 Todo | `cd backend && npm test -- comparison`  |
+| [T-100](./tasks/T-100-comparison-endpoints.md) | US5   | Comparison worker + health-trend verdict | ✅ Done | `cd backend && npm test -- comparison`  |
 | [T-101](./tasks/T-101-frontend-comparison.md)  | US5   | Frontend follow-up upload + trend view   | 🔴 Todo | `cd frontend && npm test -- comparison` |
 | [T-107](./tasks/T-107-wire-us5.md)             | US5   | Wire US5                                 | 🔴 Todo | `npm run test:e2e -- --grep comparison` |
 
@@ -105,7 +105,7 @@ _Need guidance on specific rules?_
 
 | ID                                       | Story | Description                                      | Status  | Verification                      |
 | ---------------------------------------- | ----- | ------------------------------------------------ | ------- | --------------------------------- |
-| [T-110](./tasks/T-110-chat-endpoints.md) | US6   | Chat endpoints + worker (10-free cap, ≤2 photos) | 🔴 Todo | `cd backend && npm test -- chat`  |
+| [T-110](./tasks/T-110-chat-endpoints.md) | US6   | Chat endpoints + worker (10-free cap, ≤2 photos) | ✅ Done | `cd backend && npm test -- chat`  |
 | [T-111](./tasks/T-111-frontend-chat.md)  | US6   | Frontend chat UI (paywall on 402)                | 🔴 Todo | `cd frontend && npm test -- chat` |
 | [T-117](./tasks/T-117-wire-us6.md)       | US6   | Wire US6                                         | 🔴 Todo | `curl .../v1/plants/:id/chat`     |
 

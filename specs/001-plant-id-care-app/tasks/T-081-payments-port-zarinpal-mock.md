@@ -21,26 +21,26 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-26T19:31:18Z by claude
+- Implementation end: 2026-07-26T19:31:18Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `payment.provider` | none (real) / `provider_custom: zarinpal_mock_v1` |
-| `payment.abstraction_pattern` | port_adapter — `PaymentPort` interface + `ZarinpalMockAdapter` implementation |
-| `payment.event_persistence` | ledger (`payment_event` table) |
-| `payment.provider_planned` | `[zarinpal_live, stripe]` — the port MUST NOT bake in Zarinpal-mock-only assumptions that would block adding a real adapter later |
+| Key                                                            | Value                                                                                                                                          |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `payment.provider`                                             | none (real) / `provider_custom: zarinpal_mock_v1`                                                                                              |
+| `payment.abstraction_pattern`                                  | port_adapter — `PaymentPort` interface + `ZarinpalMockAdapter` implementation                                                                  |
+| `payment.event_persistence`                                    | ledger (`payment_event` table)                                                                                                                 |
+| `payment.provider_planned`                                     | `[zarinpal_live, stripe]` — the port MUST NOT bake in Zarinpal-mock-only assumptions that would block adding a real adapter later              |
 | `integrations.webhook_ingress_contract.signature_verification` | required — for Zarinpal this means: NEVER grant credit off the redirect alone, always re-verify server-to-server via the provider's Verify API |
-| `integrations.webhook_ingress_contract.idempotency` | event_id_dedupe (here: `provider_ref` / RefID dedupe) |
-| `code_patterns.error_handling` | exceptions → RFC7807 |
-| `domain.money_representation` | integer minor units (IRR) |
+| `integrations.webhook_ingress_contract.idempotency`            | event_id_dedupe (here: `provider_ref` / RefID dedupe)                                                                                          |
+| `code_patterns.error_handling`                                 | exceptions → RFC7807                                                                                                                           |
+| `domain.money_representation`                                  | integer minor units (IRR)                                                                                                                      |
 
 ### Domain Rules (from Station 09 — Billing + Payments + Webhooks)
 
@@ -113,6 +113,7 @@ Implement a `PaymentPort` interface and a `ZarinpalMockAdapter`; `POST /v1/payme
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → Registered in main app/router file — _deferred to `T-097`, not part of this task_
 - [ ] **Frontend page** → N/A (backend-only task)
 - [ ] **Navigation** → N/A (backend-only task)

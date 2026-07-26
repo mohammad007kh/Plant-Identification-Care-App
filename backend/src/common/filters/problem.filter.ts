@@ -1,11 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
 /**
@@ -18,12 +12,15 @@ export interface ProblemDetails {
   status: number;
   detail: string;
   requestId: string;
+  /** RFC7807 extension member: present only on 402 insufficient-credit responses (T-082). */
+  plans?: unknown;
 }
 
 interface ExceptionInfo {
   status: number;
   title: string;
   detail: string;
+  extensions: Record<string, unknown>;
 }
 
 /**
@@ -39,7 +36,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const requestId = this.resolveRequestId(request);
-    const { status, title, detail } = this.resolveExceptionInfo(exception);
+    const { status, title, detail, extensions } = this.resolveExceptionInfo(exception);
 
     const problem: ProblemDetails = {
       type: 'about:blank',
@@ -47,12 +44,10 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       status,
       detail,
       requestId,
+      ...extensions,
     };
 
-    response
-      .status(status)
-      .setHeader('Content-Type', 'application/problem+json')
-      .json(problem);
+    response.status(status).setHeader('Content-Type', 'application/problem+json').json(problem);
   }
 
   private resolveRequestId(request: Request): string {
@@ -74,18 +69,33 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       const status = exception.getStatus();
       const body = exception.getResponse();
       const detail = this.extractDetail(body) ?? exception.message;
+      const extensions = this.extractExtensions(body);
 
-      return { status, title: exception.name, detail };
+      return { status, title: exception.name, detail, extensions };
     }
 
-    const detail =
-      exception instanceof Error ? exception.message : 'Internal server error';
+    const detail = exception instanceof Error ? exception.message : 'Internal server error';
 
     return {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       title: 'Internal Server Error',
       detail,
+      extensions: {},
     };
+  }
+
+  /**
+   * RFC7807 extension members: known non-standard keys a custom exception body
+   * may carry (currently just `plans`, T-082's 402 upgrade-modal payload) are
+   * passed through into the response. Everything else on the body is ignored,
+   * so this never changes the shape of any pre-existing exception response.
+   */
+  private extractExtensions(body: string | object): Record<string, unknown> {
+    if (typeof body !== 'object' || body === null) return {};
+    if ('plans' in body) {
+      return { plans: (body as { plans: unknown }).plans };
+    }
+    return {};
   }
 
   private extractDetail(body: string | object): string | undefined {
