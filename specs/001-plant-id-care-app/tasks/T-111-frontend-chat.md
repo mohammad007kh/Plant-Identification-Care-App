@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-27T12:42:13Z by claude
+- Implementation end: 2026-07-27T12:42:13Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | Next.js App Router (React 18) |
-| `frontend.ui_library` | MUI + Emotion (RTL) |
-| `frontend.data_fetching` | TanStack Query |
+| Key                         | Value                            |
+| --------------------------- | -------------------------------- |
+| `frontend.framework`        | Next.js App Router (React 18)    |
+| `frontend.ui_library`       | MUI + Emotion (RTL)              |
+| `frontend.data_fetching`    | TanStack Query                   |
 | `frontend.state_management` | Zustand (chat draft/local state) |
-| `conventions.files` | kebab-case |
-| `ui_specs.accessibility` | WCAG-AA |
+| `conventions.files`         | kebab-case                       |
+| `ui_specs.accessibility`    | WCAG-AA                          |
 
 ### Domain Rules (from Station 05 — User Flows)
 
@@ -92,6 +92,7 @@ Build the plant-scoped chat interface with context-photo attachment, message his
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Component** → chat panel rendered by plant detail
 - [ ] **API endpoint** → hook connected to chat send + history
 - [ ] **Navigation** → chat entry point present on the plant detail view
