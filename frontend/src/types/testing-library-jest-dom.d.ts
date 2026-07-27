@@ -19,5 +19,7 @@ declare module 'vitest' {
     toBeInTheDocument(): T;
     toBeDisabled(): T;
     toHaveTextContent(text: string | RegExp): T;
+    toBeChecked(): T;
+    toHaveAttribute(name: string, value?: string | RegExp): T;
   }
 }

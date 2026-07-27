@@ -229,5 +229,214 @@
       "cancellingButton": "در حال لغو درخواست...",
       "errorMessage": "لغو درخواست حذف حساب با خطا مواجه شد. لطفاً دوباره تلاش کنید."
     }
+  },
+  "notificationPrefs": {
+    "sectionTitle": "یادآوری‌های مراقبت از گیاه",
+    "sectionDescription": "کانال‌هایی که می‌خواهید یادآوری‌های مراقبت از گیاهان خود را از طریق آن‌ها دریافت کنید، انتخاب کنید.",
+    "loadingLabel": "در حال بارگذاری تنظیمات اعلان...",
+    "loadErrorMessage": "دریافت تنظیمات اعلان با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+    "updateErrorMessage": "ذخیره تغییرات با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+    "emailToggleLabel": "یادآوری از طریق ایمیل",
+    "pushToggleLabel": "یادآوری از طریق اعلان مرورگر",
+    "pushUnsupportedMessage": "اعلان‌های مرورگر در این دستگاه یا مرورگر پشتیبانی نمی‌شود. یادآوری‌های ایمیلی همچنان فعال هستند.",
+    "enablePushButton": "فعال‌سازی اعلان‌های مرورگر",
+    "enablingPushButton": "در حال فعال‌سازی...",
+    "pushSubscribedMessage": "اعلان‌های مرورگر با موفقیت فعال شد.",
+    "pushPermissionDeniedMessage": "اجازه نمایش اعلان داده نشد. می‌توانید این مجوز را از تنظیمات مرورگر خود تغییر دهید. یادآوری‌های ایمیلی همچنان فعال هستند.",
+    "pushErrorMessage": "فعال‌سازی اعلان‌های مرورگر با خطا مواجه شد. یادآوری‌های ایمیلی همچنان فعال هستند."
+  },
+  "admin": {
+    "layout": {
+      "heading": "پنل مدیریت",
+      "redirectingLabel": "در حال انتقال...",
+      "tabsAriaLabel": "بخش‌های پنل مدیریت",
+      "tabs": {
+        "catalog": "دایرکتوری گیاهان",
+        "config": "تنظیمات سامانه",
+        "users": "کاربران",
+        "reports": "گزارش‌های تشخیص نادرست"
+      }
+    },
+    "catalog": {
+      "heading": "دایرکتوری گیاهان",
+      "createHeading": "افزودن گونه جدید",
+      "createSuccessMessage": "گونه جدید با موفقیت ثبت شد.",
+      "loadingLabel": "در حال بارگذاری فهرست گونه‌ها...",
+      "errorMessage": "دریافت فهرست گونه‌ها با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "emptyState": "هنوز هیچ گونه‌ای در دایرکتوری ثبت نشده است.",
+      "editButton": "ویرایش",
+      "form": {
+        "scientificNameLabel": "نام علمی",
+        "commonNameLabel": "نام فارسی",
+        "careGuideHeading": "راهنمای نگهداری",
+        "careGuideFields": {
+          "watering": "آبیاری",
+          "light": "نور",
+          "soil": "خاک",
+          "humidity": "رطوبت",
+          "temperature": "دما",
+          "notes": "یادداشت‌ها"
+        },
+        "createButton": "افزودن گونه",
+        "creatingButton": "در حال افزودن...",
+        "saveButton": "ذخیره تغییرات",
+        "savingButton": "در حال ذخیره...",
+        "cancelButton": "انصراف",
+        "errors": {
+          "scientificNameRequired": "وارد کردن نام علمی الزامی است.",
+          "submitFailed": "ثبت تغییرات با خطا مواجه شد. لطفاً دوباره تلاش کنید."
+        }
+      }
+    },
+    "config": {
+      "heading": "تنظیمات عملیاتی سامانه",
+      "loadingLabel": "در حال بارگذاری تنظیمات...",
+      "errorMessage": "دریافت تنظیمات با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "saveButton": "ذخیره تنظیمات",
+      "savingButton": "در حال ذخیره...",
+      "submitErrorMessage": "ذخیره تنظیمات با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "submitSuccessMessage": "تنظیمات با موفقیت ذخیره شد.",
+      "photoTypes": {
+        "heading": "فرمت‌های مجاز عکس",
+        "fieldLabel": "فرمت‌های مجاز (جدا شده با کاما)",
+        "fieldHint": "مثال: image/jpeg, image/png",
+        "errors": {
+          "required": "وارد کردن حداقل یک فرمت مجاز الزامی است."
+        }
+      },
+      "creditCosts": {
+        "heading": "هزینه اعتبار هر عملیات",
+        "identifyLabel": "شناسایی گیاه",
+        "chatLabel": "گفتگو",
+        "comparisonLabel": "مقایسه روند سلامت"
+      },
+      "notification": {
+        "heading": "الگوهای اعلان",
+        "wateringHeading": "یادآوری آبیاری",
+        "customHeading": "اعلان سفارشی",
+        "subjectLabel": "موضوع",
+        "bodyLabel": "متن پیام",
+        "sendHourLabel": "ساعت ارسال (به وقت تهران)",
+        "sendHourHint": "عددی بین ۰ تا ۲۳"
+      },
+      "tiers": {
+        "heading": "اعتبار ماهانه هر سطح اشتراک",
+        "loadingLabel": "در حال بارگذاری سطوح اشتراک...",
+        "errorMessage": "دریافت سطوح اشتراک با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+        "retryButton": "تلاش دوباره",
+        "allowanceLabel": "اعتبار ماهانه",
+        "priceLabel": "قیمت (کوچک‌ترین واحد پول)",
+        "activeLabel": "این سطح فعال است",
+        "saveButton": "ذخیره",
+        "savingButton": "در حال ذخیره...",
+        "submitErrorMessage": "ذخیره این سطح با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+        "submitSuccessMessage": "سطح اشتراک با موفقیت به‌روزرسانی شد.",
+        "tierLabels": {
+          "free": "رایگان",
+          "pro": "حرفه‌ای",
+          "max": "بی‌نهایت"
+        }
+      }
+    },
+    "users": {
+      "heading": "مدیریت کاربران",
+      "searchLabel": "جستجو بر اساس ایمیل یا شناسه کاربر",
+      "searchButton": "جستجو",
+      "loadingLabel": "در حال بارگذاری کاربران...",
+      "errorMessage": "دریافت فهرست کاربران با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "emptyState": "کاربری با این مشخصات یافت نشد.",
+      "creditsSuffix": "اعتبار",
+      "selectButton": "مشاهده و اقدام",
+      "loadMoreButton": "نمایش موارد بیشتر",
+      "loadingMoreButton": "در حال بارگذاری...",
+      "closeButton": "بستن",
+      "currentTierLabel": "سطح اشتراک فعلی",
+      "creditBalanceLabel": "موجودی اعتبار",
+      "tierLabels": {
+        "free": "رایگان",
+        "pro": "حرفه‌ای",
+        "max": "بی‌نهایت"
+      },
+      "actionForm": {
+        "tierLabel": "تغییر سطح اشتراک",
+        "tierNoChangeOption": "بدون تغییر",
+        "creditAdjustmentLabel": "تعدیل اعتبار",
+        "creditAdjustmentHint": "عددی مثبت برای افزودن یا منفی برای کسر اعتبار وارد کنید.",
+        "reasonLabel": "دلیل این اقدام (الزامی)",
+        "submitButton": "ثبت اقدام",
+        "successMessage": "اقدام با موفقیت ثبت شد.",
+        "errors": {
+          "reasonRequired": "وارد کردن دلیل این اقدام الزامی است.",
+          "noChangeSelected": "لطفاً حداقل یکی از تغییر سطح اشتراک یا تعدیل اعتبار را مشخص کنید.",
+          "submitFailed": "ثبت اقدام با خطا مواجه شد. لطفاً دوباره تلاش کنید."
+        }
+      },
+      "confirmDialog": {
+        "title": "آیا از انجام این اقدام مطمئن هستید؟",
+        "body": "این یک اقدام مدیریتی روی حساب کاربر است و در سابقه سامانه ثبت می‌شود. لطفاً پیش از تأیید، تغییرات را بررسی کنید.",
+        "cancelButton": "انصراف",
+        "confirmButton": "بله، اقدام انجام شود",
+        "confirmingButton": "در حال ثبت..."
+      }
+    },
+    "reports": {
+      "heading": "گزارش‌های تشخیص نادرست",
+      "loadingLabel": "در حال بارگذاری گزارش‌ها...",
+      "errorMessage": "دریافت گزارش‌ها با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "emptyState": "هیچ گزارشی ثبت نشده است.",
+      "loadMoreButton": "نمایش موارد بیشتر",
+      "loadingMoreButton": "در حال بارگذاری...",
+      "scanIdLabel": "شناسه شناسایی",
+      "reporterLabel": "گزارش‌دهنده",
+      "guestReporterLabel": "گزارش‌دهنده: کاربر مهمان",
+      "statusLabels": {
+        "open": "باز",
+        "reviewed": "بررسی‌شده"
+      },
+      "photoAltText": "عکس گزارش‌شده",
+      "noPhotoLabel": "عکسی برای این گزارش در دسترس نیست.",
+      "aiResultHeading": "نتیجه هوش مصنوعی"
+    }
+  },
+  "chat": {
+    "entry": {
+      "openButton": "گفتگو درباره این گیاه",
+      "closeButton": "بستن گفتگو"
+    },
+    "panel": {
+      "heading": "گفتگو با دستیار هوش مصنوعی"
+    },
+    "history": {
+      "loadingLabel": "در حال بارگذاری گفتگو...",
+      "errorMessage": "دریافت تاریخچه گفتگو با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+      "retryButton": "تلاش دوباره",
+      "emptyState": "هنوز گفتگویی درباره این گیاه ثبت نشده است. سوال خود را بنویسید.",
+      "loadOlderButton": "نمایش پیام‌های قدیمی‌تر",
+      "loadingOlderButton": "در حال بارگذاری..."
+    },
+    "message": {
+      "userLabel": "شما",
+      "assistantLabel": "دستیار هوش مصنوعی"
+    },
+    "composer": {
+      "placeholder": "پیام خود را درباره این گیاه بنویسید...",
+      "sendButton": "ارسال",
+      "sendingButton": "در حال ارسال...",
+      "retryButton": "تلاش دوباره"
+    },
+    "contextPhotos": {
+      "heading": "عکس‌های زمینه (اختیاری، حداکثر ۲ عکس)",
+      "photoLabelPrefix": "عکس",
+      "limitMessage": "حداکثر ۲ عکس را می‌توانید به‌عنوان زمینه انتخاب کنید."
+    },
+    "reply": {
+      "waitingLabel": "دستیار در حال تایپ است...",
+      "timeoutMessage": "دریافت پاسخ بیشتر از حد معمول طول کشید.",
+      "checkAgainButton": "بررسی دوباره"
+    }
   }
 }

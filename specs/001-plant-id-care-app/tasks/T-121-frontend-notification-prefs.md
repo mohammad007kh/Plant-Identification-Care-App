@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-27T12:42:13Z by claude
+- Implementation end: 2026-07-27T12:42:13Z by claude
+- verify-depth: light
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          light
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | Next.js App Router (React 18) |
-| `frontend.ui_library` | MUI + Emotion (RTL) |
-| `frontend.data_fetching` | TanStack Query |
-| `frontend.form_library` | React Hook Form + Zod |
-| `conventions.files` | kebab-case |
-| `ui_specs.accessibility` | WCAG-AA |
+| Key                      | Value                         |
+| ------------------------ | ----------------------------- |
+| `frontend.framework`     | Next.js App Router (React 18) |
+| `frontend.ui_library`    | MUI + Emotion (RTL)           |
+| `frontend.data_fetching` | TanStack Query                |
+| `frontend.form_library`  | React Hook Form + Zod         |
+| `conventions.files`      | kebab-case                    |
+| `ui_specs.accessibility` | WCAG-AA                       |
 
 ### Domain Rules (from Station 05 — User Flows)
 
@@ -90,6 +90,7 @@ Build the account settings UI for enabling/disabling email and push care reminde
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **API endpoint** → hook connected to prefs + push-subscription endpoints
 - [ ] **Component** → mounted on the settings page (route added in T-127)
 
