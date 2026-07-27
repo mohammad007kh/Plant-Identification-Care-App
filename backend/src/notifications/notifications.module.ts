@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AppConfigModule } from '../common/config/app-config.module';
 import { AuthModule } from '../modules/auth/auth.module';
 import { UsersModule } from '../modules/users/users.module';
 import { MAIL_PORT } from './mail.port';
@@ -18,7 +19,7 @@ import { SmtpMailAdapter } from './smtp-mail.adapter';
  * here — T-127 registers it (mirrors DeletionModule's wiring convention).
  */
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, AppConfigModule],
   controllers: [NotificationsController],
   providers: [
     NotificationsService,
