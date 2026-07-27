@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-27T12:42:13Z by claude
+- Implementation end: 2026-07-27T12:42:13Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `frontend.framework` | Next.js App Router (React 18) |
-| `frontend.ui_library` | MUI + Emotion (RTL) |
-| `frontend.data_fetching` | TanStack Query |
-| `frontend.form_library` | React Hook Form + Zod |
-| `conventions.files` | kebab-case |
-| `ui_specs.accessibility` | WCAG-AA |
+| Key                      | Value                         |
+| ------------------------ | ----------------------------- |
+| `frontend.framework`     | Next.js App Router (React 18) |
+| `frontend.ui_library`    | MUI + Emotion (RTL)           |
+| `frontend.data_fetching` | TanStack Query                |
+| `frontend.form_library`  | React Hook Form + Zod         |
+| `conventions.files`      | kebab-case                    |
+| `ui_specs.accessibility` | WCAG-AA                       |
 
 ### Domain Rules (from Station 17 — Admin Tooling, Station 08 — Auth/RBAC)
 
@@ -94,6 +94,7 @@ Build the admin-only panel UI covering catalog editing, live config, user manage
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Frontend page** → `/admin/*` added to app router (T-147)
 - [ ] **Navigation** → admin entry shown only to admins
 - [ ] **API endpoint** → hooks connected to all admin endpoints

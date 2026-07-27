@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 33    |
-| Verified    | 33    |
-| Coverage    | 70%   |
+| Completed   | 36    |
+| Verified    | 36    |
+| Coverage    | 77%   |
 
 ## 📚 Knowledge Resources
 
@@ -106,7 +106,7 @@ _Need guidance on specific rules?_
 | ID                                       | Story | Description                                      | Status  | Verification                      |
 | ---------------------------------------- | ----- | ------------------------------------------------ | ------- | --------------------------------- |
 | [T-110](./tasks/T-110-chat-endpoints.md) | US6   | Chat endpoints + worker (10-free cap, ≤2 photos) | ✅ Done | `cd backend && npm test -- chat`  |
-| [T-111](./tasks/T-111-frontend-chat.md)  | US6   | Frontend chat UI (paywall on 402)                | 🔴 Todo | `cd frontend && npm test -- chat` |
+| [T-111](./tasks/T-111-frontend-chat.md)  | US6   | Frontend chat UI (paywall on 402)                | ✅ Done | `cd frontend && npm test -- chat` |
 | [T-117](./tasks/T-117-wire-us6.md)       | US6   | Wire US6                                         | 🔴 Todo | `curl .../v1/plants/:id/chat`     |
 
 ### US7 — Care reminders (P3) (T-120–T-127)
@@ -114,7 +114,7 @@ _Need guidance on specific rules?_
 | ID                                                    | Story | Description                                       | Status  | Verification                                       |
 | ----------------------------------------------------- | ----- | ------------------------------------------------- | ------- | -------------------------------------------------- |
 | [T-120](./tasks/T-120-notifications-scheduler.md)     | US7   | Reminder scheduler + email(MailPort)/push + prefs | ✅ Done | `cd backend && npm test -- notifications reminder` |
-| [T-121](./tasks/T-121-frontend-notification-prefs.md) | US7   | Frontend notification settings                    | 🔴 Todo | `cd frontend && npm test -- notification-settings` |
+| [T-121](./tasks/T-121-frontend-notification-prefs.md) | US7   | Frontend notification settings                    | ✅ Done | `cd frontend && npm test -- notification-settings` |
 | [T-127](./tasks/T-127-wire-us7.md)                    | US7   | Wire US7 (scheduler/worker, settings route)       | 🔴 Todo | `curl .../v1/account/notifications`                |
 
 ### US8 — Account deletion (P3) (T-130–T-137)
@@ -131,7 +131,7 @@ _Need guidance on specific rules?_
 | ---------------------------------------------- | ----- | ------------------------------------------- | ------- | ------------------------------------------------------------------ |
 | [T-140](./tasks/T-140-admin-catalog-config.md) | US9   | Admin catalog + live config (behind RBAC)   | ✅ Done | `cd backend && npm test -- admin-catalog admin-config admin-guard` |
 | [T-141](./tasks/T-141-admin-users-reports.md)  | US9   | Admin user management + report review       | ✅ Done | `cd backend && npm test -- admin-users admin-reports`              |
-| [T-142](./tasks/T-142-admin-frontend.md)       | US9   | Admin panel frontend                        | 🔴 Todo | `cd frontend && npm test -- admin`                                 |
+| [T-142](./tasks/T-142-admin-frontend.md)       | US9   | Admin panel frontend                        | ✅ Done | `cd frontend && npm test -- admin`                                 |
 | [T-147](./tasks/T-147-wire-us9.md)             | US9   | Wire US9 (module + guard, /admin route/nav) | 🔴 Todo | `curl .../v1/admin/species`                                        |
 
 ### Cross-cutting (T-160–T-161)
