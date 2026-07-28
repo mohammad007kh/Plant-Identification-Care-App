@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith — NestJS `AppModule` imports each feature module |
-| `frontend.framework` | nextjs (App Router, file-based routing) |
-| `frontend.state_management` | zustand |
-| `frontend.data_fetching` | tanstack-query |
-| `conventions.files` | kebab-case |
-| `api.versioning` | URL (`/v1`) |
+| Key                         | Value                                                             |
+| --------------------------- | ----------------------------------------------------------------- |
+| `architecture.pattern`      | modular_monolith — NestJS `AppModule` imports each feature module |
+| `frontend.framework`        | nextjs (App Router, file-based routing)                           |
+| `frontend.state_management` | zustand                                                           |
+| `frontend.data_fetching`    | tanstack-query                                                    |
+| `conventions.files`         | kebab-case                                                        |
+| `api.versioning`            | URL (`/v1`)                                                       |
 
 ### Domain Rules
 
@@ -98,6 +98,7 @@ Register the plants controller in the backend `AppModule`; add the `/plants` (li
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [x] **Backend route** → Registered in main app/router file (`backend/src/app.module.ts` imports `PlantsModule`)
 - [x] **Frontend page** → Added to app router configuration (`/plants`, `/plants/[id]`)
 - [x] **Navigation** → Link added to sidebar/nav component

@@ -24,9 +24,9 @@
 | Metric      | Value |
 | ----------- | ----- |
 | Total Tasks | 47    |
-| Completed   | 36    |
-| Verified    | 36    |
-| Coverage    | 77%   |
+| Completed   | 45    |
+| Verified    | 45    |
+| Coverage    | 96%   |
 
 ## 📚 Knowledge Resources
 
@@ -64,7 +64,7 @@ _Need guidance on specific rules?_
 | [T-021](./tasks/T-021-guest-scan-limit.md)                  | US1   | Guest 2-scan limit (cookie + IP backstop + free pool)    | ✅ Done | `cd backend && npm test -- guest-scan-limit`          |
 | [T-022](./tasks/T-022-misidentification-report-endpoint.md) | US1   | Misidentification report endpoint                        | ✅ Done | `cd backend && npm test -- misidentification-reports` |
 | [T-023](./tasks/T-023-frontend-scan-flow.md)                | US1   | Frontend scan flow (upload → result / low-confidence)    | ✅ Done | `cd frontend && npm test -- scan`                     |
-| [T-037](./tasks/T-037-wire-us1.md)                          | US1   | Wire US1 (routes, nav, api hooks)                        | 🔴 Todo | `curl .../v1/health`                                  |
+| [T-037](./tasks/T-037-wire-us1.md)                          | US1   | Wire US1 (routes, nav, api hooks)                        | ✅ Done | `curl .../v1/health`                                  |
 
 ### US2 — Register after guest limit + keep prior scans (P2) (T-040–T-057)
 
@@ -73,7 +73,7 @@ _Need guidance on specific rules?_
 | [T-040](./tasks/T-040-auth-jwt-endpoints.md)  | US2   | Auth JWT endpoints (register/login/refresh/logout) | ✅ Done | `cd backend && npm test -- auth`        |
 | [T-041](./tasks/T-041-guest-account-merge.md) | US2   | Guest→account scan merge (single tx)               | ✅ Done | `cd backend && npm test -- guest-merge` |
 | [T-043](./tasks/T-043-frontend-auth.md)       | US2   | Frontend auth + registration wall + carryover      | ✅ Done | `cd frontend && npm test -- auth`       |
-| [T-057](./tasks/T-057-wire-us2.md)            | US2   | Wire US2 (auth routes/guard, auth store, nav)      | 🔴 Todo | `curl .../v1/auth/login`                |
+| [T-057](./tasks/T-057-wire-us2.md)            | US2   | Wire US2 (auth routes/guard, auth store, nav)      | ✅ Done | `curl .../v1/auth/login`                |
 
 ### US3 — Save plants & photo history (P2) (T-060–T-077)
 
@@ -81,7 +81,7 @@ _Need guidance on specific rules?_
 | ------------------------------------------ | ----- | -------------------------------------------- | ------- | ----------------------------------- |
 | [T-060](./tasks/T-060-plants-endpoints.md) | US3   | Plants CRUD + photo history (tenancy-scoped) | ✅ Done | `cd backend && npm test -- plants`  |
 | [T-061](./tasks/T-061-frontend-plants.md)  | US3   | Frontend profile + plant detail              | ✅ Done | `cd frontend && npm test -- plants` |
-| [T-077](./tasks/T-077-wire-us3.md)         | US3   | Wire US3                                     | 🔴 Todo | `curl .../v1/plants`                |
+| [T-077](./tasks/T-077-wire-us3.md)         | US3   | Wire US3                                     | ✅ Done | `curl .../v1/plants`                |
 
 ### US4 — Subscription tiers + unified AI credit system (P2) (T-080–T-097)
 
@@ -91,7 +91,7 @@ _Need guidance on specific rules?_
 | [T-081](./tasks/T-081-payments-port-zarinpal-mock.md)     | US4   | PaymentPort + Zarinpal-mock (checkout + verify) | ✅ Done | `cd backend && npm test -- payments`                        |
 | [T-082](./tasks/T-082-credit-exhaustion-and-reset.md)     | US4   | 402 credit-exhaustion guard + monthly reset job | ✅ Done | `cd backend && npm test -- credit-exhaustion monthly-reset` |
 | [T-083](./tasks/T-083-frontend-billing.md)                | US4   | Frontend upgrade modal + checkout + balance     | ✅ Done | `cd frontend && npm test -- billing`                        |
-| [T-097](./tasks/T-097-wire-us4.md)                        | US4   | Wire US4                                        | 🔴 Todo | `curl .../v1/subscriptions/plans`                           |
+| [T-097](./tasks/T-097-wire-us4.md)                        | US4   | Wire US4                                        | ✅ Done | `curl .../v1/subscriptions/plans`                           |
 
 ### US5 — Health comparison (P3) (T-100–T-107)
 
@@ -99,7 +99,7 @@ _Need guidance on specific rules?_
 | ---------------------------------------------- | ----- | ---------------------------------------- | ------- | --------------------------------------- |
 | [T-100](./tasks/T-100-comparison-endpoints.md) | US5   | Comparison worker + health-trend verdict | ✅ Done | `cd backend && npm test -- comparison`  |
 | [T-101](./tasks/T-101-frontend-comparison.md)  | US5   | Frontend follow-up upload + trend view   | ✅ Done | `cd frontend && npm test -- comparison` |
-| [T-107](./tasks/T-107-wire-us5.md)             | US5   | Wire US5                                 | 🔴 Todo | `npm run test:e2e -- --grep comparison` |
+| [T-107](./tasks/T-107-wire-us5.md)             | US5   | Wire US5                                 | ✅ Done | `npm run test:e2e -- --grep comparison` |
 
 ### US6 — Plant chat (P3) (T-110–T-117)
 
@@ -107,7 +107,7 @@ _Need guidance on specific rules?_
 | ---------------------------------------- | ----- | ------------------------------------------------ | ------- | --------------------------------- |
 | [T-110](./tasks/T-110-chat-endpoints.md) | US6   | Chat endpoints + worker (10-free cap, ≤2 photos) | ✅ Done | `cd backend && npm test -- chat`  |
 | [T-111](./tasks/T-111-frontend-chat.md)  | US6   | Frontend chat UI (paywall on 402)                | ✅ Done | `cd frontend && npm test -- chat` |
-| [T-117](./tasks/T-117-wire-us6.md)       | US6   | Wire US6                                         | 🔴 Todo | `curl .../v1/plants/:id/chat`     |
+| [T-117](./tasks/T-117-wire-us6.md)       | US6   | Wire US6                                         | ✅ Done | `curl .../v1/plants/:id/chat`     |
 
 ### US7 — Care reminders (P3) (T-120–T-127)
 
@@ -115,7 +115,7 @@ _Need guidance on specific rules?_
 | ----------------------------------------------------- | ----- | ------------------------------------------------- | ------- | -------------------------------------------------- |
 | [T-120](./tasks/T-120-notifications-scheduler.md)     | US7   | Reminder scheduler + email(MailPort)/push + prefs | ✅ Done | `cd backend && npm test -- notifications reminder` |
 | [T-121](./tasks/T-121-frontend-notification-prefs.md) | US7   | Frontend notification settings                    | ✅ Done | `cd frontend && npm test -- notification-settings` |
-| [T-127](./tasks/T-127-wire-us7.md)                    | US7   | Wire US7 (scheduler/worker, settings route)       | 🔴 Todo | `curl .../v1/account/notifications`                |
+| [T-127](./tasks/T-127-wire-us7.md)                    | US7   | Wire US7 (scheduler/worker, settings route)       | ✅ Done | `curl .../v1/account/notifications`                |
 
 ### US8 — Account deletion (P3) (T-130–T-137)
 
@@ -123,7 +123,7 @@ _Need guidance on specific rules?_
 | --------------------------------------------------- | ----- | ----------------------------------------- | ------- | ------------------------------------------- |
 | [T-130](./tasks/T-130-account-deletion.md)          | US8   | Deletion request/cancel + 7-day purge job | ✅ Done | `cd backend && npm test -- deletion purge`  |
 | [T-131](./tasks/T-131-frontend-account-deletion.md) | US8   | Frontend deletion flow + pending banner   | ✅ Done | `cd frontend && npm test -- delete-account` |
-| [T-137](./tasks/T-137-wire-us8.md)                  | US8   | Wire US8                                  | 🔴 Todo | `curl .../v1/account/deletion`              |
+| [T-137](./tasks/T-137-wire-us8.md)                  | US8   | Wire US8                                  | ✅ Done | `curl .../v1/account/deletion`              |
 
 ### US9 — Admin panel (P3) (T-140–T-147)
 
@@ -132,7 +132,7 @@ _Need guidance on specific rules?_
 | [T-140](./tasks/T-140-admin-catalog-config.md) | US9   | Admin catalog + live config (behind RBAC)   | ✅ Done | `cd backend && npm test -- admin-catalog admin-config admin-guard` |
 | [T-141](./tasks/T-141-admin-users-reports.md)  | US9   | Admin user management + report review       | ✅ Done | `cd backend && npm test -- admin-users admin-reports`              |
 | [T-142](./tasks/T-142-admin-frontend.md)       | US9   | Admin panel frontend                        | ✅ Done | `cd frontend && npm test -- admin`                                 |
-| [T-147](./tasks/T-147-wire-us9.md)             | US9   | Wire US9 (module + guard, /admin route/nav) | 🔴 Todo | `curl .../v1/admin/species`                                        |
+| [T-147](./tasks/T-147-wire-us9.md)             | US9   | Wire US9 (module + guard, /admin route/nav) | ✅ Done | `curl .../v1/admin/species`                                        |
 
 ### Cross-cutting (T-160–T-161)
 

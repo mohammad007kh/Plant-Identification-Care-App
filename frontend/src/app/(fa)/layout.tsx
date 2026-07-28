@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import ThemeRegistry from '@/theme/theme-provider';
 import { AppErrorBoundary } from '@/components/errors/error-boundary';
 import { OfflineBanner } from '@/components/errors/offline-banner';
+import { MainNav } from '@/components/navigation/main-nav';
+import { Providers } from '@/app/providers';
 import '@/theme/fonts/vazirmatn.css';
 
 export const metadata: Metadata = {
@@ -24,11 +26,18 @@ export default function FaLocaleLayout({ children }: { children: ReactNode }) {
     <html lang="fa" dir="rtl">
       <body>
         <ThemeRegistry>
-          {/* T-161/FR-030: app-wide crash fallback + connectivity banner, above
-              every page so no route can end up with a blank screen or a
-              silent hang on a render crash or an offline connection. */}
-          <OfflineBanner />
-          <AppErrorBoundary>{children}</AppErrorBoundary>
+          {/* App-wide TanStack Query client + billing overlays (this wiring
+              task's critical gap: every feature hook needs a QueryClientProvider
+              ancestor or it throws on mount). */}
+          <Providers>
+            {/* Auth-aware top nav, above every route. */}
+            <MainNav />
+            {/* T-161/FR-030: app-wide crash fallback + connectivity banner, above
+                every page so no route can end up with a blank screen or a
+                silent hang on a render crash or an offline connection. */}
+            <OfflineBanner />
+            <AppErrorBoundary>{children}</AppErrorBoundary>
+          </Providers>
         </ThemeRegistry>
       </body>
     </html>

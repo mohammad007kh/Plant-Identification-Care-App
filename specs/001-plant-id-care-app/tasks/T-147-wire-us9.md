@@ -21,21 +21,21 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (register `AdminModule`) |
-| `backend.authorization` | AdminGuard applied to all admin routes |
-| `conventions.files` | kebab-case |
+| Key                     | Value                                     |
+| ----------------------- | ----------------------------------------- |
+| `architecture.pattern`  | modular_monolith (register `AdminModule`) |
+| `backend.authorization` | AdminGuard applied to all admin routes    |
+| `conventions.files`     | kebab-case                                |
 
 ### Domain Rules (from Station 12 — CI/CD & Wiring, Station 08 — Auth/RBAC)
 
@@ -84,6 +84,7 @@ Register the admin module (all controllers + guard) in the backend and wire the 
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → `AdminModule` registered; guard on all routes
 - [ ] **Frontend page** → `/admin/*` in the app router
 - [ ] **Navigation** → admin-only entry

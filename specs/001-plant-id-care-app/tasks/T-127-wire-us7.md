@@ -21,21 +21,21 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (register `NotificationsModule`) |
-| `backend.scheduling` | app_scheduler (repeatable BullMQ jobs must be registered) |
-| `conventions.files` | kebab-case |
+| Key                    | Value                                                     |
+| ---------------------- | --------------------------------------------------------- |
+| `architecture.pattern` | modular_monolith (register `NotificationsModule`)         |
+| `backend.scheduling`   | app_scheduler (repeatable BullMQ jobs must be registered) |
+| `conventions.files`    | kebab-case                                                |
 
 ### Domain Rules (from Station 12 — CI/CD & Wiring)
 
@@ -84,6 +84,7 @@ Register the notifications module, scheduler, and worker in the backend and add 
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → `NotificationsModule` registered; scheduler + worker attached
 - [ ] **Frontend page** → `/settings` added to the app router
 - [ ] **Navigation** → "Settings" link added

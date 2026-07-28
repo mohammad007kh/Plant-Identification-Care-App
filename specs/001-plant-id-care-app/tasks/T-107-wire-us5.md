@@ -21,21 +21,21 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith (register providers, no new module needed) |
-| `architecture.communication` | async (BullMQ worker must be registered to consume jobs) |
-| `conventions.files` | kebab-case |
+| Key                          | Value                                                       |
+| ---------------------------- | ----------------------------------------------------------- |
+| `architecture.pattern`       | modular_monolith (register providers, no new module needed) |
+| `architecture.communication` | async (BullMQ worker must be registered to consume jobs)    |
+| `conventions.files`          | kebab-case                                                  |
 
 ### Domain Rules (from Station 12 — CI/CD & Wiring)
 
@@ -84,6 +84,7 @@ Register the comparison worker/service in the backend and ensure the US5 UI is w
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [ ] **Backend route** → comparison worker registered in `PlantsModule`
 - [ ] **Component** → comparison panel rendered by plant detail
 - [ ] **API endpoint** → frontend hook connected to follow-up + poll endpoints

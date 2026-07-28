@@ -21,22 +21,22 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith — feature modules registered into one NestJS `AppModule` |
-| `frontend.framework` | nextjs (App Router), route group `(fa)` for the Persian/RTL app shell |
-| `frontend.data_fetching` | tanstack-query |
-| `conventions.files` | kebab-case |
+| Key                      | Value                                                                     |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `architecture.pattern`   | modular_monolith — feature modules registered into one NestJS `AppModule` |
+| `frontend.framework`     | nextjs (App Router), route group `(fa)` for the Persian/RTL app shell     |
+| `frontend.data_fetching` | tanstack-query                                                            |
+| `conventions.files`      | kebab-case                                                                |
 
 ### Domain Rules
 
@@ -51,7 +51,7 @@
 POST /v1/scans
 GET  /v1/scans/{id}
 POST /v1/misidentification-reports
-GET  /v1/health   # existing health endpoint (from backend skeleton, T-002) used for the smoke check below
+GET  /v1/health # existing health endpoint (from backend skeleton, T-002) used for the smoke check below
 ```
 
 ### Feature Summary
@@ -94,6 +94,7 @@ None — this is a pure wiring task; it only updates existing files.
 ## 🔌 Wiring Checklist
 
 ### Web
+
 - [x] **Backend route** → Registered in main app/router file (`backend/src/app.module.ts` now imports `ScansModule`, `GuestsModule`, `MisidentificationReportsModule`)
 - [x] **Frontend page** → Added to app router configuration (`frontend/src/app/(fa)/page.tsx` renders `ScanFlow`)
 - [x] **Navigation** → Link added to sidebar/nav component (`main-nav.tsx` includes the scan/identify entry)
@@ -116,6 +117,7 @@ npx playwright test -g "home page renders plant photo uploader"
 ```
 
 Example Playwright check (add to `frontend/e2e/scan-home.spec.ts` if not already covered by T-023's unit tests):
+
 ```ts
 import { test, expect } from '@playwright/test';
 

@@ -21,24 +21,24 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith — feature modules registered into one NestJS `AppModule` |
-| `backend.auth_method` | jwt (registry deviation: short-lived access + rotating httpOnly refresh + server-side denylist) |
-| `frontend.framework` | nextjs (App Router) |
-| `frontend.state_management` | zustand |
-| `frontend.data_fetching` | tanstack-query |
-| `conventions.files` | kebab-case |
+| Key                         | Value                                                                                           |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| `architecture.pattern`      | modular_monolith — feature modules registered into one NestJS `AppModule`                       |
+| `backend.auth_method`       | jwt (registry deviation: short-lived access + rotating httpOnly refresh + server-side denylist) |
+| `frontend.framework`        | nextjs (App Router)                                                                             |
+| `frontend.state_management` | zustand                                                                                         |
+| `frontend.data_fetching`    | tanstack-query                                                                                  |
+| `conventions.files`         | kebab-case                                                                                      |
 
 ### Domain Rules
 
@@ -54,7 +54,7 @@ POST /v1/auth/register
 POST /v1/auth/login
 POST /v1/auth/refresh
 POST /v1/auth/logout
-GET  /v1/health   # existing health endpoint used for the smoke check below
+GET  /v1/health # existing health endpoint used for the smoke check below
 ```
 
 ### Feature Summary
@@ -99,6 +99,7 @@ None — this is a pure wiring task; it only updates existing files. (If no glob
 ## 🔌 Wiring Checklist
 
 ### Web
+
 - [x] **Backend route** → Registered in main app/router file (`backend/src/app.module.ts` imports `AuthModule` and registers the global `JwtAuthGuard`)
 - [x] **Frontend page** → Added to app router configuration (`/login`, `/register`, and the protected route group layout)
 - [x] **Navigation** → Link added to sidebar/nav component (`main-nav.tsx` shows login/logout state)
@@ -121,6 +122,7 @@ npx playwright test -g "user can log in and see an authenticated nav state"
 ```
 
 Example Playwright check (add to `frontend/e2e/auth-login.spec.ts` if not already covered by T-043's unit tests):
+
 ```ts
 import { test, expect } from '@playwright/test';
 

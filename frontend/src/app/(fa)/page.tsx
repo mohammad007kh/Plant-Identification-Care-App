@@ -1,28 +1,16 @@
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import { getMessages, defaultLocale } from '@/i18n';
+import { ScanFlow } from '@/features/scan';
 
 /**
- * Placeholder home page — proves the RTL + MUI/Emotion theme + i18n
- * wiring renders end-to-end in Persian. Later tasks (scan/upload flow)
- * replace this content; this task only wires the shell (no business
- * feature, no navigation).
- *
- * Only block-axis spacing (`mt`) is used below — block-axis (top/bottom)
- * properties are directionally invariant between LTR/RTL, unlike
- * inline-axis (left/right) ones, which this task's files must avoid.
+ * Home route: the guest-accessible scan flow (upload → poll → result), per
+ * this wiring task's spec. `ScanFlow` is self-contained (owns its own
+ * upload/poll/result state) and requires no auth — replaces the placeholder
+ * that only proved the RTL/theme/i18n shell rendered.
  */
 export default function HomePage() {
-  const messages = getMessages(defaultLocale);
-
   return (
-    <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
-      <Typography variant="h1" component="h1" gutterBottom>
-        {messages.home.greeting}
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        {messages.app.title}
-      </Typography>
+    <Container maxWidth="sm" sx={{ mt: 4, mb: 8 }}>
+      <ScanFlow />
     </Container>
   );
 }

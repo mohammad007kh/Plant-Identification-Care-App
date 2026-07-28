@@ -21,29 +21,29 @@
 
 ---
 
+- Authored start: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Authored end: 2026-07-24T20:15:12Z by claude:opus-4-8
+- Implementation start: 2026-07-28T14:14:05Z by claude
+- Implementation end: 2026-07-28T14:14:05Z by claude
+- verify-depth: deep
 
-- Authored start:        2026-07-24T20:15:12Z by claude:opus-4-8
-- Authored end:          2026-07-24T20:15:12Z by claude:opus-4-8
-- Implementation start:  <empty>
-- Implementation end:    <empty>
-- verify-depth:          deep
 ## 📋 Embedded Context (READ THIS FIRST)
 
 ### Project Standards (from registry)
 
-| Key | Value |
-|-----|-------|
-| `architecture.pattern` | modular_monolith — `AppModule` imports each feature module |
-| `frontend.framework` | nextjs (App Router) |
-| `frontend.state_management` | zustand |
-| `frontend.data_fetching` | tanstack-query |
-| `api.error_format` | rfc7807 |
-| `conventions.files` | kebab-case |
+| Key                         | Value                                                      |
+| --------------------------- | ---------------------------------------------------------- |
+| `architecture.pattern`      | modular_monolith — `AppModule` imports each feature module |
+| `frontend.framework`        | nextjs (App Router)                                        |
+| `frontend.state_management` | zustand                                                    |
+| `frontend.data_fetching`    | tanstack-query                                             |
+| `api.error_format`          | rfc7807                                                    |
+| `conventions.files`         | kebab-case                                                 |
 
 ### Domain Rules
 
 - Pure integration/wiring task: connects code already built by `T-080` (subscriptions + credits-balance endpoints), `T-081` (payments/Zarinpal-mock), `T-082` (credit-check guard + monthly reset job), and `T-083` (frontend billing components) into the running application. No new business logic here.
-- **Global 402 handling is the centerpiece of this task**: per FR-016, whenever *any* AI-metered endpoint (scans, plants photo-comparison, chat) responds `402` (thanks to `T-082`'s guard), the frontend must open the upgrade modal built in `T-083` — this must be wired once, globally, at the HTTP client level, not duplicated per-feature/per-call-site.
+- **Global 402 handling is the centerpiece of this task**: per FR-016, whenever _any_ AI-metered endpoint (scans, plants photo-comparison, chat) responds `402` (thanks to `T-082`'s guard), the frontend must open the upgrade modal built in `T-083` — this must be wired once, globally, at the HTTP client level, not duplicated per-feature/per-call-site.
 - **Orphan-code rule**: `SubscriptionsModule`, `PaymentsModule`, and the `T-082` guard/job exist in code after their respective tasks but are inert until registered here.
 
 ### API Context
@@ -94,7 +94,7 @@ Register the subscriptions/payments/credits controllers in the backend `AppModul
 ### Code/Logic Requirements
 
 - `AppModule` import changes must not alter existing module ordering/behavior beyond adding `SubscriptionsModule`/`PaymentsModule` (and `CreditsModule` only if genuinely missing).
-- The global HTTP interceptor is the *only* place that inspects response status `402` for the upgrade-modal trigger — no individual feature (scans, chat, plants) should special-case `402` itself; they only need to handle the rejected promise/thrown error to stop their own optimistic UI, per the interceptor's re-thrown error.
+- The global HTTP interceptor is the _only_ place that inspects response status `402` for the upgrade-modal trigger — no individual feature (scans, chat, plants) should special-case `402` itself; they only need to handle the rejected promise/thrown error to stop their own optimistic UI, per the interceptor's re-thrown error.
 - Interceptor must not swallow the `402` — after opening the modal, it re-throws/rejects so the calling mutation's own error state (e.g. a disabled "submit" button) still reflects that the action did not complete.
 - The monthly-reset scheduler registration must not run duplicate schedules if `main.ts` is invoked multiple times in tests (guard with the existing app bootstrap pattern already used for other BullMQ workers — do not invent a new one).
 - No changes to `T-080`/`T-081`/`T-082`/`T-083` internal logic — if wiring reveals a defect in one of those, that is a signal the dependency task was incomplete, not an invitation to patch it here.
@@ -102,6 +102,7 @@ Register the subscriptions/payments/credits controllers in the backend `AppModul
 ## 🔌 Wiring Checklist
 
 ### Web (React/Vue/Next.js/etc.)
+
 - [x] **Backend route** → Registered in main app/router file (`backend/src/app.module.ts` imports `SubscriptionsModule`, `PaymentsModule`)
 - [x] **Frontend page** → N/A for a route, but the modal is mounted globally in `frontend/src/app/layout.tsx`
 - [x] **Navigation** → Credit-balance badge + upgrade link added to nav component

@@ -23,5 +23,8 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['**/node_modules/**', '**/.next/**', '**/e2e/**'],
+    // Heavy MSW + Testing-Library integration flows (e.g. the admin four-section
+    // test) can exceed the 5s default under machine load; give them headroom.
+    testTimeout: 20000,
   },
 });
