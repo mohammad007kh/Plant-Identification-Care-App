@@ -24,6 +24,14 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
   {
+    // Node CLI scripts (e.g. the traceability gate) run under Node — give them
+    // the Node globals so `console`/`process` aren't flagged as undefined.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: { console: 'readonly', process: 'readonly' },
+    },
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     rules: {
       // Pragmatic relaxations for an early-stage scaffold; tightened later.
