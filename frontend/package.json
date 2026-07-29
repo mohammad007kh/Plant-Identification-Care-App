@@ -4,9 +4,9 @@
   "private": true,
   "description": "Next.js App Router web client (Persian/RTL) for the Plant Identification & Care app. MUI + Emotion RTL theme, self-hosted Vazirmatn font, i18n scaffold (fa-only, extensible).",
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 13000",
     "build": "next build",
-    "start": "next start -p 3000",
+    "start": "next start -p 13000",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest",

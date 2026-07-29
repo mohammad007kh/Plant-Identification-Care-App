@@ -7,7 +7,7 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:5433/plant',
+    url: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:15432/plant',
   },
   strict: true,
   verbose: true,

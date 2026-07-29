@@ -3,8 +3,8 @@ process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET ?? 'test-access-se
 // AppConfigModule (pulled in transitively) validates these at bootstrap; the raw
 // db client has a fallback but the validator does not. Match the docker defaults.
 process.env.DATABASE_URL =
-  process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:5433/plant';
-process.env.REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:6379';
+  process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:15432/plant';
+process.env.REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:16379';
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { INestApplication } from '@nestjs/common';

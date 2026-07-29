@@ -10,14 +10,14 @@ async function bootstrap(): Promise<void> {
   // Frontend (Next.js) is a separate origin in dev; allow it with credentials so
   // the httpOnly refresh cookie round-trips. Origin is env-configurable for prod.
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:13000',
     credentials: true,
   });
 
   // No global ValidationPipe: request bodies are validated with Zod (safeParse)
   // in the controllers, so class-validator/-transformer are not dependencies.
 
-  const port = process.env.PORT ?? 3001;
+  const port = process.env.PORT ?? 13001;
   await app.listen(port);
 }
 

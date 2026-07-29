@@ -17,8 +17,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-plant}
       POSTGRES_DB: ${POSTGRES_DB:-plant}
     ports:
-      # Host 5433 → container 5432 to avoid clashing with a native Postgres on 5432.
-      - '5433:5432'
+      # Host 15432 → container 5432. Uncommon host port so this project can run
+      # alongside other local projects (and a native Postgres on 5432) without clashing.
+      - '15432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -31,7 +32,8 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      # Host 16379 → container 6379 (avoid clashing with other projects' Redis).
+      - '16379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
@@ -48,8 +50,9 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      # Host 19000/19001 → container 9000/9001 (API + console).
+      - '19000:9000'
+      - '19001:9001'
     volumes:
       - minio_data:/data
     healthcheck:
@@ -62,8 +65,9 @@ services:
     image: axllent/mailpit
     restart: unless-stopped
     ports:
-      - '8025:8025'
-      - '1025:1025'
+      # Host 18025 (web UI) / 11025 (SMTP) → container 8025 / 1025.
+      - '18025:8025'
+      - '11025:1025'
 
 volumes:
   postgres_data:

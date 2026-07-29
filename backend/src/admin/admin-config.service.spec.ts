@@ -1,5 +1,5 @@
 process.env.DATABASE_URL =
-  process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:5433/plant';
+  process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:15432/plant';
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq, inArray } from 'drizzle-orm';
@@ -16,7 +16,7 @@ import {
 import { ConfigService } from './config.service';
 import { TierRepository } from './tier.repository';
 
-// Live-DB test (Postgres on localhost:5433). Proves the WRITE side (ConfigService)
+// Live-DB test (Postgres on localhost:15432). Proves the WRITE side (ConfigService)
 // and the EXISTING read side (AppConfigService, T-013) never diverge: a write here
 // is visible to a brand-new AppConfigService instance immediately — no cache, no
 // restart (FR-005/FR-027's core requirement).
