@@ -10,13 +10,12 @@ import type { ComparisonJobData } from './comparison.queue';
  * only); tests set `DISABLE_WORKERS=1` and invoke ComparisonService.process
  * directly (mirrors scans/IdentifyWorker, T-020).
  *
- * NOTE: `identify` (T-020) jobs and `comparison` (T-060) jobs are both
- * enqueued onto the same `ai` queue name (jobs/queues.ts), distinguished only
- * by BullMQ job name. This worker filters on `job.name === 'comparison'` so
- * it never misinterprets an identify job's payload; wiring both workers to
- * coexist safely on the shared queue (and not double-process a job) is
- * T-107's responsibility (worker registration is out of scope here — this
- * module is not imported by app.module yet).
+ * Consumes the dedicated `comparison` queue — NOT the shared `ai` queue.
+ * Sharing `ai` was a silent-data-loss bug: IdentifyWorker does not filter by
+ * job.name, so the two workers popped (and dropped, on a no-op return) each
+ * other's jobs, stalling ~half of all identifications. Isolating the queue
+ * removes the race entirely (jobs/queues.ts). Tests set `DISABLE_WORKERS=1`
+ * and invoke ComparisonService.process directly (mirrors scans/IdentifyWorker).
  */
 @Injectable()
 export class ComparisonWorker implements OnModuleInit, OnModuleDestroy {
@@ -28,9 +27,8 @@ export class ComparisonWorker implements OnModuleInit, OnModuleDestroy {
   onModuleInit(): void {
     if (process.env.DISABLE_WORKERS === '1') return;
     this.worker = new Worker(
-      QUEUE_NAMES.ai,
+      QUEUE_NAMES.comparison,
       async (job) => {
-        if (job.name !== 'comparison') return;
         await this.comparison.process(job.data as ComparisonJobData);
       },
       { connection: createRedisConnection() },

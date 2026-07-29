@@ -38,6 +38,7 @@ function wateringIntervalDays(careGuide: unknown): number {
 export class ReminderScheduler implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(ReminderScheduler.name);
   private queue?: Queue;
+  private sendQueue?: Queue;
   private worker?: Worker;
 
   constructor(private readonly repo: NotificationRepository) {}
@@ -78,7 +79,7 @@ export class ReminderScheduler implements OnModuleInit, OnModuleDestroy {
 
     for (const reminder of due) {
       const scheduledForIso = reminder.scheduledFor.toISOString();
-      await this.getQueue().add(
+      await this.getSendQueue().add(
         'send',
         {
           userId: reminder.userId,
@@ -104,6 +105,15 @@ export class ReminderScheduler implements OnModuleInit, OnModuleDestroy {
     return this.queue;
   }
 
+  /** Dedicated `send`-job queue (drained by ReminderWorker) — kept separate from
+   * the `sweep` queue so the two workers never pop each other's jobs. */
+  private getSendQueue(): Queue {
+    if (!this.sendQueue) {
+      this.sendQueue = new Queue(QUEUE_NAMES.reminderSend, { connection: createRedisConnection() });
+    }
+    return this.sendQueue;
+  }
+
   onModuleInit(): void {
     if (process.env.DISABLE_WORKERS === '1') return;
 
@@ -117,11 +127,9 @@ export class ReminderScheduler implements OnModuleInit, OnModuleDestroy {
         this.logger.error(`failed to register reminder sweep: ${(err as Error).message}`),
       );
 
-    // Shares the `reminders` queue with `ReminderWorker`'s `send` consumer
-    // (filtering by job.name below); multiple named jobs coexisting on one
-    // queue mirrors the identify/comparison split on the `ai` queue (T-020/
-    // T-060) — full multi-worker registration is T-127's job, same as T-107
-    // is for that queue.
+    // Sole consumer of the `reminders` queue (only `sweep` jobs live here now;
+    // per-plant `send` jobs go on the dedicated `reminder-send` queue drained by
+    // ReminderWorker). The `job.name` guard is retained as belt-and-suspenders.
     this.worker = new Worker(
       QUEUE_NAMES.reminders,
       async (job) => {
@@ -140,5 +148,6 @@ export class ReminderScheduler implements OnModuleInit, OnModuleDestroy {
   async onModuleDestroy(): Promise<void> {
     await this.worker?.close();
     await this.queue?.close();
+    await this.sendQueue?.close();
   }
 }

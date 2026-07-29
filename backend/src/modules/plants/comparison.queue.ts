@@ -8,11 +8,11 @@ export interface ComparisonJobData {
 }
 
 /**
- * Producer for the async `comparison` job on the shared `ai` queue, enqueued by
- * `POST /v1/plants/:id/photos` (follow-up photo comparison, FR-010). Only the
- * enqueue side is implemented here — the consumer (AI comparison call, credit
- * settle) is US5/T-08x scope; this gives that future task a stable job to pick
- * up without restructuring this controller/service. Mirrors scans/IdentifyQueue.
+ * Producer for the async `comparison` job on the dedicated `comparison` queue,
+ * enqueued by `POST /v1/plants/:id/photos` (follow-up photo comparison, FR-010).
+ * Uses its own queue (NOT the shared `ai` queue) so ComparisonWorker and
+ * IdentifyWorker never pop each other's jobs — see jobs/queues.ts. Mirrors
+ * scans/IdentifyQueue.
  */
 @Injectable()
 export class ComparisonQueue implements OnModuleDestroy {
@@ -20,7 +20,7 @@ export class ComparisonQueue implements OnModuleDestroy {
 
   private getQueue(): Queue {
     if (!this.queue) {
-      this.queue = new Queue(QUEUE_NAMES.ai, { connection: createRedisConnection() });
+      this.queue = new Queue(QUEUE_NAMES.comparison, { connection: createRedisConnection() });
     }
     return this.queue;
   }

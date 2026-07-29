@@ -156,11 +156,11 @@ export class ReminderWorker implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit(): void {
     if (process.env.DISABLE_WORKERS === '1') return;
-    // Shares the `reminders` queue with `ReminderScheduler`'s `sweep` producer
-    // (filtering by job.name); see that file's comment on multi-worker
-    // coexistence, deferred to T-127.
+    // Sole consumer of the dedicated `reminder-send` queue (ReminderScheduler
+    // enqueues `send` jobs there). Kept off the `reminders` (sweep) queue so the
+    // two workers never pop — and silently drop — each other's jobs.
     this.worker = new Worker(
-      QUEUE_NAMES.reminders,
+      QUEUE_NAMES.reminderSend,
       async (job) => {
         if (job.name !== 'send') return;
         await this.processReminder(job.data as ReminderJobData);

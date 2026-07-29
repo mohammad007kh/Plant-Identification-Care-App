@@ -76,16 +76,25 @@ export class UploadValidationService {
 
     // Re-encode to the same format: strips EXIF/metadata and any bytes past the
     // image's logical end (polyglot defense). Auto-orient via rotate().
-    const pipeline = sharp(buffer, { limitInputPixels: MAX_PIXELS }).rotate();
-    const normalizedBuffer = await (
-      format === 'png'
-        ? pipeline.png()
-        : format === 'webp'
-          ? pipeline.webp()
-          : pipeline.jpeg({ quality: 90 })
-    ).toBuffer();
-
-    const outMeta = await sharp(normalizedBuffer).metadata();
+    // `metadata()` above only parses the header — the full pixel decode happens
+    // here, so a file with a valid header but corrupt/undecodable pixel data
+    // (e.g. libspng read errors) surfaces at this step. Treat that as an
+    // unsupported upload (415), never an unhandled 500.
+    let normalizedBuffer: Buffer;
+    let outMeta: sharp.Metadata;
+    try {
+      const pipeline = sharp(buffer, { limitInputPixels: MAX_PIXELS }).rotate();
+      normalizedBuffer = await (
+        format === 'png'
+          ? pipeline.png()
+          : format === 'webp'
+            ? pipeline.webp()
+            : pipeline.jpeg({ quality: 90 })
+      ).toBuffer();
+      outMeta = await sharp(normalizedBuffer).metadata();
+    } catch {
+      throw new UnsupportedMediaTypeException('upload.notAnImage');
+    }
     return {
       normalizedBuffer,
       contentType: mime,
