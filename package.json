@@ -16,12 +16,19 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:migrate": "npm run db:migrate --workspace backend --if-present",
     "db:seed": "npm run db:seed --workspace backend --if-present",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e:install": "playwright install chromium",
+    "test:e2e:default": "cross-env playwright test --grep-invert \"@lowconf|@aifail\"",
+    "test:e2e:low-confidence": "cross-env STUB_AI_CONFIDENCE=0.4 playwright test --grep \"@lowconf\"",
+    "test:e2e:ai-failure": "cross-env STUB_AI_FAIL=1 STUB_AI_FAIL_ACTION=chat playwright test --grep \"@aifail\"",
+    "test:e2e": "npm run test:e2e:default && npm run test:e2e:low-confidence && npm run test:e2e:ai-failure"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.1",
     "@swc/core": "^1.15.46",
     "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
     "drizzle-orm": "^0.44.7",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",

@@ -15,6 +15,20 @@ export const CHAT_POLL_INTERVAL_MS = 1500;
 export const MAX_CONTEXT_PHOTOS = 2;
 
 /**
+ * Fresh idempotency key per send (mirrors `features/scan/hooks/use-create-scan.ts`'s
+ * `generateIdempotencyKey`) — required by the backend for a metered send
+ * (Pro/Max, or Free past the free-message cap) and harmless otherwise, so it
+ * is always generated and sent with every message.
+ */
+function generateIdempotencyKey(): string {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `chat-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+/**
  * Gives up polling for the assistant's reply after this many attempts
  * (~30s at `CHAT_POLL_INTERVAL_MS`) rather than polling forever — surfaces
  * `replyTimedOut` (a manual "check again" affordance) instead.
@@ -143,10 +157,12 @@ export function useChat(plantId: string): UseChatResult {
         throw new ApiError(0, null);
       }
 
-      await sendChatMessage(accessToken, plantId, {
-        content: pending.content,
-        contextPhotoIds: pending.contextPhotoIds,
-      });
+      await sendChatMessage(
+        accessToken,
+        plantId,
+        { content: pending.content, contextPhotoIds: pending.contextPhotoIds },
+        generateIdempotencyKey(),
+      );
     },
     onSuccess: () => {
       // Kicks an immediate refetch so the persisted user message (and,

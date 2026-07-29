@@ -301,11 +301,19 @@ export type ChatSendResponse = z.infer<typeof chatSendResponseSchema>;
  * non-2xx response — including the FR-013 Free-tier/out-of-credit 402 —
  * surfaces as an `ApiError`; the caller (`useChat`) special-cases
  * `status === 402` into the upgrade modal rather than a generic error message.
+ *
+ * `idempotencyKey` is REQUIRED by the backend for a metered send (Pro/Max, or
+ * Free past the free-message cap — `ChatService.sendMessage` rejects a
+ * metered send with no `Idempotency-Key` header, 400, before the credit check
+ * ever runs). `useChat` always generates and passes one (mirroring
+ * `features/scan/hooks/use-create-scan.ts`'s `generateIdempotencyKey`), so
+ * this is harmless to send on an unmetered (free, under-cap) message too.
  */
 export async function sendChatMessage(
   accessToken: string,
   plantId: string,
   payload: ChatMessageRequest,
+  idempotencyKey: string,
 ): Promise<ChatSendResponse> {
   const parsed = chatMessageRequestSchema.parse(payload);
 
@@ -313,7 +321,11 @@ export async function sendChatMessage(
     `/v1/plants/${plantId}/chat`,
     {
       method: 'POST',
-      headers: { ...authHeaders(accessToken), 'Content-Type': 'application/json' },
+      headers: {
+        ...authHeaders(accessToken),
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+      },
       credentials: 'include',
       body: JSON.stringify(parsed),
     },
