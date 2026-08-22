@@ -80,3 +80,41 @@ export async function login(payload: LoginRequest): Promise<AuthTokenResponse> {
   const parsed = loginRequestSchema.parse(payload);
   return postAuthRequest('/v1/auth/login', parsed);
 }
+
+/**
+ * `POST /v1/auth/refresh` (T-057) — mints a fresh access token from the
+ * httpOnly `refresh-token` cookie. No request body and no bearer needed: the
+ * browser attaches the cookie via `credentials: 'include'`. Throws
+ * `AuthApiError` (401 when the cookie is missing/expired) so the caller can
+ * decide whether to re-establish the session or fall back to the guest state.
+ */
+export async function refresh(): Promise<AuthTokenResponse> {
+  const response = await fetch(`${API_BASE_URL}/v1/auth/refresh`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    await throwAuthApiError(response);
+  }
+
+  return authTokenResponseSchema.parse(await response.json());
+}
+
+/**
+ * `POST /v1/auth/logout` (T-057) — clears the refresh-token cookie server-side
+ * and responds `204 No Content`. Tolerates the empty body (never calls
+ * `response.json()`); still throws `AuthApiError` on a non-2xx so an unexpected
+ * failure is observable, but the caller (`MainNav`) always clears local state
+ * regardless.
+ */
+export async function logout(): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/v1/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    await throwAuthApiError(response);
+  }
+}

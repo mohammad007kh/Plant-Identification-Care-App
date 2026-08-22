@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppConfigModule } from './common/config/app-config.module';
 import { ProblemDetailsFilter } from './common/filters/problem.filter';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { HealthModule } from './modules/health/health.module';
 import { CreditsModule } from './credits/credits.module';
 import { AiGatewayModule } from './ai-gateway/ai-gateway.module';
@@ -23,10 +24,17 @@ import { AdminModule } from './admin/admin.module';
 
 /**
  * Root application module — the composition root of the modular monolith. Every
- * feature module is registered here. Route-level `@UseGuards(JwtAuthGuard)` /
- * `@OptionalUserId()` already enforce auth per endpoint, so NO global auth guard
- * is registered — a global guard would need a `@Public()` allowlist to keep the
- * guest-allowed scan submission and the public auth routes reachable.
+ * feature module is registered here. Auth is enforced globally by `JwtAuthGuard`
+ * (registered below as `APP_GUARD`, T-057): every route requires a valid Bearer
+ * access token UNLESS its handler/controller carries the `@Public()` marker.
+ * The guest-allowed scan submission, the public auth routes (register/login/
+ * refresh), the plans/verify reads and the health check opt out via `@Public()`;
+ * `@OptionalUserId()` still resolves an optional principal on those. Existing
+ * route-level `@UseGuards(JwtAuthGuard)` are kept (idempotent — the same guard
+ * running twice is a no-op) so protection is defense-in-depth, and route-level
+ * `AdminGuard`/`CreditCheckGuard` still run after the global guard has populated
+ * `req.user`. The guard is bound via `useExisting` so the single AuthModule
+ * instance (with its TokenService + UsersRepository deps) is reused.
  */
 @Module({
   imports: [
@@ -61,6 +69,13 @@ import { AdminModule } from './admin/admin.module';
     {
       provide: APP_FILTER,
       useClass: ProblemDetailsFilter,
+    },
+    // Global auth guard (T-057). `useExisting` aliases the JwtAuthGuard exported
+    // by AuthModule, reusing that single fully-injected instance rather than
+    // constructing a second copy.
+    {
+      provide: APP_GUARD,
+      useExisting: JwtAuthGuard,
     },
   ],
 })

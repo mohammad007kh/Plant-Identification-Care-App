@@ -11,19 +11,24 @@ import {
 import type { Request, Response } from 'express';
 import { loginRequestSchema, registerRequestSchema, type AuthTokenResponse } from 'shared';
 import { AuthService, type IssuedTokens } from './auth.service';
+import { Public } from './public.decorator';
 
 const REFRESH_COOKIE = 'refresh-token';
 const GUEST_COOKIE = 'guest-id';
 
 /**
  * Auth routes (register/login/refresh/logout). Access token is returned in the
- * body; the refresh token rides in an httpOnly cookie. NOT wired into app.module
- * here — T-057 registers AuthModule + the global guard.
+ * body; the refresh token rides in an httpOnly cookie. T-057 registers the
+ * global JwtAuthGuard; register/login/refresh carry `@Public()` (they must be
+ * reachable before the caller has a token). `logout` is intentionally NOT
+ * `@Public()` — it stays protected, matching the OpenAPI contract (logout is not
+ * `security: []`).
  */
 @Controller('auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
+  @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(
@@ -42,6 +47,7 @@ export class AuthController {
     return this.respond(res, tokens);
   }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -54,6 +60,7 @@ export class AuthController {
     return this.respond(res, tokens);
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(

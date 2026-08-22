@@ -15,6 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request, Response } from 'express';
 import type { ScanJob } from 'shared';
 import { OptionalUserId } from '../../common/auth/optional-user';
+import { Public } from '../auth/public.decorator';
 import { UploadValidationPipe } from '../../common/uploads/upload.pipe';
 import type { NormalizedImage } from '../../common/uploads/upload-validation.service';
 import { GuestsService } from '../guests/guests.service';
@@ -24,8 +25,11 @@ import { ScansService } from './scans.service';
  * `POST /v1/scans` (guest-allowed multipart submission) and `GET /v1/scans/:id`
  * (poll status/result). File type/size validation is delegated to T-014's
  * UploadValidationPipe; the 70% confidence gate is enforced later in the worker.
- * Not registered in app.module yet — wired by T-037 with the rest of US1.
+ * Both routes are guest-allowed, so the controller is `@Public()` (T-057): the
+ * global JwtAuthGuard never rejects them, and `@OptionalUserId()` still resolves
+ * an optional principal for personalization.
  */
+@Public()
 @Controller('scans')
 export class ScansController {
   constructor(

@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { defaultLocale, getMessages } from '@/i18n';
 import { useAuthStore } from '@/lib/store/auth-store';
+import { logout } from '@/features/auth/api/auth-api';
 import { useIsAdmin } from '@/features/admin';
 
 /**
@@ -32,7 +33,15 @@ export function MainNav() {
   const isAdmin = useIsAdmin();
   const isLoggedIn = accessToken !== null;
 
-  const handleLogout = (): void => {
+  const handleLogout = async (): Promise<void> => {
+    // Best-effort server-side cookie clear (T-057). A network failure must
+    // never trap the user in a logged-in-looking UI, so the local clear +
+    // redirect always run regardless of the request outcome.
+    try {
+      await logout();
+    } catch {
+      // Tolerated: fall through to the local clear below.
+    }
     clearSession();
     router.push('/');
   };
@@ -89,7 +98,9 @@ export function MainNav() {
                 type="button"
                 variant="outlined"
                 size="small"
-                onClick={handleLogout}
+                onClick={() => {
+                  void handleLogout();
+                }}
                 data-testid="nav-logout-button"
               >
                 {messages.logout}

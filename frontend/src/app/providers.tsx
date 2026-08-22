@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UpgradeModal, CheckoutReturnBanner } from '@/features/billing';
+import { SessionBootstrap } from '@/components/auth/session-bootstrap';
 
 /**
  * App-wide client providers.
@@ -32,6 +33,9 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Rehydrates the session (transparent refresh) once on every hard load,
+          before any protected route decides whether to redirect (T-057). */}
+      <SessionBootstrap />
       {children}
       <UpgradeModal />
       <CheckoutReturnBanner />

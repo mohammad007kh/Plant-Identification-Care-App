@@ -23,6 +23,18 @@ export interface AuthSession {
   justConvertedFromGuest?: boolean;
 }
 
+/**
+ * Session lifecycle as seen by the UI:
+ * - `unknown`  — before the transparent refresh (T-057) has resolved on a hard
+ *   load; protected routes MUST show a loading state, not redirect, in this
+ *   window so a logged-in user reloading a protected page isn't bounced to
+ *   `/login` before rehydration finishes.
+ * - `authenticated` — a valid access token is in memory (set by login/register
+ *   or a successful refresh).
+ * - `guest` — no session (never logged in, logged out, or the refresh failed).
+ */
+export type AuthStatus = 'unknown' | 'authenticated' | 'guest';
+
 interface AuthState {
   /**
    * Short-lived JWT, kept in memory ONLY (never `localStorage`) to limit XSS
@@ -33,10 +45,22 @@ interface AuthState {
   accessToken: string | null;
   user: AuthUser | null;
   justConvertedFromGuest: boolean;
+  /**
+   * Rehydration state (T-057). Starts `unknown` so `SessionBootstrap` can run
+   * the one-shot refresh before any protected route decides to redirect.
+   */
+  authStatus: AuthStatus;
   setSession: (session: AuthSession) => void;
   clearSession: () => void;
   /** Resets the guest-conversion flag once the confirmation banner has been shown/dismissed. */
   acknowledgeGuestConversion: () => void;
+  /**
+   * Marks the session state without touching the token. Used by
+   * `SessionBootstrap` to flip `unknown` → `guest` when the transparent
+   * refresh fails (no token to set, but the UI must stop showing the loading
+   * state and treat the visitor as logged out).
+   */
+  setAuthStatus: (status: AuthStatus) => void;
 }
 
 /**
@@ -51,8 +75,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   user: null,
   justConvertedFromGuest: false,
+  authStatus: 'unknown',
   setSession: ({ accessToken, user = null, justConvertedFromGuest = false }) =>
-    set({ accessToken, user, justConvertedFromGuest }),
-  clearSession: () => set({ accessToken: null, user: null, justConvertedFromGuest: false }),
+    set({ accessToken, user, justConvertedFromGuest, authStatus: 'authenticated' }),
+  clearSession: () =>
+    set({ accessToken: null, user: null, justConvertedFromGuest: false, authStatus: 'guest' }),
   acknowledgeGuestConversion: () => set({ justConvertedFromGuest: false }),
+  setAuthStatus: (authStatus) => set({ authStatus }),
 }));

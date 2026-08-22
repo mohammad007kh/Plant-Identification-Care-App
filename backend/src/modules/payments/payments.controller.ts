@@ -13,6 +13,7 @@ import type { CheckoutResponse, PaymentVerifyResponse } from 'shared';
 import { checkoutRequestSchema } from 'shared';
 import { CurrentUserId } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
 import { PaymentsService } from './payments.service';
 
 /**
@@ -39,6 +40,7 @@ export class PaymentsController {
     return this.payments.checkout(userId, parsed.data.planId);
   }
 
+  @Public()
   @Get('verify')
   @HttpCode(HttpStatus.OK)
   verify(@Query('Authority') authority?: string): Promise<PaymentVerifyResponse> {

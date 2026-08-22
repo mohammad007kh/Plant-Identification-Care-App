@@ -1,12 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
 import type { Plan } from 'shared';
+import { Public } from '../auth/public.decorator';
 import { SubscriptionsService } from './subscriptions.service';
 
 /**
  * `GET /v1/subscriptions/plans` (T-080, FR-016) — unauthenticated per contract
- * `security: []` (pre-registration visitors also see plans). Backs the
- * upgrade modal (T-083). Not registered in app.module here — T-097 wires it.
+ * `security: []` (pre-registration visitors also see plans). Marked `@Public()`
+ * (T-057) so the global JwtAuthGuard lets it through. Backs the upgrade modal
+ * (T-083).
  */
+@Public()
 @Controller('subscriptions')
 export class SubscriptionsController {
   constructor(private readonly subscriptions: SubscriptionsService) {}
