@@ -38,5 +38,5 @@ export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
  */
 export function createRedisConnection(): IORedis {
   const options: RedisOptions = { maxRetriesPerRequest: null };
-  return new IORedis(process.env.REDIS_URL ?? 'redis://localhost:16379', options);
+  return new IORedis(process.env.REDIS_URL ?? 'redis://localhost:26379', options);
 }

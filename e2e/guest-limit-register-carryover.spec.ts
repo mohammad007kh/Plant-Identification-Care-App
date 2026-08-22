@@ -61,7 +61,11 @@ test.describe('Guest 2-scan limit → registration wall → register → carryov
 
     await expect(page.getByTestId('registration-wall')).toBeVisible({ timeout: 10_000 });
     await expect(page.getByTestId('photo-dropzone')).toHaveCount(0);
-    await expect(page.getByRole('alert')).toHaveCount(0);
+    // FR-007/008: the wall replaces the error UI, never alongside it — so no
+    // scan-error alert should show. Scope to NON-EMPTY alerts: `next dev` mounts
+    // an always-present empty `role=alert` live region (the Next.js dev-tools
+    // overlay) that a bare `getByRole('alert')` would falsely catch.
+    await expect(page.getByRole('alert').filter({ hasText: /\S/ })).toHaveCount(0);
 
     const email = randomEmail('carryover');
     const [registerResponse] = await Promise.all([

@@ -33,8 +33,8 @@ import { defineConfig, devices } from '@playwright/test';
  * ai-and-payment-stubs.ts` intercepts that origin via `page.route` so no real
  * DNS/network call is ever attempted.
  */
-const PORT = Number(process.env.E2E_FRONTEND_PORT ?? 3000);
-const API_PORT = Number(process.env.E2E_BACKEND_PORT ?? 3001);
+const PORT = Number(process.env.E2E_FRONTEND_PORT ?? 23100);
+const API_PORT = Number(process.env.E2E_BACKEND_PORT ?? 23101);
 const BASE_URL = `http://localhost:${PORT}`;
 const API_BASE_URL = `http://localhost:${API_PORT}`;
 
@@ -54,8 +54,8 @@ const backendEnv = {
   // up` + `npm run db:seed` is all it needs. There is no committed root `.env`;
   // NestJS's AppConfigModule hard-requires these in process.env (fail-fast), so
   // they MUST be set here rather than assumed present.
-  DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:15432/plant',
-  REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:16379',
+  DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:25432/plant',
+  REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:26379',
   // JWT secrets are hard-required by token.service.ts (throws if unset). E2E-only
   // dev values — never used outside the local Playwright-spawned backend.
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET ?? 'e2e-access-secret',
@@ -74,7 +74,12 @@ const frontendEnv = {
 
 export default defineConfig({
   testDir: './e2e',
+  // Re-seed the DB before any spec so the suite is immune to app_config
+  // pollution from the backend integration tests (which drop
+  // allowed_photo_file_types to ["image/jpeg"]) — see e2e/global-setup.ts.
+  globalSetup: './e2e/global-setup.ts',
   fullyParallel: false, // journeys share seeded/global state (tiers, admin, species) — avoid cross-test races
+  workers: 1, // serialize across spec files too — journeys share global DB state; fullyParallel:false alone does not serialize between files
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   timeout: 60_000,

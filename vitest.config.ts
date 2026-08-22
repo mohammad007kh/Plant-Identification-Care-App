@@ -7,8 +7,8 @@ import swc from 'unplugin-swc';
 // Injected before any test module loads (some Nest modules validate these env
 // vars at import time). Fall back to the docker-compose defaults; CI/local env wins.
 const testEnv = {
-  DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:15432/plant',
-  REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:16379',
+  DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:25432/plant',
+  REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:26379',
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET ?? 'test-access-secret',
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET ?? 'test-refresh-secret',
   DISABLE_WORKERS: process.env.DISABLE_WORKERS ?? '1',

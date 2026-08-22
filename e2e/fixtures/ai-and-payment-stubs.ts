@@ -12,7 +12,7 @@ export { expect };
  * determinism contract (env knobs + the three-pass `test:e2e` design).
  */
 
-export const API_BASE_URL = `http://localhost:${process.env.E2E_BACKEND_PORT ?? 3001}`;
+export const API_BASE_URL = `http://localhost:${process.env.E2E_BACKEND_PORT ?? 23101}`;
 
 /** MUST match `backend/src/db/seed.ts`'s `E2E_SEED_SPECIES_ID` (separate runtime/package — duplicated, not imported). */
 export const E2E_SEED_SPECIES_ID = 'e2e-seed-species-sansevieria';

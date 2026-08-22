@@ -4,7 +4,7 @@ import { db, pool } from '../../db/client';
 import { appConfig } from '../../db/schema';
 import { AppConfigService } from './app-config.service';
 
-// Live-DB test (Postgres on localhost:15432 via the client default). Verifies the
+// Live-DB test (Postgres on localhost:25432 via the client default). Verifies the
 // read path against the real app_config table; idempotent via per-key cleanup.
 
 const service = new AppConfigService();

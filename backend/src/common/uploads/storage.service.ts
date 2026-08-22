@@ -15,7 +15,7 @@ import {
 @Injectable()
 export class StorageService {
   private readonly client = new S3Client({
-    endpoint: process.env.MINIO_ENDPOINT ?? process.env.S3_ENDPOINT ?? 'http://localhost:19000',
+    endpoint: process.env.MINIO_ENDPOINT ?? process.env.S3_ENDPOINT ?? 'http://localhost:29000',
     region: process.env.S3_REGION ?? 'us-east-1',
     forcePathStyle: true,
     credentials: {

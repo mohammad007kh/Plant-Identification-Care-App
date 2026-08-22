@@ -17,7 +17,7 @@ export class SmtpMailAdapter implements MailPort {
     if (!this.transporter) {
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST ?? 'localhost',
-        port: Number(process.env.SMTP_PORT ?? 1025),
+        port: Number(process.env.SMTP_PORT ?? 21025),
         secure: false,
       });
     }

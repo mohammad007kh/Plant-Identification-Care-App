@@ -1,7 +1,7 @@
 process.env.DISABLE_WORKERS = '1';
 process.env.DATABASE_URL =
-  process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:15432/plant';
-process.env.REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:16379';
+  process.env.DATABASE_URL ?? 'postgres://plant:plant@localhost:25432/plant';
+process.env.REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:26379';
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Test } from '@nestjs/testing';

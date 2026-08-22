@@ -57,6 +57,13 @@ export async function createScan(photo: File, idempotencyKey: string): Promise<S
   const response = await fetch(`${API_BASE_URL}/v1/scans`, {
     method: 'POST',
     headers: { 'Idempotency-Key': idempotencyKey },
+    // Required so the browser STORES the httpOnly `guest-id` cookie the backend
+    // sets on the first scan (and SENDS it on later ones). Without it every
+    // UI-driven guest scan looks like a brand-new guest, so the server-side
+    // 2-scan limit (FR-006) never triggers the registration wall — the bug the
+    // guest-limit E2E journey caught. Also carries the Bearer/refresh session
+    // for a logged-in scanner, consistent with every other `*-api` module.
+    credentials: 'include',
     body: formData,
   });
 
@@ -69,7 +76,11 @@ export async function createScan(photo: File, idempotencyKey: string): Promise<S
 
 /** `GET /v1/scans/:id` — fetches the current status/result of a scan job. */
 export async function getScan(scanId: string): Promise<ScanJob> {
-  const response = await fetch(`${API_BASE_URL}/v1/scans/${scanId}`);
+  // Same guest/auth session propagation as `createScan` above (the poll must be
+  // recognized as the same guest/user that created the scan).
+  const response = await fetch(`${API_BASE_URL}/v1/scans/${scanId}`, {
+    credentials: 'include',
+  });
 
   if (!response.ok) {
     await throwScanApiError(response);

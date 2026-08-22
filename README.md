@@ -12,20 +12,21 @@ Snap a leaf photo → get the species name and a structured care guide, with **n
 
 ### Core features (v1 / MVP)
 
-| Area | Capability |
-|---|---|
-| **Identification** | AI photo-based plant ID with a **70% confidence gate** (below threshold → prompt for a clearer photo, never a wrong guess) |
-| **Guest access** | 2 free scans before a registration wall; all guest scans transfer to the new account on sign-up |
-| **Accounts** | Email/password auth; saved plants with photo history |
-| **Tracking** | Follow-up photo comparison → health trend (improved / worse / unchanged) |
-| **AI chat** | Ask questions about a specific saved plant (up to 2 photos of context) |
-| **Credits & tiers** | A unified AI-credit system — every AI action (scan, chat, comparison) consumes credit; **Free / Pro / Max** tiers with admin-configurable monthly allowances; credit **refunded on AI-service failure** |
-| **Payments** | Mock **Zarinpal** gateway for v1 (real/international deferred), behind a swappable payment port |
-| **Reminders** | Care reminders (e.g., watering) via email (primary) + best-effort web push, with user preferences |
-| **Account lifecycle** | Account deletion with a 7-day cancellable grace period, then full purge |
-| **Admin panel** | Plant/species database, misidentification reports, user management, and operational config (credit costs, allowances, notification templates, allowed file types) |
+| Area                  | Capability                                                                                                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Identification**    | AI photo-based plant ID with a **70% confidence gate** (below threshold → prompt for a clearer photo, never a wrong guess)                                                                              |
+| **Guest access**      | 2 free scans before a registration wall; all guest scans transfer to the new account on sign-up                                                                                                         |
+| **Accounts**          | Email/password auth; saved plants with photo history                                                                                                                                                    |
+| **Tracking**          | Follow-up photo comparison → health trend (improved / worse / unchanged)                                                                                                                                |
+| **AI chat**           | Ask questions about a specific saved plant (up to 2 photos of context)                                                                                                                                  |
+| **Credits & tiers**   | A unified AI-credit system — every AI action (scan, chat, comparison) consumes credit; **Free / Pro / Max** tiers with admin-configurable monthly allowances; credit **refunded on AI-service failure** |
+| **Payments**          | Mock **Zarinpal** gateway for v1 (real/international deferred), behind a swappable payment port                                                                                                         |
+| **Reminders**         | Care reminders (e.g., watering) via email (primary) + best-effort web push, with user preferences                                                                                                       |
+| **Account lifecycle** | Account deletion with a 7-day cancellable grace period, then full purge                                                                                                                                 |
+| **Admin panel**       | Plant/species database, misidentification reports, user management, and operational config (credit costs, allowances, notification templates, allowed file types)                                       |
 
 ### Explicitly out of scope for v1
+
 Multi-language (Persian only), real/international payments (Stripe), antivirus scanning of uploads, native mobile apps, and offline mode. The architecture is kept extensible so these can be added later without a rebuild.
 
 ---
@@ -34,16 +35,16 @@ Multi-language (Persian only), real/international payments (Stripe), antivirus s
 
 End-to-end **TypeScript**, chosen to be Iran-viable and solo-maintainable.
 
-| Layer | Choice |
-|---|---|
-| **Frontend** | Next.js (App Router, hybrid SSR) · MUI + Emotion (first-class RTL) · Zustand + TanStack Query · React Hook Form + Zod · **i18n from day one** · self-hosted **Vazirmatn** font · WCAG-AA |
-| **Backend** | NestJS · Node.js 22 LTS · Drizzle ORM · REST (`/v1`, cursor pagination, RFC 7807 errors) · JWT auth (short-lived access + rotating refresh) |
-| **Data** | PostgreSQL · Redis + BullMQ (async AI jobs, scheduling) · ULID internal keys + opaque UUID public ids · integer minor-unit money · UTC time · append-only **credit ledger** |
-| **AI** | OpenAI, orchestrated with **LangChain + LangGraph**, behind a swappable `PlantAIProvider` |
-| **Payments / Email** | `PaymentPort` (Zarinpal-mock adapter) · SMTP behind a `MailPort` |
-| **Storage** | S3-compatible object storage — MinIO locally, ArvanCloud in production (deferred) |
-| **Testing** | Vitest (unit) · Supertest (API) · Playwright (E2E on critical flows) · 80% coverage target |
-| **Runtime** | Local-first via Docker Compose; cloud/VPS deployment deferred to a later milestone |
+| Layer                | Choice                                                                                                                                                                                   |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend**         | Next.js (App Router, hybrid SSR) · MUI + Emotion (first-class RTL) · Zustand + TanStack Query · React Hook Form + Zod · **i18n from day one** · self-hosted **Vazirmatn** font · WCAG-AA |
+| **Backend**          | NestJS · Node.js 22 LTS · Drizzle ORM · REST (`/v1`, cursor pagination, RFC 7807 errors) · JWT auth (short-lived access + rotating refresh)                                              |
+| **Data**             | PostgreSQL · Redis + BullMQ (async AI jobs, scheduling) · ULID internal keys + opaque UUID public ids · integer minor-unit money · UTC time · append-only **credit ledger**              |
+| **AI**               | OpenAI, orchestrated with **LangChain + LangGraph**, behind a swappable `PlantAIProvider`                                                                                                |
+| **Payments / Email** | `PaymentPort` (Zarinpal-mock adapter) · SMTP behind a `MailPort`                                                                                                                         |
+| **Storage**          | S3-compatible object storage — MinIO locally, ArvanCloud in production (deferred)                                                                                                        |
+| **Testing**          | Vitest (unit) · Supertest (API) · Playwright (E2E on critical flows) · 80% coverage target                                                                                               |
+| **Runtime**          | Local-first via Docker Compose; cloud/VPS deployment deferred to a later milestone                                                                                                       |
 
 ---
 
@@ -62,6 +63,7 @@ docker-compose.yml   postgres · redis · minio · mailpit · api · web
 ```
 
 **Key design guarantees**
+
 - **Credit integrity:** an append-only ledger + cached balance, idempotency keys, a per-action state machine, and a reconciliation sweep — no double-spend, no double-refund, and refund-on-failure even if a worker crashes mid-call.
 - **Provider swappability:** all AI calls go through `PlantAIProvider`; all payments through `PaymentPort`; all email through `MailPort`. Swapping a provider is a new adapter, not a rewrite.
 - **Upload safety:** image uploads are validated by magic bytes, decoded and re-encoded (stripping EXIF/polyglots), size/pixel-capped, and SVG-excluded.
@@ -88,8 +90,8 @@ npm run db:seed               # tiers, demo admin, sample species, config defaul
 npm run dev                   # backend (NestJS) + frontend (Next.js)
 ```
 
-- Web: http://localhost:3000 · API: http://localhost:3001/v1
-- Mailpit inbox: http://localhost:8025 · MinIO console: http://localhost:9001
+- Web: http://localhost:23000 · API: http://localhost:23001/v1
+- Mailpit inbox: http://localhost:28025 · MinIO console: http://localhost:29001
 
 ```bash
 npm run test        # unit (Vitest)
